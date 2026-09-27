@@ -1,213 +1,188 @@
 # Product Workflow
 
-How information moves through GridPulse, from the real world to human attention and action.
-This is a **conceptual** workflow; no technical design, schema or UI is implied.
+**Phase 0 — LOCKED.** Conceptual workflow; the precise model (states, objects, rules) is defined in
+`PHASE_1_ARCHITECTURE.md`.
 
 ## 1. The canonical loop
 
 ```
 REAL WORLD
     ↓
-INFORMATION ENTERS ────────── any channel, one universal intake path
+INFORMATION ENTERS ──────────── one universal intake path; read-only against external systems
     ↓
-DETECTION ─────────────────── changes detected; potential events proposed
+DETECTION ───────────────────── changes, potential events, conflicts, stale/missing evidence
     ↓
-EVIDENCE ──────────────────── every claim linked to source → version → location
+EVIDENCE ────────────────────── every claim linked to source → version → location, verified
     ↓
-HUMAN REVIEW ──────────────── Review Queue: confirm / reject / edit / request more investigation
+HUMAN REVIEW ────────────────── CONFIRM · REJECT · REQUEST_INVESTIGATION · EDIT_FINDING
     ↓
-TRUSTED PROJECT EVENT ─────── confirmed event updates the validated intelligence state
+VALIDATED PROJECT INTELLIGENCE ─ GridPulse's validated view; not the source of truth
     ↓
-PROJECT INTELLIGENCE GRAPH ── entities and dependencies (CONFIRMED / INFERRED / REJECTED)
+PROJECT INTELLIGENCE GRAPH ──── entities, dependencies (status + provenance), evidence
     ↓
-IMPACT ANALYSIS ───────────── traverse dependencies; potential impacts; facts vs inferences
+IMPACT ANALYSIS ─────────────── direct → secondary → milestones → gates → potential exposure
     ↓
-ATTENTION / ACTION ────────── routed to relevant humans, who make the decisions
+ATTENTION / ACTION ──────────── routed to reviewers; humans make determinations
 ```
+
+The auditable chain for every change to Validated Project Intelligence:
+
+```
+SOURCE → DETECTION → FINDING → REVIEW → VALIDATED PROJECT INTELLIGENCE
+```
+
+There is no direct-edit path (D-020).
 
 ## 2. Stages
 
 ### 2.1 Information enters
 
-Information may enter through manual entry, document upload, email, schedule update, integration or
-future external systems. There is **one universal event/change intake mechanism**; channels are only
-different ways for raw information to arrive. GridPulse is **read-only** against external systems in
-the MVP (D-002).
+Supported inputs: **documents, schedules, supplier communications, manual project facts, other
+imported information.** A schedule is preferred when available but **not required** — the first user
+often does not control it (D-003). All inputs use one universal intake path.
 
 ### 2.2 Detection
 
-Detection covers two related concepts (D-009):
-
-- A **Change** is a difference between two states or versions — e.g. PCS specification Rev 7 → Rev 8,
-  or transformer delivery Jan 12 → Feb 2.
-- An **Event** is something that happened, or is reported to have happened, in the real project — e.g.
-  *"Supplier informed the project that transformer delivery has moved to February 2."*
+- A **Change** is a detected difference between two states, versions, records or observations
+  (e.g. transformer delivery 15 Jan → 2 Feb; PCS spec Rev 7 → Rev 8).
+- An **Event** is something that happened, or is reported to have happened, in the real project
+  (e.g. "Supplier informed the project that transformer delivery has moved to 2 February").
 
 ```
-SOURCE → CHANGE DETECTED → POTENTIAL EVENT → HUMAN REVIEW → CONFIRMED PROJECT EVENT
+SOURCE → CHANGE DETECTED → POTENTIAL EVENT → HUMAN REVIEW → CONFIRMED / REJECTED
 ```
 
-A detected Change may generate a Potential Event. **Every AI-detected Project Event starts as
-`NEEDS_REVIEW`** (D-001).
+Every AI-detected event starts `DETECTED` and moves to `UNDER_REVIEW`. An authorized user's manual
+entry of a known event may be created directly as `CONFIRMED`, with `MANUAL_ENTRY` provenance (D-001).
 
-**Exception — manual entry by an authorized user.** An authorized user entering a known real-world
-event may create it directly as `CONFIRMED`:
-
-| Origin | Example | Initial status |
-|---|---|---|
-| Manual entry by authorized user | "Transformer delivery has been confirmed by the project manager as moving from Jan 12 to Feb 2." | `CONFIRMED` |
-| AI detection | "Supplier email appears to change transformer delivery from Jan 12 to Feb 2." | `NEEDS_REVIEW` |
-
-AI-detected information is **never** silently promoted into the trusted project state.
+**Conflicts.** If sources contradict each other (Source A: delivery 15 Jan; Source B: delivery 2 Feb),
+GridPulse raises **CONFLICT DETECTED** with both sources, their versions/dates and evidence. It may
+explain the conflict but never chooses which source is authoritative. Human review determines the
+validated interpretation (D-011).
 
 ### 2.3 Evidence
 
-Every extracted fact, detected change, potential event and inferred dependency carries evidence:
-source → record → version → page/section/chunk/location. Manually entered events record who entered
-them and on what basis.
+Every claim is traceable: claim → evidence → document version → page/section/chunk (or email message,
+schedule activity/field, data row, manual-entry record). Cited evidence is mechanically verified.
+Evidence that points to superseded versions is flagged as stale.
 
 ### 2.4 Human review — the Review Queue
 
-The Review Queue is **part of the trust architecture**, not an administrative feature. It is the
-boundary between AI output and the trusted project state.
+The Review Queue is **part of the trust architecture**: it is the boundary between AI output and
+Validated Project Intelligence.
 
-For each item the reviewer should be able to see:
+The reviewer sees: what GridPulse detected · why · the supporting source · what changed · the affected
+entity · evidence confidence, relationship confidence and validation status · dependencies that may be
+affected (preview) · what remains uncertain.
 
-- what GridPulse detected
-- why it detected it
-- what source supports it
-- what changed (old → new)
-- which entity is affected
-- what confidence exists
-- which dependencies may be affected
-- what remains uncertain
+MVP review actions (D-010):
 
-The reviewer should eventually be able to:
+| Action | Effect |
+|---|---|
+| `CONFIRM` | Finding applied to Validated Project Intelligence |
+| `REJECT` | Nothing applied; rationale recorded |
+| `REQUEST_INVESTIGATION` | Creates `INVESTIGATION_REQUESTED`; finding/change stays unresolved; intelligence unchanged |
+| `EDIT_FINDING` | Corrects the finding (original preserved); reviewer then confirms or rejects |
 
-- **confirm**
-- **reject**
-- **edit / correct**
-- **request more investigation**
+No elaborate workflow management. The exact UI is deferred.
 
-The exact UI is deferred. (Which actions are in the MVP, and how "request more investigation" is
-represented, are open — D-010, D-022.)
+### 2.5 Validated Project Intelligence
 
-### 2.5 Trusted project event
-
-A confirmed Project Event updates GridPulse's **trusted project state** — its validated intelligence
-state. This state is derived from authoritative sources plus human review; it is **not** the
-authoritative or contractual record (D-021).
+Confirmed findings update GridPulse's validated view. It may legitimately diverge from a system of
+record (e.g. a validated supplier date that the EPC schedule does not yet reflect); the divergence is
+shown, never hidden or "corrected".
 
 ### 2.6 Project intelligence graph
 
-The graph holds project entities and their dependencies. Dependencies carry a status (D-004):
-
-| Status | Meaning | Example |
-|---|---|---|
-| `CONFIRMED` | Explicit in a source (e.g. schedule logic) or confirmed by a human | Schedule: "Transformer Installation depends on Transformer Delivery" |
-| `INFERRED` | Proposed by AI from project information, with evidence | AI infers from several documents that installation affects HV commissioning |
-| `REJECTED` | A human rejected the relationship | Reviewer rejects the inferred link |
-
-The initial graph is **reconstructed from available project information** (documents, imported
-schedule, manually entered facts), with manual seeding only where needed to establish ground truth for
-the controlled benchmark (D-003). GridPulse consumes explicit schedule relationships; it is **not** a
-scheduling engine.
+Dependencies carry a **status** (`INFERRED` / `CONFIRMED` / `REJECTED`) and **provenance**
+(`SCHEDULE_DERIVED`, `DOCUMENT_DERIVED`, `AI_INFERRED`, `HUMAN_CONFIRMED`, …). "The schedule says it"
+and "an engineer validated it" are never treated as the same kind of evidence (D-023).
 
 ### 2.7 Impact analysis
 
-GridPulse traverses dependencies from the affected entity and identifies **potential** downstream
-impact. It may use `INFERRED` dependencies but must label them as inferred; it never uses `REJECTED`
-ones and never presents an inference as established fact.
+```
+Change → direct impacts → dependency propagation → secondary impacts → milestones → gates → potential exposure
+```
 
-GridPulse may perform **deterministic calculations and evidence-backed comparisons** (Level 1). It must
-**not** produce engineering/project conclusions (Level 3) (D-005).
+GridPulse may use inferred dependencies (labelled), perform deterministic calculations and comparisons,
+and surface candidate Level 3 implications **only** as potential exposure requiring validation.
 
 ### 2.8 Attention / action
 
-GridPulse identifies relevant reviewers and routes the investigation to them. Humans decide whether the
-project is delayed, whether engineering must change, whether compliance is affected, and what to do.
+GridPulse suggests relevant reviewers (configured project roles) and routes impacts to them. Humans
+make the determinations.
 
-## 3. What an impact investigation must contain
+## 3. What an investigation must contain
 
-"Review required" alone is not enough (Risk 3). A GridPulse investigation should present:
+"Review required" alone is not enough. Every impact exposes: affected entity · relationship ·
+dependency status · evidence · deterministic calculations · relevant milestone · uncertainty ·
+reviewer · unresolved question.
 
-| Element | Example (transformer scenario) |
-|---|---|
-| Evidence | Link to the exact sentence in the supplier communication |
-| Affected entities | Main transformer |
-| Dependency chain | Delivery → installation → HV commissioning → grid compliance testing → energization, each link with status and evidence |
-| Deterministic calculations | Delivery moved 21 calendar days; new delivery is 18 calendar days after planned installation start |
-| Relevant milestones / gates | HV commissioning, grid compliance testing, energization |
-| Uncertainty | Which links are INFERRED; what information is missing (e.g. float, resequencing options) |
-| Suggested reviewers | Relevant roles for schedule and engineering review |
-| Unresolved questions | Questions a human must answer before any conclusion |
+## 4. Ask GridPulse (MVP, narrow)
 
-Each item is labelled Level 1 (fact) or Level 2 (dependency / inference).
+Ask GridPulse answers questions from Validated Project Intelligence with evidence. It is **not** a
+general-purpose chatbot. Each answer contains: answer · supporting evidence · affected entities ·
+dependency chain · uncertainty · reviewer/validation status. If an answer cannot be supported by
+evidence, GridPulse says so (D-019).
 
-## 4. The first product demonstration — transformer delivery change
+Example: *"What is currently blocking energization?"*
 
-### Initial project state
+## 5. The first product demonstration — transformer delivery change
+
+Canonical definition: `PHASE_1_ARCHITECTURE.md` §16.
 
 | Item | Date |
 |---|---|
-| Transformer delivery | January 12 |
-| Transformer installation | January 15 |
-| HV commissioning | February 10 |
-| Grid compliance testing | February 20 |
-| Energization | March 1 |
+| Transformer delivery (original) | 15 January |
+| Transformer installation | 15 January |
+| HV commissioning | 10 February |
+| Grid compliance testing | 20 February |
+| Energization | 1 March |
 
-### New information
+Supplier communication: *"Transformer delivery is now expected February 2."*
 
-A supplier communication arrives: *"Transformer delivery is now expected February 2."*
+GridPulse:
 
-### What GridPulse does
+1. detects the change
+2. extracts old and new dates
+3. links the evidence
+4. creates a potential event
+5. marks it for review (`DETECTED` → `UNDER_REVIEW`)
+6. human confirms it
+7. updates Validated Project Intelligence
+8. traverses project dependencies — including **at least one AI-inferred dependency** (D-025)
+9. identifies potential downstream impact
+10. identifies relevant reviewers
+11. clearly separates facts, inferences and conclusions
 
-1. **Detects the change** in the supplier communication.
-2. **Extracts old and new dates** — January 12 → February 2.
-3. **Links the evidence** — the exact location in the communication.
-4. **Creates a potential event** — `DELIVERY_DATE_CHANGE`, affected entity: main transformer.
-5. **Marks it `NEEDS_REVIEW`.**
-6. **Human confirms it** in the Review Queue.
-7. **Updates the trusted project state** — transformer delivery = February 2, with evidence and reviewer.
-8. **Traverses project dependencies** — delivery → installation → HV commissioning → grid compliance
-   testing → energization.
-9. **Identifies potential downstream impact.**
-10. **Identifies relevant reviewers.**
-11. **Clearly separates facts, inferences and conclusions.**
+Expected output:
 
-### Example output (illustrative wording)
-
-| Level | Statement |
+| | |
 |---|---|
-| 1 — Fact | Supplier states transformer delivery is now expected February 2 (previously January 12). *[evidence]* |
-| 1 — Fact (calculation) | The new delivery date is 21 calendar days later than the previous planned date. |
-| 1 — Fact (comparison) | The new delivery date (Feb 2) is after the planned transformer installation date (Jan 15). *[schedule evidence]* |
-| 2 — Dependency | Transformer installation depends on transformer delivery. *[CONFIRMED — schedule logic]* |
-| 2 — Inference | Transformer installation appears to precede HV commissioning. *[INFERRED — evidence: …]* |
-| Attention | Potential downstream impact on HV commissioning, grid compliance testing and energization. Schedule and engineering review required. Suggested reviewers: … |
+| CHANGE | Delivery date changed 15 Jan → 2 Feb |
+| FACT | 18 calendar days difference relative to the planned installation date |
+| DEPENDENCY | Transformer delivery → transformer installation |
+| SECONDARY DEPENDENCY | Transformer installation → downstream commissioning activity (**AI-inferred, validation required**) |
+| POTENTIAL EXPOSURE | Downstream milestone may require review |
+| VALIDATION | Project-control / electrical engineering review required |
 
-### What GridPulse must NOT say
+GridPulse must **not** say: *"Energization will be delayed."* Exact downstream engineering
+consequences are never asserted without evidence.
 
-> ✗ *"Energization will be delayed by 21 days."*
+## 6. What the user eventually experiences
 
-That is a Level 3 project/engineering conclusion. Float, resequencing, mitigation and contractual
-context are for humans to assess.
-
-## 5. What the user eventually experiences
-
-These areas describe the eventual experience, **not** MVP scope, and exist to serve the core loop —
-not as generic PM features.
+These are views over the intelligence model, not generic PM features.
 
 | Area | Purpose |
 |---|---|
-| Project Overview | Current validated intelligence state |
-| Data Room | Project information and documents GridPulse has read |
-| Events | Things that happened or are reported to have happened |
-| Review Queue | Items requiring human validation (trust boundary) |
-| Changes | Detected differences between states or versions |
+| Project Overview | Current Validated Project Intelligence |
+| Data Room | Information GridPulse has read (not a document-management system) |
+| Events | What happened or is reported to have happened |
+| Review Queue | Trust boundary — items requiring validation |
+| Changes | All detected changes with lifecycle `DETECTED → UNDER_REVIEW → CONFIRMED / REJECTED` |
 | Evidence | Why GridPulse believes something |
-| Requirements | Project/grid requirements and supporting evidence |
-| Dependencies | Relationships between project elements, with status |
-| Impact | What a confirmed event may affect |
-| Gates | Grid connection, engineering completion, procurement readiness, construction completion, commissioning, grid compliance, energization, COD |
-| Ask GridPulse | Evidence-backed natural-language investigation |
+| Requirements | Requirements and supporting / missing evidence |
+| Dependencies | Relationships with status and provenance |
+| Impact | What a confirmed change may affect |
+| Gates | The fixed MVP gate set as intelligence checkpoints |
+| Ask GridPulse | Narrow, evidence-backed questions |

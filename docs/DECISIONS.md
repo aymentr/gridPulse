@@ -1,417 +1,328 @@
 # Decisions Log
 
-Product and architecture decisions for GridPulse. Resolved decisions are **locked** for Phase 0 and
-change only by explicit founder decision. Open decisions carry a recommendation for founder review.
+**Phase 0 decisions: LOCKED.** They change only by explicit founder decision.
+**Phase 1 decisions (D-026 onward): OPEN** for founder review.
 
-Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`, `SUPERSEDED`.
+Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 
-| ID | Question | Status |
+## Index
+
+| ID | Topic | Status |
 |---|---|---|
-| D-001 | Which events require human review? | **RESOLVED** |
-| D-002 | Does GridPulse write back to external systems? | **RESOLVED** |
-| D-003 | How is the initial project state and graph established? | **RESOLVED** |
-| D-004 | How are AI-inferred dependencies handled? | **RESOLVED** |
-| D-005 | Where is the Level 2 / Level 3 line? | **RESOLVED** |
-| D-006 | How is confidence represented? | OPEN |
-| D-007 | How granular is the event taxonomy? | **RESOLVED** (principle); exact list open |
-| D-008 | How are relevant reviewers identified? | OPEN |
-| D-009 | What is the difference between an Event and a Change? | **RESOLVED** |
-| D-010 | Which review actions are in the MVP? | PARTIALLY RESOLVED |
-| D-011 | How are conflicting sources handled? | OPEN |
-| D-012 | How much history does the trusted state keep? | OPEN |
-| D-013 | Who is the initial MVP user? | **RESOLVED** |
-| D-014 | Which intake channels does the MVP support? | PARTIALLY RESOLVED |
-| D-015 | Data and confidentiality approach | **RESOLVED** |
-| D-016 | How are gates defined and how is gate status determined? | OPEN |
-| D-017 | How is investigation compression measured, and on what data? | OPEN |
-| D-018 | Single project or portfolio? | OPEN |
-| D-019 | Is "Ask GridPulse" in the MVP? | OPEN |
-| D-020 | Can the trusted state be edited outside the event path? | PARTIALLY RESOLVED |
-| D-021 | GridPulse's source of truth | **RESOLVED** |
-| D-022 | How is "request more investigation" represented? | OPEN |
-| D-023 | Does `CONFIRMED` dependency conflate source-explicit and human-confirmed? | OPEN |
-| D-024 | What is an "authorized user" in the MVP? | OPEN |
-| D-025 | Must the first demo exercise AI-inferred dependencies? | OPEN |
+| D-001 | Human review of events | RESOLVED |
+| D-002 | Write-back to external systems | RESOLVED |
+| D-003 | Initial project state / graph; schedule optional | RESOLVED |
+| D-004 | Dependency status | RESOLVED |
+| D-005 | Level 1 / 2 / 3 boundary | RESOLVED |
+| D-006 | Confidence representation | RESOLVED |
+| D-007 | Event taxonomy | RESOLVED (principle); list OPEN |
+| D-008 | Reviewer identification / routing | OPEN |
+| D-009 | Event vs Change; Changes view | RESOLVED |
+| D-010 | MVP review actions | RESOLVED |
+| D-011 | Conflicting sources | RESOLVED |
+| D-012 | History | RESOLVED |
+| D-013 | Initial user | RESOLVED |
+| D-014 | Intake channels | PARTIALLY RESOLVED |
+| D-015 | Data and confidentiality | RESOLVED |
+| D-016 | Gates | RESOLVED |
+| D-017 | Measurement | RESOLVED |
+| D-018 | Single project | RESOLVED |
+| D-019 | Ask GridPulse | RESOLVED |
+| D-020 | Direct editing of validated intelligence | RESOLVED |
+| D-021 | Source of truth / Validated Project Intelligence | RESOLVED |
+| D-022 | Request more investigation | RESOLVED (by D-010) |
+| D-023 | Dependency provenance | RESOLVED |
+| D-024 | Authorized user | RESOLVED |
+| D-025 | AI-inferred dependency in first demo | RESOLVED |
+| D-026 | Baseline validation scope | OPEN |
+| D-027 | Initial status of AI-extracted explicit dependencies | OPEN |
+| D-028 | Entity resolution review | OPEN |
+| D-029 | Impact disposition | OPEN |
+| D-030 | Document content retention | OPEN |
+| D-031 | Recording human Level 3 determinations | OPEN |
+| D-032 | Canonical scenario dates | OPEN |
+| D-033 | Gate readiness verdicts | OPEN |
+| D-034 | Conditional one-hop implications | OPEN |
+| D-035 | Impact propagation matrix | OPEN |
+| D-036 | Source-authority configuration | OPEN |
+| D-037 | Ask GridPulse over unvalidated intelligence | OPEN |
+| D-038 | Who performs requested investigations | OPEN |
+| D-039 | Activity as an entity kind | OPEN |
+| D-040 | Rejecting schedule-derived dependencies | OPEN |
 
 ---
 
-# Resolved decisions
+# Phase 0 — resolved (locked)
 
 ## D-001 — Human review
-
-**Decision.** In the MVP, **every AI-detected Project Event begins in `NEEDS_REVIEW`.** An authorized
-user manually entering a known real-world event may create it directly as `CONFIRMED`.
-
-| Origin | Example | Status |
-|---|---|---|
-| Manual | "Transformer delivery has been confirmed by the project manager as moving from Jan 12 to Feb 2." | `CONFIRMED` |
-| AI | "Supplier email appears to change transformer delivery from Jan 12 to Feb 2." | `NEEDS_REVIEW` |
-
-AI-detected information is never silently promoted into the trusted project state. Risk/confidence-based
-review routing may come in future versions but is **not** part of the MVP.
-
-**Status.** RESOLVED
-
----
+Every AI-detected Project Event begins in review (`DETECTED` → `UNDER_REVIEW`) during the MVP. An
+authorized user manually entering a known real-world event may create it directly as `CONFIRMED`
+(provenance `MANUAL_ENTRY`). AI-detected information is never silently promoted. Risk/confidence-based
+routing is a possible future feature, not MVP. **RESOLVED**
 
 ## D-002 — Write-back
-
-**Decision.** GridPulse is **read-only against external systems during the MVP.** It does not modify
-Primavera, Aconex, SharePoint, external schedules or engineering systems. It maintains its own validated
-intelligence state. Write-back may be considered later only if a customer need is demonstrated.
-
-**Status.** RESOLVED
-
----
+Read-only against all external systems (Primavera, Aconex, SharePoint, schedules, engineering systems)
+in the MVP. Write-back only later and only with demonstrated customer need. **RESOLVED**
 
 ## D-003 — Initial project state / graph
+Users must not manually construct the whole graph. Initial intelligence is reconstructed from available
+information: documents, schedule, supplier communications, manual project facts, other imported
+information. Manual relationship seeding only where necessary for benchmark ground truth. GridPulse
+consumes explicit schedule relationships and is not a scheduling engine. **The schedule is preferred
+but not mandatory**; GridPulse must be useful when it is incomplete or unavailable, and must not assume
+the first user controls it (the EPC often does). Long-term: AI reconstructs and maintains the graph.
+**RESOLVED**
 
-**Decision.** GridPulse must **not** require users to manually construct the whole dependency graph.
-Initial project intelligence is reconstructed from available project information. The MVP may use:
+## D-004 — Dependency status
+`CONFIRMED` · `INFERRED` · `REJECTED`. Impact analysis may use inferred dependencies but must label
+them; inferred relationships are never presented as fact. Human confirmation strengthens the graph.
+**RESOLVED** (see D-023, D-027)
 
-- project documents
-- an imported project schedule
-- manually entered project facts
-- manually seeded relationships where necessary for the controlled benchmark (to establish ground truth)
+## D-005 — Level 1 / 2 / 3
+GridPulse may perform deterministic calculations and evidence-backed comparisons (Level 1) and state
+evidence-backed relationships/inferences (Level 2). Level 3 engineering/project conclusions are human
+decisions; GridPulse may surface candidate Level 3 implications only as potential exposure requiring
+validation. **Discovery vs determination** is a fundamental product boundary. **RESOLVED**
 
-The architecture must allow GridPulse to discover and infer relationships. The MVP is **not** a
-scheduling engine: explicit relationships in a source schedule are consumed.
-
-**Long-term goal:** AI reconstructs and maintains the project intelligence graph from the project's
-existing information.
-
-**Status.** RESOLVED
-
----
-
-## D-004 — AI-inferred dependencies
-
-**Decision.** Dependencies have a status:
-
-| Status | Example |
-|---|---|
-| `CONFIRMED` | Schedule explicitly says Transformer Installation depends on Transformer Delivery |
-| `INFERRED` | AI infers from several documents that Transformer Installation affects HV Commissioning |
-| `REJECTED` | A human rejects that relationship |
-
-The impact engine may use inferred dependencies but must clearly label them. An inferred relationship is
-never presented as established fact. Human confirmation strengthens the trusted graph.
-
-**Status.** RESOLVED (see D-023 for a residual question)
-
----
-
-## D-005 — Level 2 vs Level 3
-
-**Decision.** GridPulse **may** perform deterministic calculations and evidence-backed comparisons,
-e.g. *"The new delivery date is 21 calendar days later than the previous planned date."* It may identify
-evidence-backed project relationships, e.g. that transformer installation is scheduled relative to
-delivery. It must **not** conclude *"Energization will be delayed by 21 days."*
-
-- **Level 1 — Fact:** directly supported information (incl. deterministic calculations on evidenced values).
-- **Level 2 — Dependency / Inference:** evidence-backed relationship or analytical inference.
-- **Level 3 — Engineering / Project Conclusion:** consequential technical or project decision — **human only.**
-
-**Status.** RESOLVED
-
----
+## D-006 — Confidence
+No single "AI confidence score". Three axes: **evidence confidence** (`HIGH`/`MEDIUM`/`LOW`),
+**relationship confidence** (`EXPLICIT`/`INFERRED`), **validation status**
+(`REQUIRED`/`VALIDATED`/`REJECTED`/`NOT_REQUIRED`). Explicit states over pseudo-precise percentages;
+no percentages without a future validated statistical basis. **RESOLVED**
 
 ## D-007 — Event taxonomy
+Small and extensible; broad categories with attributes (old, new, reason, affected entity), e.g.
+`DELIVERY_DATE_CHANGE` rather than shipment/supplier/transport/logistics/equipment delay types.
+Descriptive labels are derived from the state change. `SHIPMENT_DELAY` is absorbed into
+`DELIVERY_DATE_CHANGE`.
+*Still open:* the final list — candidates for consolidation are `SCHEDULE_CHANGE` vs
+`DELIVERY_DATE_CHANGE` and `TEST_FAILURE` vs `EQUIPMENT_FAILURE`. Working list in
+`PHASE_1_ARCHITECTURE.md` §8.4. **RESOLVED (principle); list OPEN**
 
-**Decision.** Keep the taxonomy **small and extensible**; prefer broad categories with attributes.
-Use `DELIVERY_DATE_CHANGE` (old date, new date, reason, affected entity) rather than separate
-`SHIPMENT_DELAY`, `SUPPLIER_DELAY`, `TRANSPORT_DELAY`, `LOGISTICS_DELAY`, `EQUIPMENT_DELAY` types.
-Descriptive labels such as "delivery delay" may be derived from the state change.
+## D-008 — Reviewer identification / routing
+*Context:* the demo must identify relevant reviewers, and the benchmark measures routing accuracy.
+D-024 defines reviewers as configured roles/persons.
+*Options:* A. manual assignment; B. configured role map (role ↔ entity kinds/disciplines) with
+GridPulse suggesting routes; C. AI-inferred responsibility from documents.
+*Recommendation:* B for the MVP, with suggestions shown as Level 2 with their basis; C later as
+suggestion only. **OPEN**
 
-**Consequence.** The original `SHIPMENT_DELAY` type is absorbed into `DELIVERY_DATE_CHANGE`.
+## D-009 — Event vs Change; Changes view
+**Change** = a detected difference between two states, versions, records or observations. **Event** =
+something that happened or is reported to have happened in the real project. A Change may generate a
+potential Event: `SOURCE → CHANGE DETECTED → POTENTIAL EVENT → HUMAN REVIEW → CONFIRMED PROJECT EVENT`.
+The **Changes view shows all detected changes regardless of review**, with lifecycle
+`DETECTED → UNDER_REVIEW → CONFIRMED | REJECTED`. A detected change never silently becomes confirmed.
+**RESOLVED**
 
-**Still open.** The exact category list. Candidates for further consolidation during design:
-`SCHEDULE_CHANGE` vs `DELIVERY_DATE_CHANGE` (a delivery date is a schedule date), and `TEST_FAILURE` vs
-`EQUIPMENT_FAILURE`. Recommendation: settle the list when the data model is designed, using the same
-"broad category + attributes" rule.
+## D-010 — Review actions
+MVP actions: `CONFIRM`, `REJECT`, `REQUEST_INVESTIGATION`, `EDIT_FINDING`. No elaborate workflow.
+`REQUEST_INVESTIGATION` does not change Validated Project Intelligence; it creates
+`INVESTIGATION_REQUESTED` and keeps the finding/change unresolved. **RESOLVED**
 
-**Status.** RESOLVED (principle); list OPEN
+## D-011 — Conflicting sources
+Never silently resolved. GridPulse represents **CONFLICT DETECTED** with both sources, versions/dates
+where available and their evidence. AI may explain the conflict but must not choose the authoritative
+source. Human review determines the validated interpretation. **RESOLVED**
 
----
-
-## D-009 — Event vs Change
-
-**Decision.** Related but conceptually different.
-
-- **Change:** a difference between two states or versions (PCS specification Rev 7 → Rev 8;
-  transformer delivery Jan 12 → Feb 2).
-- **Event:** something that happened or is reported to have happened in the real project
-  ("Supplier informed the project that transformer delivery has moved to February 2").
-
-A Change may generate a Potential Event:
-
-```
-SOURCE → CHANGE DETECTED → POTENTIAL EVENT → HUMAN REVIEW → CONFIRMED PROJECT EVENT
-```
-
-The technical data model is designed later.
-
-**Consequence.** The original UI description "Changes — confirmed changes to project state" is replaced
-by "Changes — detected differences between states or versions". Not every Event originates from a
-detected Change (e.g. a manually entered confirmed event, or an RFI being issued).
-
-**Status.** RESOLVED
-
----
+## D-012 — History
+GridPulse retains the complete history of its own detected changes, findings, reviews, confirmations,
+rejections, dependency status changes, evidence associations, investigation requests and reviewer
+actions. It is not an archival replacement for document- or project-management systems and does not
+recreate Aconex-style document history or Primavera-style schedule history. **RESOLVED** (see D-030)
 
 ## D-013 — Initial user
+Owner's Engineer / technical project-control professional on large BESS projects. **RESOLVED**
 
-**Decision.** Initial MVP user: **Owner's Engineer / technical project-control professional working on
-large BESS projects.** The MVP optimizes for this workflow and is not designed simultaneously for
-developers, EPCs, grid operators, other consultants, data-center operators, commissioning companies or
-investors.
-
-First question: *Can GridPulse materially reduce the investigation workload of a technical professional
-when project information changes?*
-
-**Status.** RESOLVED
-
----
+## D-014 — Intake channels
+*Resolved:* inputs are documents, schedule (optional), supplier communications, manual project facts
+and other imported information (D-003).
+*Open:* how supplier communications arrive in the MVP. *Recommendation:* uploaded email/document
+files; live mailbox connection is an integration and out of MVP scope. **PARTIALLY RESOLVED**
 
 ## D-015 — Data and confidentiality
-
-**Decision.** Prototype and benchmark use **synthetic and public data only**. Production enterprise
-security is not required before proving the product, but the architecture must acknowledge that real
-projects are highly confidential. Before real customer data is used, the product must address:
-encryption, authentication, authorization, tenant isolation, audit logs, data retention, data deletion,
-data residency, AI-provider data handling, contractual confidentiality and appropriate enterprise
-security requirements. No enterprise compliance program during the MVP.
-
-**Status.** RESOLVED
-
----
-
-## D-021 — GridPulse's source of truth
-
-**Decision.** GridPulse is **not the contractual or authoritative source of truth** for the project. It
-maintains a **validated intelligence state** derived from authoritative project sources and human review.
-
-- Aconex may remain the project document / contractual record.
-- Primavera may remain the project scheduling system.
-- Engineering systems may remain authoritative for engineering data.
-
-GridPulse maintains an evidence-backed intelligence representation of what the information across these
-systems collectively implies about the current project state.
-
-**Reasoning.** Strategically, this keeps GridPulse in the intelligence category rather than competing
-with systems of record. Legally, it limits the risk of GridPulse outputs being treated as the
-authoritative project record.
-
-**Consequence.** "Trusted project state" in these documents means this validated intelligence state —
-trusted *within GridPulse*, not authoritative for the project.
-
-**Status.** RESOLVED
-
----
-
-# Open and partially resolved decisions
-
-## D-006 — How is confidence represented?
-
-**Options.** A. Numeric (0–1). B. Categorical (high/medium/low) with reasons. C. Derived from source
-type and evidence quality, with reasons.
-
-**Recommendation.** B or C shown to users; raw numbers kept internally for evaluation.
-
-**Reasoning.** Model-produced numeric confidences are poorly calibrated and invite false trust; reasons
-help reviewers more.
-
-**Status.** OPEN
-
----
-
-## D-008 — How are relevant reviewers identified?
-
-**Context.** The first demo now requires GridPulse to "identify relevant reviewers" (step 10). That needs
-some knowledge of people, roles and responsibilities.
-
-**Options.** A. Manual assignment per event. B. A simple project role/responsibility map (entered or
-seeded) used to suggest reviewers by entity/discipline. C. AI-inferred from documents (RACI, contracts,
-org charts).
-
-**Recommendation.** B for the MVP — a seeded role map in the synthetic benchmark project, with
-suggestions shown as Level 2 (with the basis for the suggestion). C later, as suggestion only.
-
-**Status.** OPEN
-
----
-
-## D-010 — Which review actions are in the MVP?
-
-**Resolved part.** The reviewer should *eventually* be able to confirm, reject, edit/correct and request
-more investigation. Corrections become part of the trusted state.
-
-**Open part.** Which of these are required in the MVP.
-
-**Recommendation.** Confirm, reject and edit/correct in the MVP (store both the AI proposal and the
-human correction — this is the raw data for measuring precision). "Request more investigation" can follow.
-
-**Status.** PARTIALLY RESOLVED
-
----
-
-## D-011 — How are conflicting sources handled?
-
-**Example.** Supplier email says Feb 2; latest schedule still says Jan 12; minutes say "late January".
-
-**Options.** A. Latest source wins. B. Surface a contradiction as a reviewable item with all evidence.
-C. Source-authority ranking as a hint.
-
-**Recommendation.** B, optionally informed by C. Note that under D-021 a difference between GridPulse's
-validated state and a system of record is expected and should be surfaced, not overwritten.
-
-**Status.** OPEN
-
----
-
-## D-012 — How much history does the trusted state keep?
-
-**Options.** A. Current state plus event log. B. Full history, reconstructable as of any time on both
-the detected-time and effective-time axes.
-
-**Recommendation.** B conceptually, via an append-only record of changes, events and reviews.
-
-**Reasoning.** "What changed since last week?", auditability and evaluation all require it.
-
-**Status.** OPEN
-
----
-
-## D-014 — Which intake channels does the MVP support?
-
-**Resolved part.** D-003 establishes project documents, an imported schedule and manual entry as MVP
-inputs.
-
-**Open part.** How the supplier communication arrives in the demo — as an uploaded document/email file,
-or via a live mailbox connection.
-
-**Recommendation.** Uploaded email/document file. Live mailbox ingestion is an integration and is out
-of MVP scope.
-
-**Status.** PARTIALLY RESOLVED
-
----
+Synthetic and public data only for prototype and benchmark. No production enterprise security before
+proving the product. Before real customer data: encryption, authentication, authorization, tenant
+isolation, audit logs, retention, deletion, residency, AI-provider data handling, contractual
+confidentiality, enterprise security requirements (`PHASE_1_ARCHITECTURE.md` §17). No enterprise
+compliance program in the MVP. **RESOLVED**
 
 ## D-016 — Gates
+Small fixed MVP set: GRID CONNECTION · ENGINEERING READY · PROCUREMENT READY · CONSTRUCTION READY ·
+COMMISSIONING READY · GRID COMPLIANCE READY · ENERGIZATION READY · COD / HANDOVER. Intelligence
+checkpoints, not contractual approvals. Architecture allows future configurable gates without making
+the MVP a gate-management system. **RESOLVED** (see D-033)
 
-**Options.** A. Gates as graph nodes reachable by impact analysis, no status logic. B. Gates with
-evidence checklists showing missing evidence. C. Computed "ready / not ready".
+## D-017 — Measurement
+Measurement exists in the architecture from the start. The benchmark measures at least: change
+detection accuracy, direct-impact recall, secondary-impact recall, evidence precision, stale-evidence
+detection, false-positive rate, reviewer routing accuracy, gate identification, investigation time,
+human correction rate. The 4 h → 15 min + 30–60 min figure is only a product hypothesis/target, not an
+industry fact or validated evidence. **RESOLVED**
 
-**Recommendation.** A for MVP; B later. Avoid C — a computed readiness status risks becoming a Level 3
-conclusion.
+## D-018 — Single project
+MVP is one project. No portfolio functionality; architecture stays extensible. **RESOLVED**
 
+## D-019 — Ask GridPulse
+In the MVP, narrow. Not a general-purpose chatbot. Answers from Validated Project Intelligence with
+evidence; each answer contains answer, supporting evidence, affected entities, dependency chain,
+uncertainty and reviewer/validation status. If an answer cannot be supported by evidence, GridPulse
+says so. **RESOLVED** (see D-037)
+
+## D-020 — Direct editing
+No arbitrary direct edits to Validated Project Intelligence. State changes originate through the
+event/review mechanism: `SOURCE → DETECTION → FINDING → REVIEW → VALIDATED PROJECT INTELLIGENCE`.
+Manual project facts may be entered explicitly with provenance showing manual entry. **RESOLVED**
+
+## D-021 — Source of truth / Validated Project Intelligence
+GridPulse is not the contractual or authoritative source of truth. The primary term is **Validated
+Project Intelligence**: GridPulse's internally validated view of project information derived from
+authoritative project sources and human review; not the contractual, legal, engineering, scheduling or
+other authoritative source of truth. ("Trusted project state" is retired.) Systems of record stay
+authoritative (Aconex for documents/contracts, Primavera for the schedule, engineering systems for
+engineering data). GridPulse must never imply that its state replaces them. **RESOLVED**
+
+## D-022 — Request more investigation
+Resolved by D-010: `REQUEST_INVESTIGATION` → `INVESTIGATION_REQUESTED`; finding stays unresolved.
+**RESOLVED**
+
+## D-023 — Dependency provenance
+Every dependency records provenance; at minimum `SCHEDULE_DERIVED`, `DOCUMENT_DERIVED`,
+`HUMAN_CONFIRMED`, `AI_INFERRED`. "The schedule says it" and "an engineer validated it" are different
+kinds of evidence and are never treated as equivalent. Architecture models provenance as a list
+(origin plus human actions) separate from status. **RESOLVED**
+
+## D-024 — Authorized user
+No authentication yet. "Authorized user" = a configured project role/person allowed to perform the
+relevant review action. Reviewer identity is explicit so authentication can be added later. **RESOLVED**
+
+## D-025 — AI-inferred dependency in first demo
+Yes. The first end-to-end demonstration must include at least one meaningful AI-inferred dependency,
+proposed as `INFERRED` with evidence and validation required, never silently treated as confirmed.
+**RESOLVED**
+
+---
+
+# Phase 1 — open architecture decisions
+
+## D-026 — Baseline validation scope
+**Question.** Reconstructing the initial project (D-003) produces many AI-extracted facts. D-001/D-020
+forbid silently promoting AI output into Validated Project Intelligence, but reviewing every extracted
+fact would cause review overload (Risk 2).
+**Options.** A. Review every extracted fact. B. Extracted facts stay `PROPOSED` (usable, labelled
+unvalidated); only facts that participate in impact paths, milestones or gates are raised as `FACT`
+findings for baseline review. C. Treat facts from authoritative documents as validated without review.
+**Recommendation.** B. C violates D-001's spirit; A is unusable at scale.
 **Status.** OPEN
 
----
-
-## D-017 — Measuring investigation compression
-
-**Context.** D-015 restricts the prototype and benchmark to synthetic and public data.
-
-**Options.** A. Synthetic BESS project with hand-built ground truth and scripted events. B. Anonymised
-real project data with experts timing manual investigations. C. A, then B once enterprise controls exist.
-
-**Recommendation.** C. Define acceptable precision/recall thresholds with target users before claiming
-the 4 h → 15 min + 30–60 min targets. Recognise that synthetic data can show *feasibility* but cannot by
-itself validate real-world time savings.
-
+## D-027 — Initial status of AI-extracted explicit dependencies
+**Question.** D-025 says relationships *not* explicitly stated are `INFERRED`. A relationship that *is*
+explicitly stated in a document but extracted by AI could be mis-extracted. What status does it start with?
+**Options.** A. `CONFIRMED` (it is explicit). B. `INFERRED` status, with relationship confidence
+`EXPLICIT`, provenance `DOCUMENT_DERIVED`, validation `REQUIRED`, until reviewed. C. Add a fourth status.
+**Recommendation.** B. Only deterministic structured imports (`SCHEDULE_DERIVED`), authorized manual
+entries and human review produce `CONFIRMED`. The display shows "explicitly stated in <document> —
+validation required", so the `INFERRED` status label is not mistaken for "reasoned". If the label
+confusion is unacceptable, choose C.
 **Status.** OPEN
 
----
-
-## D-018 — Single project or portfolio?
-
-**Recommendation.** Single project in the MVP; model entities (e.g. suppliers) so cross-project views
-are possible later.
-
+## D-028 — Entity resolution review
+**Question.** "Main transformer", "TX-01" and "Power Transformer T1" must be resolved to one entity.
+Wrong merges corrupt impact paths. Must merges be reviewed?
+**Options.** A. Every merge reviewed. B. Merges shown and reviewed as part of the finding that depends
+on them; no separate queue. C. Automatic.
+**Recommendation.** B for the MVP.
 **Status.** OPEN
 
----
-
-## D-019 — Is "Ask GridPulse" in the MVP?
-
-**Options.** A. Exclude. B. Narrow version over the validated state and graph, evidence-backed.
-C. General document Q&A.
-
-**Recommendation.** A for the first demo, B soon after. Avoid C (drifts toward "chat with your PDFs").
-
+## D-029 — Impact disposition
+**Question.** What can a reviewer do with an Impact?
+**Options.** A. Impacts are informational only. B. Minimal lifecycle `OPEN → ACKNOWLEDGED | DISMISSED`
+(reason required), `SUPERSEDED` on recompute. C. Treat impacts as Findings with the four review actions.
+**Recommendation.** B. C risks "CONFIRM impact" being read as confirming a Level 3 consequence.
 **Status.** OPEN
 
----
-
-## D-020 — Can the trusted state be edited outside the event path?
-
-**Resolved part.** D-001 provides a path for authorized manual entry of `CONFIRMED` events.
-
-**Open part.** Whether any direct edit that bypasses events is allowed (e.g. fixing an extracted value).
-
-**Recommendation.** No direct edits; all changes go through events or review corrections, so history
-and evidence remain complete.
-
-**Status.** PARTIALLY RESOLVED
-
----
-
-## D-022 — How is "request more investigation" represented?
-
-**Question.** The reviewer can eventually request more investigation. The event statuses are
-`NEEDS_REVIEW`, `CONFIRMED`, `REJECTED`. Does "more investigation" keep the item in `NEEDS_REVIEW` with
-a note, or need its own status?
-
-**Options.** A. Stays `NEEDS_REVIEW` with a recorded request. B. A distinct status (e.g. under
-investigation).
-
-**Recommendation.** A — keeps the status set minimal; the request is recorded on the item.
-
+## D-030 — Document content retention
+**Question.** Evidence must stay inspectable, but GridPulse is not a document archive. Does GridPulse
+retain full content of the versions it ingested, or only references?
+**Options.** A. Retain content of ingested versions (needed for verification and inspection if the
+source changes). B. References only. C. Retain cited excerpts only.
+**Recommendation.** A for the prototype (synthetic data); revisit with retention/deletion requirements
+before real data.
 **Status.** OPEN
 
----
-
-## D-023 — What does `CONFIRMED` mean for a dependency?
-
-**Question.** Under D-004, a dependency is `CONFIRMED` both when a schedule explicitly states it and when
-a human confirms it. These differ: a schedule link is evidenced by an authoritative source, not by a
-GridPulse reviewer; and schedules can themselves be wrong or out of date.
-
-**Options.** A. Single `CONFIRMED` status, with the basis (source-explicit vs human-confirmed) recorded
-as an attribute. B. Separate statuses.
-
-**Recommendation.** A — keeps D-004's three statuses while preserving provenance for the evidence view.
-
+## D-031 — Recording human Level 3 determinations
+**Question.** When a human decides "energization is not affected", does GridPulse record it?
+**Options.** A. No — decisions live outside GridPulse. B. Record as a human-authored Level 3 claim with
+reviewer attribution (never AI-authored), linked to the impact.
+**Recommendation.** B — improves "what's blocking energization?" answers and the audit trail, while
+keeping authorship explicit.
 **Status.** OPEN
 
----
-
-## D-024 — What is an "authorized user" in the MVP?
-
-**Question.** D-001 lets an *authorized* user create `CONFIRMED` events, but D-015 defers authentication
-and authorization. How is authorization represented in the prototype?
-
-**Options.** A. A simple role flag on benchmark users (no real authentication). B. Defer; treat all MVP
-users as authorized.
-
-**Recommendation.** A — the concept of "who may confirm" is part of the trust architecture and should
-exist in the model even before real security is built.
-
+## D-032 — Canonical scenario dates
+**Question.** Phase 1 sets original delivery = 15 Jan and planned installation = 15 Jan. Then "delivery
+moved 18 days" and "new delivery is 18 days after planned installation" give the same number, so the
+benchmark cannot tell whether GridPulse compared against the right baseline. Same-day delivery and
+installation is also unrealistic.
+**Options.** A. Keep 15 Jan / 15 Jan. B. Original delivery 12 Jan (21-day shift; 18 days after
+installation). C. Keep delivery 15 Jan; move planned installation (e.g. 19 Jan).
+**Recommendation.** B or C — make the two calculations produce different numbers.
 **Status.** OPEN
 
----
+## D-033 — Gate readiness verdicts
+**Question.** Gate names like "ENERGIZATION READY" suggest a ready/not-ready verdict, which would be a
+Level 3 determination.
+**Options.** A. No verdict; gates show linked items, open exposures, missing/stale evidence and
+conflicts. B. A computed readiness status.
+**Recommendation.** A.
+**Status.** OPEN
 
-## D-025 — Must the first demo exercise AI-inferred dependencies?
+## D-034 — Conditional one-hop implications
+**Question.** May GridPulse state "If the finish-to-start link holds, installation cannot start before
+2 Feb"? It is logically entailed by a dependency, but close to schedule calculation.
+**Options.** A. Not allowed. B. Allowed as Level 2, one hop only, with the dependency's status shown.
+**Recommendation.** B — high investigative value, clearly conditional.
+**Status.** OPEN
 
-**Question.** D-003 allows the benchmark graph to be built from schedule links and manual seeding.
-If every link in the demo is `CONFIRMED`, the demo never shows `INFERRED` handling — yet Risk 1 (graph
-quality) is the largest technical risk.
+## D-035 — Impact propagation matrix
+**Question.** Which change kinds propagate over which relationship types
+(`PHASE_1_ARCHITECTURE.md` §10.3)?
+**Recommendation.** Adopt the initial matrix; tune it only with benchmark evidence.
+**Status.** OPEN
 
-**Options.** A. Demo uses only schedule/seeded links. B. Demo includes at least one AI-inferred link
-(e.g. installation → HV commissioning inferred from a commissioning plan), scored against seeded
-ground truth.
+## D-036 — Source-authority configuration
+**Question.** Should the project record which source is authoritative for which information (e.g.
+EPC schedule for planned dates)?
+**Options.** A. No. B. Yes, for display and conflict explanation only — never automatic resolution.
+**Recommendation.** B.
+**Status.** OPEN
 
-**Recommendation.** B — it tests the riskiest capability and shows labelling of inferences.
+## D-037 — Ask GridPulse over unvalidated intelligence
+**Question.** D-019 says answers come from Validated Project Intelligence, but many useful answers
+("what is blocking energization?") need inferred dependencies or open findings, and the required answer
+fields include validation status.
+**Options.** A. Validated intelligence only. B. Validated first, plus clearly labelled unvalidated
+items (inferred links, open findings, conflicts).
+**Recommendation.** B.
+**Status.** OPEN
 
+## D-038 — Who performs requested investigations
+**Question.** After `REQUEST_INVESTIGATION`, who investigates?
+**Options.** A. GridPulse runs a targeted AI investigation and attaches results. B. Assigned to a
+person. C. Either, recorded on the Investigation.
+**Recommendation.** A for the MVP (keeps it out of workflow management); the reviewer's question drives it.
+**Status.** OPEN
+
+## D-039 — Activity as an entity kind
+**Question.** The required concept list has Milestone but not Activity/Task, yet the scenario's nodes
+(transformer installation, HV commissioning) are dated activities, not zero-duration milestones.
+**Options.** A. Model them as milestones (start/finish). B. Add `Activity` as an Entity kind carrying
+only the dated claims needed for intelligence — explicitly not a task.
+**Recommendation.** B, with the non-task boundary stated.
+**Status.** OPEN
+
+## D-040 — Rejecting schedule-derived dependencies
+**Question.** If an engineer rejects a `SCHEDULE_DERIVED` link as wrong, GridPulse's graph and the
+schedule diverge.
+**Options.** A. Not allowed. B. Allowed; divergence shown; schedule untouched (D-002).
+**Recommendation.** B — consistent with D-021 (divergence is information).
 **Status.** OPEN
