@@ -1,6 +1,6 @@
 # Product Vision
 
-**Phase 0 — LOCKED.** Changes require an explicit founder decision recorded in `DECISIONS.md`.
+**Phase 0 — LOCKED** (amended by council-review decisions D-041 – D-047). Changes require an explicit founder decision recorded in `DECISIONS.md`.
 
 > **North star:** GridPulse continuously turns fragmented project information and real-world project
 > events into an evidence-backed understanding of what changed, what may be affected, and what requires
@@ -148,6 +148,18 @@ data-center operators, commissioning companies or investors.
 This user often does **not** own the schedule (the EPC frequently does). GridPulse must be useful when
 the schedule is incomplete or unavailable (D-003).
 
+**What this user actually receives (D-041).** Suppliers usually communicate with the EPC, not the OE.
+The OE typically learns of changes through reporting-period documents: EPC monthly progress reports,
+schedule updates, submittals and document revisions, meeting minutes and correspondence copied to the
+owner — often later and less precisely than the original. GridPulse is designed around that flow. The
+killer question for this user:
+
+> *"What changed since the last reporting period, what may it affect, and is it consistent across the
+> evidence?"*
+
+GridPulse reports inconsistencies between sources as facts with evidence; it never characterises any
+party's intent.
+
 **First question:** *Can GridPulse materially reduce the investigation workload of a technical
 professional when project information changes?*
 
@@ -159,6 +171,14 @@ infrastructure projects.* MVP scope: **one project**; no portfolio functionality
 Long-term lifecycle coverage (not built now): project intake → data room → requirements → grid
 maturity → grid application → grid offer → contracts → engineering → procurement → construction →
 commissioning → grid compliance → energization → COD.
+
+**Where GridPulse's value is most distinct (D-042, D-043).** Scheduling systems already propagate
+date changes well. GridPulse's distinct value lies in:
+
+1. **links no schedule contains** — e.g. PCS specification → PPC design basis → grid-compliance
+   requirement and test;
+2. **non-date changes** — specification revisions, requirement changes, test results;
+3. **disagreement between sources** — e.g. progress report vs schedule update vs supplier statement.
 
 **Long-term graph goal:** AI reconstructs and maintains the project intelligence graph from the
 project's existing information, rather than humans modelling everything manually.
@@ -204,6 +224,9 @@ and unresolved questions.
 | 4 | **False engineering conclusions** | Unsupported technical conclusions must never appear authoritative — by wording, layout or implication. |
 | 5 | **Data access** | The buyer may not control all project systems (e.g. the EPC owns the schedule). |
 | 6 | **Confidentiality** | Infrastructure projects contain sensitive information; real data requires enterprise controls. |
-| 7 | **Ground truth** | Reliable benchmark data is scarce. |
+| 7 | **Ground truth** | Reliable benchmark data is scarce; an author-written synthetic corpus is cleaner than real data and will flatter results (mitigation: corpus realism tiers, D-044). |
 | 8 | **Scope creep** | Customers may request generic project-management features. |
-| 9 | **Liability** | Incorrect impact analysis could have commercial consequences; D-021 is part of the mitigation. |
+| 9 | **Liability** | Incorrect or incomplete impact analysis could have commercial consequences, and a flagged-but-ignored exposure creates a discoverable record. GridPulse is positioned as decision support, not a guarantee of completeness; D-021 and the audit trail are part of the mitigation. |
+| 10 | **Incumbent AI** | Oracle (Aconex/Primavera), Procore and others are adding AI. If the value is "AI reads our documents", incumbents win. GridPulse must win on cross-system dependency intelligence and accumulated validated review data. |
+| 11 | **Intake mismatch** | If the first user does not receive the information the product assumes, the demonstrations do not reflect real use (D-041; tested by the validation gate). |
+| 12 | **Unvalidated thesis** | The product definition precedes practitioner validation; Phase 2 is gated on `VALIDATION_PLAN.md` (D-044). |

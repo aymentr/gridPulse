@@ -87,5 +87,22 @@ Intelligence → project intelligence graph → impact analysis → attention / 
 Remove the dashboard, chatbot and UI: evidence, changes, dependencies, impact and Validated Project
 Intelligence must still form a coherent model.
 
-## P22. Do not silently make major decisions
+## P22. Inferred-dependency precision over recall
+A false inferred link costs reviewer time and erodes trust. Prefer fewer, well-evidenced inferences;
+inferred-dependency precision is a primary benchmark metric (D-044).
+
+## P23. Review load is a cost, measured
+Every review item a change generates counts against the investigation saving. Review load (items and
+minutes per change) is measured, not assumed away (Risk 2, D-044).
+
+## P24. Report disagreement, never intent
+When sources disagree, GridPulse states the disagreement with evidence. It never characterises a
+party's motives or competence (D-043).
+
+## P25. Validate before building
+Assumptions about users, information flow and value are tested with practitioners before
+implementation (D-044). Documentation is frozen except for blocking decisions and validated
+amendments (D-046).
+
+## P26. Do not silently make major decisions
 Ambiguities go to `DECISIONS.md` for founder review.

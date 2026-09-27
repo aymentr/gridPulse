@@ -1,6 +1,7 @@
 # Phase 1 — Domain & System Architecture
 
-**Status:** Phase 1 draft for founder review. Phase 0 is locked.
+**Status:** Phase 1 draft — **frozen** pending the validation gate (D-044, D-046). Phase 0 is locked;
+the council-review amendments D-041 – D-047 are applied.
 
 This document defines the GridPulse intelligence model precisely enough that Phase 2 can implement it
 without inventing product semantics while coding. It is **conceptual architecture**:
@@ -31,7 +32,7 @@ inline as **[D-xxx]**.
 13. Ask GridPulse (narrow)
 14. Gates (MVP)
 15. Benchmark architecture
-16. First vertical slice — transformer delivery change
+16. Canonical vertical slices (transformer divergence; PCS specification change)
 17. Security architecture (requirements only)
 18. Explicit non-goals
 19. Architectural quality test
@@ -1044,15 +1045,16 @@ The benchmark explicitly separates:
 ┌──────────────────────────┐     same intake path      ┌──────────────────────┐
 │ Benchmark corpus          │ ─────────────────────────►│ GridPulse pipeline    │
 │ (synthetic/public BESS    │                            │ + intelligence model  │
-│  project: docs, schedule, │   scripted change events   │                       │
-│  supplier comms, manual   │ ─────────────────────────►│                       │
-│  facts)                   │                            └──────────┬───────────┘
-└──────────────────────────┘                                        │ read outputs
-┌──────────────────────────┐                                         ▼
-│ Ground truth (sealed)     │ ─────────────► Scorer ◄── findings, claims, evidence,
-│ entities, dependencies    │                           impacts, routing, answers,
-│ (stated vs inferable),    │                           audit timestamps
-│ expected changes/impacts, │
+│  project: EPC reports,    │   scripted reporting       │                       │
+│  schedule updates, specs, │   periods / change events  │                       │
+│  submittals, manual facts)│ ─────────────────────────►│                       │
+└──────────────────────────┘                            └──────────┬───────────┘
+┌──────────────────────────┐                                         │ read outputs
+│ Ground truth (sealed)     │                                         ▼
+│ entities & aliases,       │ ─────────────► Scorer ◄── findings, claims, evidence,
+│ dependencies (stated vs   │                           impacts, routing, answers,
+│ inferable), expected      │                           audit timestamps
+│ changes/conflicts/impacts,│
 │ gates, reviewers,         │   Simulated / real reviewer actions (timed)
 │ forbidden conclusions     │
 └──────────────────────────┘
@@ -1060,53 +1062,87 @@ The benchmark explicitly separates:
 
 - The corpus enters through the **same intake path** as real data (I-9). No back door.
 - Ground truth is stored separately and **never** visible to the pipeline.
-- Scripted change events are replayed in sequence; the scorer reads the product's own objects
-  (Findings, Claims, Evidence, Impacts, routing, Reviews, audit timestamps).
+- The corpus is organised the way an Owner's Engineer receives information: **by reporting period**
+  (EPC monthly report, schedule update, submittals and revisions, meeting minutes, correspondence
+  copied to the owner) — not as a stream of supplier emails the OE would not normally see (D-041).
+- The scorer reads the product's own objects (Findings, Claims, Evidence, Impacts, routing, Reviews,
+  audit timestamps).
 - Human reviewers (or scripted reviewer decisions for automated runs) act through the normal review
   actions, so review time and correction rate are measured the same way as in real use.
 
-### 15.3 Metrics
+### 15.3 Corpus realism tiers
+
+A synthetic corpus written by the team is cleaner than real project data and will flatter results.
+The benchmark therefore reports every metric **per tier** (D-044):
+
+| Tier | Content | Purpose |
+|---|---|---|
+| T1 — Clean synthetic | Consistent naming, text-native documents | Functional correctness of the loop |
+| T2 — Degraded synthetic | Inconsistent equipment names and revision labels, tables, scanned-style PDFs, long email chains, partial information | Robustness, entity resolution |
+| T3 — Public real documents | Publicly available grid-connection requirements, tender specifications, test procedures, where licensing allows | Realism check against non-authored text |
+
+Drawings, single-line diagrams and protection-setting files are **out of MVP scope** and recorded as a
+known limitation (D-047).
+
+### 15.4 Metrics
 
 | Metric | Definition (initial) |
 |---|---|
-| Change detection | Precision/recall of detected Changes vs ground-truth changes (subject, old, new correct) |
+| Change detection | Precision/recall of detected Changes vs ground truth (subject, old, new correct) |
+| **Cross-source divergence detection** | Recall of ground-truth disagreements between current sources (e.g. progress report vs schedule update) raised as CONFLICT findings (D-043) |
 | Direct-impact recall | Share of ground-truth one-hop impacted entities surfaced |
 | Secondary-impact recall | Share of ground-truth ≥2-hop impacted entities surfaced |
-| Evidence precision | Share of cited evidence records that actually support their claim (location verified *and* semantically supportive, judged against ground truth) |
-| Stale-evidence detection | Recall of ground-truth stale evidence / stale references |
+| **Inferred-dependency precision** (primary) | Share of `AI_INFERRED` dependencies that are correct per ground truth. Prioritised over recall: every false inferred link costs reviewer time |
+| Entity-resolution accuracy | Correct vs incorrect alias merges (e.g. "main transformer" = TX-01 = "T1 132/33 kV") |
+| Evidence precision | Share of cited evidence that actually supports its claim (location verified *and* semantically supportive) |
+| Stale-evidence detection | Recall of ground-truth stale evidence / stale cross-document references |
 | False-positive rate | Findings/impacts not in ground truth ÷ all findings/impacts |
 | Reviewer routing | Share of findings/impacts routed to a ground-truth appropriate role |
 | Gate identification | Precision/recall of gates reported as potentially exposed |
+| **Review load** | Review items generated per real change, and reviewer minutes per change — tests Risk 2 directly |
 | Investigation time | GridPulse processing time + measured reviewer time per investigation, vs a manual expert baseline on the same scenario |
 | Human correction rate | Share of reviewed findings that were edited or rejected |
-| **Unsupported-determination violations** (guardrail) | Count of outputs asserting a Level 3 conclusion or presenting an inferred link as fact. Target: **0** |
+| **Unsupported-determination violations** (guardrail) | Outputs asserting a Level 3 conclusion, presenting an inferred link as fact, or characterising a party's intent. Target: **0** |
 
 The **4 h manual → 15 min AI + 30–60 min expert** figure is a **product hypothesis/target only**, not
-an industry fact and not validated evidence. The benchmark exists to test it.
+an industry fact and not validated evidence. The benchmark, and the timed comparison in
+`VALIDATION_PLAN.md`, exist to test it. Review load and reviewer minutes count *against* the saving.
 
-### 15.4 Ground-truth rules
+### 15.5 Ground-truth rules
 
 - Ground truth marks each dependency as **stated** (explicit in a source) or **inferable** (not
   stated, but supported by evidence).
-- At least one inferable dependency in the canonical scenario must **not** be seeded anywhere the
+- Each canonical scenario has at least one inferable dependency that is **not** seeded anywhere the
   pipeline can see it (D-025).
-- Ground truth lists **forbidden conclusions** (e.g. "energization will be delayed by 18 days") that
-  must never appear.
+- Ground truth lists **forbidden conclusions** per scenario that must never appear.
+- Ground-truth domain content is synthetic and must not be presented as any real grid code or
+  equipment standard.
 - Synthetic and public data only (D-015).
 
 ---
 
-## 16. First vertical slice — transformer delivery change
+## 16. Canonical vertical slices
 
-### 16.1 Benchmark project data (synthetic)
+Two co-primary scenarios (D-042). They exercise different strengths:
+
+| | 16.A Transformer delivery divergence | 16.B PCS specification change |
+|---|---|---|
+| Change kind | Date | Technical specification |
+| What it proves | Cross-source divergence detection and exposure tracing | Propagation through links **no schedule contains** |
+| Where incumbents are strong | Schedulers propagate dates in P6 — GridPulse's value is *detecting that sources disagree*, not recalculating dates | Nowhere — this chain lives across documents |
+| AI-inferred dependency | Transformer installation → HV commissioning | PCS reactive capability → grid reactive power requirement |
+
+### 16.A Transformer delivery divergence
+
+#### 16.A.1 Project data (synthetic)
 
 | Item | Value | Source in corpus |
 |---|---|---|
-| Transformer delivery (original) | **15 January** | Purchase order / supplier confirmation letter |
-| Transformer installation | 15 January | Schedule export (when available) or construction method statement |
-| HV commissioning | 10 February | Schedule / commissioning plan |
-| Grid compliance testing | 20 February | Schedule / grid-connection test programme |
-| Energization | 1 March | Schedule / grid-connection agreement |
+| Transformer delivery (original) | **15 January** | Purchase order; previous month's EPC progress report |
+| Transformer installation | 15 January | EPC schedule update or construction method statement |
+| HV commissioning | 10 February | Schedule update / commissioning plan |
+| Grid compliance testing | 20 February | Schedule update / grid-connection test programme |
+| Energization | 1 March | Schedule update / grid-connection agreement |
 
 Note: with original delivery equal to planned installation, "delivery moved 18 days" and "new delivery
 is 18 days after planned installation" produce the same number — see **[D-032]**.
@@ -1115,47 +1151,108 @@ Dependency ground truth:
 
 | Link | Type | Ground truth | Expected GridPulse provenance/status |
 |---|---|---|---|
-| Transformer delivery → transformer installation | `PRECEDES` | Stated (schedule logic, or method statement) | `SCHEDULE_DERIVED` → `CONFIRMED` (or `DOCUMENT_DERIVED` → `INFERRED`/EXPLICIT if no schedule) |
-| Transformer installation → HV commissioning | `PRECEDES` | **Inferable, not stated.** Commissioning plan says "HV commissioning shall commence once all HV equipment is installed"; equipment list classes the main transformer as HV equipment. | `AI_INFERRED` → `INFERRED`, Validation `REQUIRED` — **must not be seeded** |
-| HV commissioning → protection / grid compliance testing | `PRECEDES` | Stated (grid test programme) | `DOCUMENT_DERIVED` |
+| Transformer delivery → transformer installation | `PRECEDES` | Stated (schedule logic, or method statement) | `SCHEDULE_DERIVED` → `CONFIRMED` (or `DOCUMENT_DERIVED`, validation required, if no schedule) |
+| Transformer installation → HV commissioning | `PRECEDES` | **Inferable, not stated.** Commissioning plan: "HV commissioning shall commence once all HV equipment is installed"; equipment list classes the main transformer as HV equipment. | `AI_INFERRED` → `INFERRED`, Validation `REQUIRED` — **must not be seeded** |
+| HV commissioning → grid compliance testing | `PRECEDES` | Stated (grid test programme) | `DOCUMENT_DERIVED` |
 | Grid compliance testing → ENERGIZATION READY | `CONTRIBUTES_TO` | Stated (grid-connection agreement) | `DOCUMENT_DERIVED` |
 
-### 16.2 New information
+#### 16.A.2 New information (as the OE receives it)
 
-Supplier email: *"Transformer delivery is now expected February 2."*
+Reporting period N delivers two documents to the Owner's Engineer:
 
-### 16.3 Expected behaviour
+- **EPC monthly progress report, period N:** *"Main transformer: the supplier has advised a revised
+  delivery date of 2 February."*
+- **EPC schedule update, data date period N:** transformer delivery activity still shows **15 January**.
 
-1. **Ingestion** — email ingested as a DocumentVersion (Source: supplier correspondence).
-2. **Extraction** — L1 claim: supplier states delivery expected 2 Feb; entity "transformer" resolved
-   to the main transformer (alias recorded).
-3. **Change detection** — CHANGE finding: delivery 15 Jan → 2 Feb; potential Event
-   `DELIVERY_DATE_CHANGE`; divergence from schedule noted.
-4. **Evidence linking** — quoted sentence verified in the email; Evidence: `HIGH`.
-5. **Pre-review preview** — possibly affected: installation, HV commissioning (inferred link).
-6. Finding `DETECTED` → `UNDER_REVIEW`, routed to Project Controls.
-7. **Review** — reviewer `CONFIRM`s (alternatives: `REJECT`, `EDIT_FINDING`, `REQUEST_INVESTIGATION`).
-8. **Validated Project Intelligence** — validated delivery claim = 2 Feb (provenance
-   `DOCUMENT_DERIVED` + `HUMAN_CONFIRMED`); previous claim superseded; schedule divergence visible.
-9. **Impact investigation** — traversal and Impacts.
-10. **Routing** — Project Controls and Electrical Engineering.
+Variant intake (same pipeline): a supplier letter copied to the owner stating *"Transformer delivery
+is now expected February 2."*
 
-### 16.4 Expected outputs
+#### 16.A.3 Expected behaviour
+
+1. **Ingestion** — report and schedule update ingested as DocumentVersions for period N.
+2. **Extraction** — L1 claims: report states revised delivery 2 Feb; schedule update states 15 Jan;
+   "main transformer" resolved to TX-01 (alias recorded).
+3. **Change detection** — CHANGE finding: delivery 15 Jan (period N-1 report / PO) → 2 Feb (period N
+   report); potential Event `DELIVERY_DATE_CHANGE`.
+4. **Conflict detection** — CONFLICT finding: two current sources for period N disagree (report 2 Feb
+   vs schedule update 15 Jan). GridPulse does not choose between them.
+5. **Evidence linking** — quoted sentence and schedule field verified; Evidence: `HIGH` for both.
+6. **Pre-review preview** — possibly affected: installation, HV commissioning (inferred link).
+7. Findings `DETECTED` → `UNDER_REVIEW`, routed to Project Controls.
+8. **Review** — reviewer `CONFIRM`s the change and records the validated interpretation of the
+   conflict (alternatives: `REJECT`, `EDIT_FINDING`, `REQUEST_INVESTIGATION`).
+9. **Validated Project Intelligence** — validated delivery claim = 2 Feb (provenance
+   `DOCUMENT_DERIVED` + `HUMAN_CONFIRMED`); previous claim superseded; the schedule update remains a
+   visible **source divergence** (§2.4).
+10. **Impact investigation** — traversal and Impacts; routing to Project Controls and Electrical
+    Engineering.
+
+#### 16.A.4 Expected outputs
 
 | Category | Output |
 |---|---|
-| CHANGE | Transformer delivery date changed 15 Jan → 2 Feb. *(L1, evidence: supplier email)* |
+| CHANGE | Transformer delivery date changed 15 Jan → 2 Feb. *(L1, evidence: progress report period N)* |
+| CONFLICT / DIVERGENCE | Progress report (2 Feb) and schedule update (15 Jan) state different delivery dates for the same period. *(L1, both evidenced)* |
 | FACT | New delivery is 18 calendar days later than the previous date. *(L1, calculated)* |
 | FACT | New delivery (2 Feb) is 18 calendar days after the planned installation date (15 Jan). *(L1, calculated)* |
 | DEPENDENCY | Transformer delivery → transformer installation. *(L2 · Relationship: EXPLICIT · CONFIRMED · SCHEDULE_DERIVED)* |
-| SECONDARY DEPENDENCY | Transformer installation → HV commissioning. *(L2 · Relationship: INFERRED · Validation: REQUIRED · AI_INFERRED, evidence: commissioning plan + equipment list)* |
-| POTENTIAL EXPOSURE | Downstream milestones (HV commissioning 10 Feb; grid compliance testing 20 Feb; ENERGIZATION READY gate) may require review. |
+| SECONDARY DEPENDENCY | Transformer installation → HV commissioning. *(L2 · Relationship: INFERRED · Validation: REQUIRED · AI_INFERRED)* |
+| POTENTIAL EXPOSURE | HV commissioning (10 Feb), grid compliance testing (20 Feb) and ENERGIZATION READY may require review. |
 | VALIDATION | Project-control / electrical engineering review required. |
-| UNRESOLVED | Installation duration, float and resequencing options are not evidenced. |
+| UNRESOLVED | Which date the schedule will carry; installation duration, float and resequencing options are not evidenced. |
 
-**Forbidden outputs** (benchmark violations): "Energization will be delayed", "Energization will be
-delayed by 18 days", "HV commissioning will slip", any presentation of the installation → HV
-commissioning link as established fact.
+**Forbidden outputs:** "Energization will be delayed", "Energization will be delayed by 18 days",
+"HV commissioning will slip", "The schedule is wrong", any statement about the EPC's intent (e.g.
+"the EPC is concealing the delay"), and any presentation of the installation → HV commissioning link
+as established fact.
+
+### 16.B PCS specification change
+
+#### 16.B.1 Project data (synthetic — values are illustrative, not a real grid code)
+
+| Document | Relevant content |
+|---|---|
+| PCS specification **Rev 7** | Cl. 5.3: reactive power capability ±0.95 power factor at PCS terminals across **0–100 %** rated active power. Cl. 6.1: control firmware v3.2. |
+| PPC functional specification Rev 2 | "Reactive power control shall be designed to the PCS capability defined in **PCS specification Rev 7, clause 5.3**." |
+| Grid connection requirements | Cl. R-12: facility shall provide ±0.95 power factor at the point of connection across the **full** active power range. Cl. R-30: the connecting party shall notify the network operator of any change to plant equipment or control systems that **may affect** compliance before compliance testing. |
+| Grid compliance test plan Rev 1 | Test GC-04 "Reactive power capability" verifies R-12, executed through the PPC. |
+| Equipment list | PCS units, PPC, main transformer, no other reactive compensation listed. |
+
+Dependency ground truth:
+
+| Link | Type | Ground truth | Expected provenance/status |
+|---|---|---|---|
+| PPC functional spec → PCS spec (cl. 5.3) | `REFERENCES` | Stated | `DOCUMENT_DERIVED`, validation required (D-027) |
+| Test GC-04 → requirement R-12 | `VERIFIES` | Stated | `DOCUMENT_DERIVED` |
+| GC-04 → GRID COMPLIANCE READY | `CONTRIBUTES_TO` | Stated (test plan) | `DOCUMENT_DERIVED` |
+| **PCS reactive capability (cl. 5.3) → requirement R-12** | `SPECIFIES` / contributes to | **Inferable, not stated.** No document links them; the equipment list shows PCS as the only listed reactive source, so plant reactive capability at the point of connection depends on it. | `AI_INFERRED` → `INFERRED`, Validation `REQUIRED` — **must not be seeded** |
+
+#### 16.B.2 New information (as the OE receives it)
+
+Submittal: **PCS specification Rev 8.** Cl. 5.3 now reads "across **20–100 %** rated active power";
+cl. 6.1 now states firmware v4.0.
+
+#### 16.B.3 Expected outputs
+
+| Category | Output |
+|---|---|
+| CHANGE | PCS spec cl. 5.3 capability range changed from 0–100 % to 20–100 % rated active power; cl. 6.1 firmware v3.2 → v4.0. *(L1, evidence: Rev 7 and Rev 8)* |
+| STALE_EVIDENCE | PPC functional specification Rev 2 references PCS specification **Rev 7** cl. 5.3, which Rev 8 supersedes. *(L1)* |
+| FACT (comparison) | The Rev 8 stated range (20–100 %, at PCS terminals) does not cover the 0–20 % portion of the range stated in R-12 (full range, at point of connection). The two are stated at different measurement points. *(L1, calculated)* |
+| FACT | R-12 and R-30 are the grid requirements whose text concerns reactive capability and equipment/control changes. *(L1)* |
+| DEPENDENCY | PPC functional spec references PCS spec cl. 5.3. *(L2 · EXPLICIT · validation required)* |
+| INFERRED DEPENDENCY | PCS reactive capability appears to contribute to plant capability under R-12. *(L2 · Relationship: INFERRED · Validation: REQUIRED · AI_INFERRED, evidence: equipment list + R-12 + cl. 5.3)* |
+| POTENTIAL EXPOSURE | GRID COMPLIANCE READY (test GC-04) and ENGINEERING READY (PPC design basis) may require review. |
+| VALIDATION | Electrical engineering / grid compliance review required. |
+| UNRESOLVED | Does other plant equipment provide reactive support at low active power? Does the firmware change affect submitted models or PPC tuning? Is R-30 notification triggered? |
+
+**Forbidden outputs:** "The plant will fail grid compliance testing", "PCS Rev 8 is non-compliant",
+"The PPC must be redesigned", "The network operator must be notified", "Grid models must be
+resubmitted", and any presentation of the PCS → R-12 link as established fact.
+
+This scenario is the clearest demonstration of **discovery vs determination**: GridPulse discovers a
+revision change, a stale reference, a range gap between stated values and the relevant requirements —
+and leaves every determination to engineers.
 
 ---
 
@@ -1219,8 +1316,15 @@ itself modelled as an Investigation, not as a separate system.
 
 ## 20. Readiness for Phase 2
 
-Phase 2 can begin implementation of the model once the founder has reviewed this document and the
-open decisions D-026 – D-040 in `DECISIONS.md`, in particular: D-026 (baseline validation scope),
-D-027 (initial status of AI-extracted explicit dependencies), D-032 (scenario dates), D-033 (gate
-verdicts) and D-037 (Ask GridPulse over unvalidated intelligence). Technology selection is a Phase 2
-decision.
+This architecture is **frozen** (D-046). Phase 2 does not start until:
+
+1. **The validation gate passes** (`VALIDATION_PLAN.md`, D-044): practitioner interviews confirm the
+   information flow and the pain, and the timed comparison shows a clear investigation saving once
+   review time is counted.
+2. **The five blocking decisions are made:** D-026 (baseline validation scope), D-027 (initial status
+   of AI-extracted explicit dependencies), D-032 (scenario dates), D-033 (gate verdicts), D-037 (Ask
+   GridPulse over unvalidated intelligence).
+3. **Findings from validation are folded back** into this document as founder-approved amendments —
+   not as new documentation layers.
+
+Technology selection is a Phase 2 decision.

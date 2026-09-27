@@ -1,6 +1,6 @@
 # Product Workflow
 
-**Phase 0 — LOCKED.** Conceptual workflow; the precise model (states, objects, rules) is defined in
+**Phase 0 — LOCKED** (amended by council-review decisions D-041 – D-047). Conceptual workflow; the precise model (states, objects, rules) is defined in
 `PHASE_1_ARCHITECTURE.md`.
 
 ## 1. The canonical loop
@@ -38,7 +38,8 @@ There is no direct-edit path (D-020).
 ### 2.1 Information enters
 
 Supported inputs: **documents, schedules, supplier communications, manual project facts, other
-imported information.** A schedule is preferred when available but **not required** — the first user
+imported information.** For the first user these typically arrive **by reporting period** — EPC
+progress reports, schedule updates, submittals and revisions, minutes, copied correspondence (D-041). A schedule is preferred when available but **not required** — the first user
 often does not control it (D-003). All inputs use one universal intake path.
 
 ### 2.2 Detection
@@ -127,9 +128,12 @@ evidence, GridPulse says so (D-019).
 
 Example: *"What is currently blocking energization?"*
 
-## 5. The first product demonstration — transformer delivery change
+## 5. The first product demonstrations
 
-Canonical definition: `PHASE_1_ARCHITECTURE.md` §16.
+Two co-primary scenarios (D-042), both framed around information the Owner's Engineer actually
+receives — reporting-period documents (D-041). Canonical definitions: `PHASE_1_ARCHITECTURE.md` §16.
+
+### 5.A Transformer delivery divergence (D-043)
 
 | Item | Date |
 |---|---|
@@ -139,35 +143,53 @@ Canonical definition: `PHASE_1_ARCHITECTURE.md` §16.
 | Grid compliance testing | 20 February |
 | Energization | 1 March |
 
-Supplier communication: *"Transformer delivery is now expected February 2."*
+Reporting period N: the **EPC progress report** says *"the supplier has advised a revised delivery
+date of 2 February"*; the **schedule update** for the same period still shows 15 January. (Variant:
+a supplier letter copied to the owner.)
 
 GridPulse:
 
-1. detects the change
+1. detects the change (15 Jan → 2 Feb) and the **disagreement between the two current sources**
 2. extracts old and new dates
-3. links the evidence
-4. creates a potential event
-5. marks it for review (`DETECTED` → `UNDER_REVIEW`)
-6. human confirms it
-7. updates Validated Project Intelligence
-8. traverses project dependencies — including **at least one AI-inferred dependency** (D-025)
-9. identifies potential downstream impact
+3. links the evidence for both
+4. creates a potential event and a conflict finding
+5. marks them for review (`DETECTED` → `UNDER_REVIEW`)
+6. human confirms and records the validated interpretation
+7. updates Validated Project Intelligence; the schedule update stays visible as a source divergence
+8. traverses dependencies — including **at least one AI-inferred dependency** (D-025)
+9. identifies potential downstream exposure
 10. identifies relevant reviewers
 11. clearly separates facts, inferences and conclusions
-
-Expected output:
 
 | | |
 |---|---|
 | CHANGE | Delivery date changed 15 Jan → 2 Feb |
+| CONFLICT | Progress report (2 Feb) and schedule update (15 Jan) disagree |
 | FACT | 18 calendar days difference relative to the planned installation date |
 | DEPENDENCY | Transformer delivery → transformer installation |
 | SECONDARY DEPENDENCY | Transformer installation → downstream commissioning activity (**AI-inferred, validation required**) |
 | POTENTIAL EXPOSURE | Downstream milestone may require review |
 | VALIDATION | Project-control / electrical engineering review required |
 
-GridPulse must **not** say: *"Energization will be delayed."* Exact downstream engineering
-consequences are never asserted without evidence.
+GridPulse must **not** say *"Energization will be delayed"*, *"the schedule is wrong"*, or anything
+about a party's intent.
+
+### 5.B PCS specification change
+
+A submittal delivers **PCS specification Rev 8**, changing the reactive-power capability range and the
+control firmware version.
+
+| | |
+|---|---|
+| CHANGE | PCS spec clause-level changes Rev 7 → Rev 8 |
+| STALE REFERENCE | The PPC functional specification still references PCS spec **Rev 7** |
+| FACT (comparison) | The stated Rev 8 range does not cover part of the range stated in the relevant grid requirement (stated at different measurement points) |
+| INFERRED DEPENDENCY | PCS capability appears to contribute to the plant's grid reactive-power requirement (**AI-inferred, validation required**) |
+| POTENTIAL EXPOSURE | GRID COMPLIANCE READY and ENGINEERING READY may require review |
+| VALIDATION | Electrical engineering / grid compliance review required |
+
+GridPulse must **not** say *"the plant will fail grid compliance testing"*, *"the PPC must be
+redesigned"* or *"the network operator must be notified"*.
 
 ## 6. What the user eventually experiences
 

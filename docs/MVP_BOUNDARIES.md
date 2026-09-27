@@ -1,6 +1,6 @@
 # MVP Boundaries
 
-**Phase 0 — LOCKED.** Nothing here selects a technology, schema or UI. Items depending on open Phase 1
+**Phase 0 — LOCKED** (amended by council-review decisions D-041 – D-047). Nothing here selects a technology, schema or UI. Items depending on open Phase 1
 decisions are marked **[D-xxx]**.
 
 ## 1. MVP goal
@@ -9,9 +9,13 @@ decisions are marked **[D-xxx]**.
 > project-control professional on a large BESS project when project information changes — without
 > making unsupported conclusions?**
 
-Demonstrated on **one project**, with **synthetic/public data**, through the transformer delivery
-change vertical slice (`PHASE_1_ARCHITECTURE.md` §16), which must include **at least one AI-inferred
-dependency**.
+Demonstrated on **one project**, with **synthetic/public data**, through **two co-primary vertical
+slices** (`PHASE_1_ARCHITECTURE.md` §16, D-042): **transformer delivery divergence** and **PCS
+specification change**, each including **at least one AI-inferred, unseeded dependency**. Inputs are
+framed as the OE receives them — by reporting period (D-041).
+
+**Precondition:** implementation starts only after the validation gate passes
+(`VALIDATION_PLAN.md`, D-044).
 
 ## 2. In scope
 
@@ -34,7 +38,8 @@ dependency**.
 | Narrow Ask GridPulse over Validated Project Intelligence with evidence | D-019 [D-037] |
 | Configured reviewers/roles; routing suggestions | D-024 [D-008] |
 | Complete history of GridPulse's own actions | D-012 |
-| Benchmark harness and metrics | D-017 |
+| Benchmark harness and metrics, reported per corpus realism tier; incl. inferred-dependency precision, entity-resolution accuracy, divergence detection, review load | D-017, D-044 |
+| Cross-source divergence detection (report vs schedule update) | D-043 |
 
 ## 3. Data policy
 
@@ -56,6 +61,8 @@ dependency**.
 - Authentication/authorization implementation (D-024)
 - Enterprise compliance program (D-015)
 - BIM, CAD, SCADA, EMS, trading, ERP, project accounting, IoT
+- Understanding drawings, single-line diagrams and protection-setting files — **known limitation**;
+  evidence may still cite a drawing's register entry and revision [D-047]
 
 ## 5. Deferred, but the architecture must not block
 
@@ -70,14 +77,18 @@ approach, hosting, pricing — Phase 2 or later.
 
 ## 7. MVP exit criteria
 
-1. The transformer slice runs end to end through the normal intake path.
-2. At least one dependency in the slice is AI-inferred (not seeded), labelled `INFERRED`, and shown
+1. Both vertical slices run end to end through the normal intake path.
+2. Each slice includes at least one AI-inferred (not seeded) dependency, labelled `INFERRED`, shown
    with evidence and `Validation: REQUIRED`.
-3. Every displayed claim links to verified evidence and shows its level; every dependency shows status
+3. The transformer slice raises the report-vs-schedule disagreement as a CONFLICT; the PCS slice
+   raises the PPC specification's stale reference to Rev 7.
+4. Every displayed claim links to verified evidence and shows its level; every dependency shows status
    and provenance.
-4. Deterministic calculations are correct.
-5. **Zero** unsupported determinations (e.g. "energization will be delayed").
-6. No AI-detected finding reaches Validated Project Intelligence without review; no direct edits exist.
-7. Conflicts are surfaced, not resolved.
-8. Benchmark metrics are produced for the slice, including investigation time against a manual
-   baseline — treated as evidence for or against the hypothesis, not as proof.
+5. Deterministic calculations are correct.
+6. **Zero** unsupported determinations (e.g. "energization will be delayed", "the plant will fail grid
+   compliance testing") and no statements about a party's intent.
+7. No AI-detected finding reaches Validated Project Intelligence without review; no direct edits exist.
+8. Conflicts are surfaced, not resolved.
+9. Benchmark metrics are produced for both slices and all corpus tiers, including review load and
+   investigation time against a manual baseline — treated as evidence for or against the hypothesis,
+   not as proof.

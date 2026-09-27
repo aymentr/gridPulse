@@ -108,6 +108,20 @@ No single "AI confidence score". Three separate axes:
 Example: `Evidence: HIGH · Relationship: INFERRED · Validation: REQUIRED`. No percentages without a
 validated statistical basis.
 
+## Source divergence
+
+A difference between Validated Project Intelligence and a system of record (e.g. a validated delivery
+date that the EPC schedule update does not yet reflect), or between sources for the same reporting
+period. Divergence is **information, not an error**: GridPulse shows it with evidence, never corrects
+the system of record, and never characterises a party's intent. Unresolved disagreements between
+current sources are raised as CONFLICT findings.
+
+## Reporting period
+
+The cadence at which the first user typically receives project information (EPC progress report,
+schedule update, submittals, minutes). "What changed since the last reporting period?" is the first
+user's central question (D-041).
+
 ## Entity
 
 Any project "thing": equipment, parties (incl. suppliers), contracts, requirements, milestones,

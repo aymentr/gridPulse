@@ -1,7 +1,9 @@
 # Decisions Log
 
 **Phase 0 decisions: LOCKED.** They change only by explicit founder decision.
-**Phase 1 decisions (D-026 onward): OPEN** for founder review.
+**Phase 1 decisions (D-026 – D-040): OPEN** for founder review.
+**Council-review amendments (D-041 – D-047):** adopted on founder instruction after `COUNCIL_REVIEW.md`;
+they amend the locked Phase 0 documents where noted.
 
 Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 
@@ -49,6 +51,13 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-038 | Who performs requested investigations | OPEN |
 | D-039 | Activity as an entity kind | OPEN |
 | D-040 | Rejecting schedule-derived dependencies | OPEN |
+| D-041 | Intake framed around what the OE actually receives | RESOLVED (subject to validation) |
+| D-042 | PCS specification-change scenario co-primary | RESOLVED |
+| D-043 | Transformer demo reframed as divergence detection | RESOLVED |
+| D-044 | Validation gate before Phase 2 | RESOLVED |
+| D-045 | Buyer and pricing hypotheses | OPEN (to be tested) |
+| D-046 | Documentation freeze | RESOLVED |
+| D-047 | Drawings, SLDs and protection-setting files | OPEN |
 
 ---
 
@@ -325,4 +334,68 @@ only the dated claims needed for intelligence — explicitly not a task.
 schedule diverge.
 **Options.** A. Not allowed. B. Allowed; divergence shown; schedule untouched (D-002).
 **Recommendation.** B — consistent with D-021 (divergence is information).
+**Status.** OPEN
+
+---
+
+# Council-review amendments
+
+Source: `COUNCIL_REVIEW.md`. Adopted on founder instruction ("do the changes").
+
+## D-041 — Intake framed around what the OE actually receives
+**Context.** Suppliers usually communicate with the EPC, not the Owner's Engineer. The OE typically
+learns of changes through reporting-period documents.
+**Decision.** Scenarios, benchmark corpus and intake assumptions are organised by **reporting period**:
+EPC monthly progress reports, schedule updates, submittals and document revisions, meeting minutes and
+correspondence copied to the owner. Direct supplier communications remain a supported variant, not the
+default assumption. The first user and single-project scope (D-013, D-018) are unchanged.
+**Amends.** Phase 0 demonstration framing in `PRODUCT_WORKFLOW.md` and `MVP_BOUNDARIES.md`.
+**Status.** RESOLVED — subject to confirmation by the validation gate (assumption A2).
+
+## D-042 — PCS specification-change scenario co-primary
+**Decision.** The first demonstration consists of **two co-primary vertical slices**:
+(A) transformer delivery divergence and (B) PCS specification Rev 7 → Rev 8 propagating to the PPC
+specification (stale reference) and grid-compliance requirements/tests. Each includes at least one
+AI-inferred, unseeded dependency (D-025).
+**Reasoning.** Scenario B shows propagation through links no schedule contains — where GridPulse's
+value is most distinct.
+**Status.** RESOLVED
+
+## D-043 — Transformer demo reframed as divergence detection
+**Decision.** The transformer scenario's primary value is **detecting that sources disagree** (EPC
+progress report states 2 Feb; schedule update still shows 15 Jan) and tracing potential exposure — not
+propagating dates, where schedulers and P6 are already strong. GridPulse never characterises a party's
+intent (e.g. "the EPC is concealing the delay").
+**Status.** RESOLVED
+
+## D-044 — Validation gate before Phase 2
+**Decision.** Phase 2 does not start until `VALIDATION_PLAN.md` passes: 8–12 practitioner interviews,
+3–5 anonymised real change stories, and a timed manual-vs-assisted comparison (concierge output
+acceptable). The benchmark reports metrics per corpus realism tier (clean synthetic, degraded
+synthetic, public real documents). Added metrics: inferred-dependency precision (primary),
+entity-resolution accuracy, cross-source divergence detection, review load.
+**Status.** RESOLVED (pass criteria in the plan are proposed and need founder confirmation)
+
+## D-045 — Buyer and pricing hypotheses
+**Question.** Who pays, and per what unit?
+**Hypotheses (not decisions).** H1 OE/technical-advisory firm; H2 owner/developer; H3 lender's
+technical advisor/lender; H4 services-led start through a partner OE firm. See `VALIDATION_PLAN.md` §5.
+**Recommendation.** Test H1 and H4 first — they match the first user (D-013) and avoid a long software
+procurement cycle.
+**Status.** OPEN
+
+## D-046 — Documentation freeze
+**Decision.** No new documentation layers. Before Phase 2, only: (1) the five blocking decisions
+(D-026, D-027, D-032, D-033, D-037), and (2) founder-approved amendments arising from the validation
+gate, folded into existing documents.
+**Status.** RESOLVED
+
+## D-047 — Drawings, SLDs and protection-setting files
+**Question.** Much engineering truth lives in drawings, single-line diagrams and protection-setting
+files, which text-based extraction will miss.
+**Options.** A. Out of MVP scope, recorded as a known limitation; evidence can still cite a drawing's
+register entry / revision. B. Basic support (title block, revision, drawing register) in MVP.
+C. Full drawing understanding in MVP.
+**Recommendation.** A for the MVP; revisit using the interview findings on how often drawing changes
+drive investigations.
 **Status.** OPEN

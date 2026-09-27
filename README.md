@@ -81,18 +81,26 @@ project-control validation required."*
 - **First user:** Owner's Engineer / technical project-control professional on large BESS projects.
 - **First question:** can GridPulse materially reduce this person's investigation workload when
   project information changes?
-- **First demonstration:** a supplier moves the main transformer delivery from 15 January to
-  2 February. GridPulse detects and evidences the change, queues it for review, and — once confirmed —
-  traces potential exposure through at least one **AI-inferred** dependency, without ever concluding
-  that energization is delayed.
+- **What the OE actually sees:** changes usually arrive through reporting-period documents — EPC
+  progress reports, schedule updates, submittals and revisions, meeting minutes — not direct supplier
+  emails. The killer question is *"what changed since the last reporting period, and is it consistent
+  across the evidence?"*
+- **Two co-primary demonstrations**, each with at least one **AI-inferred** dependency:
+  1. **Transformer delivery divergence** — the EPC progress report says delivery moved to 2 February
+     while the schedule update still shows 15 January. GridPulse surfaces the change *and* the
+     disagreement, traces potential exposure, and never concludes that energization is delayed.
+  2. **PCS specification change** — PCS spec Rev 7 → Rev 8. GridPulse finds the PPC specification
+     still referencing Rev 7, connects the change to grid-compliance requirements and tests, and
+     leaves every engineering determination to engineers.
 
 ## Project status
 
 | Phase | Status |
 |---|---|
 | **Phase 0 — Product definition** | **LOCKED** |
-| **Phase 1 — Domain & system architecture** | Draft for founder review |
-| Phase 2 — Implementation | Not started. No code, stack, schema, UI, agents or integrations exist. |
+| **Phase 1 — Domain & system architecture** | Draft — **frozen** pending validation |
+| **Validation gate** | **Active** — interviews, real change stories, timed comparison ([`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md)) |
+| Phase 2 — Implementation | Not started; blocked on the validation gate. No code, stack, schema, UI, agents or integrations exist. |
 
 ## Documentation
 
@@ -104,4 +112,6 @@ project-control validation required."*
 | [`docs/ENGINEERING_PRINCIPLES.md`](docs/ENGINEERING_PRINCIPLES.md) | Rules any implementation must respect |
 | [`docs/MVP_BOUNDARIES.md`](docs/MVP_BOUNDARIES.md) | MVP scope, data policy, exit criteria |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Resolved and open decisions |
-| [`docs/PHASE_1_ARCHITECTURE.md`](docs/PHASE_1_ARCHITECTURE.md) | Domain model, state machines, evidence, graph, change & impact models, AI boundaries, benchmark, vertical slice |
+| [`docs/PHASE_1_ARCHITECTURE.md`](docs/PHASE_1_ARCHITECTURE.md) | Domain model, state machines, evidence, graph, change & impact models, AI boundaries, benchmark, vertical slices |
+| [`docs/COUNCIL_REVIEW.md`](docs/COUNCIL_REVIEW.md) | Multi-perspective evaluation of the idea and the changes it led to |
+| [`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md) | The gate before Phase 2: interviews, change stories, timed comparison, buyer hypotheses |
