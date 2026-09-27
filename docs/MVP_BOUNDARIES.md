@@ -1,72 +1,79 @@
 # MVP Boundaries
 
-This document states what the first build of GridPulse should and should not include. It is derived
-from the product vision; items that depend on unresolved decisions are marked **[pending D-xxx]**
-(see `DECISIONS.md`). Nothing here selects a technology.
+What the first build of GridPulse includes and excludes. Items depending on still-open decisions are
+marked **[open D-xxx]**. Nothing here selects a technology, schema or UI.
 
 ## 1. MVP goal
 
-Demonstrate the **first killer scenario** end to end, credibly and with evidence:
+Answer one question for one user:
 
-> A supplier email moves the transformer delivery date from January 12 to February 2. GridPulse
-> detects a Potential Event with old/new value, affected equipment, source, evidence and confidence;
-> a human confirms it; GridPulse updates the trusted project state, traces
-> delivery → installation → HV commissioning → grid compliance testing → energization, and reports
-> **potential** impact requiring review — without declaring energization delayed.
+> **Can GridPulse materially reduce the investigation workload of an Owner's Engineer / technical
+> project-control professional on a large BESS project when project information changes?**
 
-The MVP succeeds if it proves the core loop **Detect → Evidence → Review → Understand → Impact → Act**
-on this scenario.
+Demonstrated through the **transformer delivery change** scenario (`PRODUCT_WORKFLOW.md` §4), end to
+end, with evidence, on synthetic/public data.
 
-## 2. In scope (minimum needed for the scenario)
+## 2. In scope
 
-| Capability | Why it is needed |
+| Capability | Decision basis |
 |---|---|
-| A project with an initial state (entities, dates, dependencies) backed by evidence | Scenario starts from a known state **[pending D-003]** |
-| Universal intake path with at least one channel | New information must enter **[pending D-014]** |
-| AI extraction of facts with evidence pointers | Evidence principle |
-| AI detection of a Potential Event (delivery date change) with the attributes in `CORE_CONCEPTS.md` | Detect step |
-| Review Queue: confirm / reject (and correct **[pending D-010]**) | Human review is fundamental |
-| Trusted project state updated only by confirmed events | Trusted-state principle |
-| Project Intelligence Graph sufficient to hold the scenario's dependency chain | Impact tracing |
-| Impact analysis that traces the chain and outputs *potential* impacts, each link labelled Fact / Inference with evidence | Impact step, three-level principle |
-| Evidence inspection for every shown claim | "Why does GridPulse believe this?" |
-| Audit of who reviewed what and when | Review record |
-| A way to measure investigation time and evidence precision/recall on the scenario | Critical metric **[pending D-017]** |
+| Initial project state reconstructed from project documents, an imported schedule and manually entered facts; manual relationship seeding only where needed for benchmark ground truth | D-003 |
+| Consuming explicit relationships from a source schedule (no scheduling engine) | D-003 |
+| One universal intake path with the channels needed for the scenario | D-014 [open D-014] |
+| Change detection and Potential Event creation with old/new values, affected entity, source, evidence, confidence | D-009 |
+| Every AI-detected event starts `NEEDS_REVIEW`; authorized manual entry may be `CONFIRMED` | D-001 |
+| Review Queue exposing what, why, source, change, entity, confidence, possibly affected dependencies, uncertainty; at least confirm / reject | D-001 [open D-010, D-022] |
+| Trusted project state updated only by confirmed events | D-001, D-021 |
+| Dependencies with `CONFIRMED` / `INFERRED` / `REJECTED` status | D-004 |
+| Impact analysis traversing dependencies, labelling inferred links, with deterministic calculations and comparisons | D-004, D-005 |
+| Investigation output: evidence, affected entities, dependency chain, calculations, relevant milestones, uncertainty, suggested reviewers, unresolved questions | Risk 3 [open D-008] |
+| Clear Level 1 / 2 / 3 separation; no Level 3 conclusions | D-005 |
+| Record of who reviewed what and when | D-001 |
+| Measurement of investigation time and evidence precision/recall on the benchmark | [open D-017] |
 
-## 3. Explicitly out of scope for the MVP
+## 3. Data policy for the MVP
 
-- Building all intake channels or any production integration (Aconex, P6, SharePoint, Procore, …)
-- Replacing or writing back to any source system **[pending D-002]**
-- Generic PM features: task management, Gantt editing, resource planning, document management
-- Automatic delay, cost or float conclusions; compliance certification; engineering approval
-- Full lifecycle coverage (grid application, grid offer, contracts, …) — architecture must allow it later
-- Domains beyond BESS / grid-connected infrastructure
-- Full event taxonomy handling — the scenario needs delivery/shipment events; others may be recognised
-  but need not be fully supported **[pending D-007]**
-- Full "Ask GridPulse" natural-language investigation **[pending D-019]**
-- Full Gates and Requirements views **[pending D-016]**
-- Automated reviewer routing beyond a simple assignment **[pending D-008]**
+- **Synthetic and public data only** for the prototype and benchmark (D-015).
+- Production enterprise security is **not** required to prove the product.
+- Before any real customer data is used, the product must address: encryption, authentication,
+  authorization, tenant isolation, audit logs, data retention, data deletion, data residency,
+  AI-provider data handling, contractual confidentiality and applicable enterprise security
+  requirements.
 
-## 4. Deferred, but the architecture must not block
+## 4. Explicitly out of scope
 
-- Additional intake channels and integrations
-- Additional event types and domains
-- Later lifecycle stages
-- Gates, requirements-evidence coverage, contradiction detection, version comparison
-- Evidence-backed natural-language investigation
-- Reports
+- Any write-back to external systems (Primavera, Aconex, SharePoint, schedules, engineering systems) — D-002
+- Production integrations; building every intake channel
+- Task management, Gantt editing, scheduling / CPM calculation, resource planning, document management
+- Automatic delay, float or cost conclusions; compliance certification; engineering approval — D-005
+- Risk/confidence-based review routing (auto-accepting AI events) — D-001
+- Designing for users other than the Owner's Engineer / technical project-control professional — D-013
+- Domains beyond BESS; lifecycle stages beyond what the scenario needs
+- Enterprise compliance program — D-015
+- Granular event taxonomies — D-007
+- Full "Ask GridPulse" [open D-019], full Gates and Requirements views [open D-016]
 
-## 5. Not decided here
+## 5. Deferred, but the architecture must not block
 
-Technology stack, database schema, AI provider/model, deployment/hosting model, UI design and
-pricing are **not** decided in Phase 0.
+- AI discovery and maintenance of the full project intelligence graph (long-term goal, D-003)
+- Additional channels, integrations, event categories, domains and lifecycle stages
+- Risk/confidence-based review routing
+- Write-back, if a customer need is demonstrated
+- Enterprise security and compliance controls
+- Evidence-backed natural-language investigation, reports, gates, requirement-evidence coverage
 
-## 6. Exit criteria for the MVP (proposed)
+## 6. Not decided in Phase 0
 
-1. The killer scenario runs end to end from raw supplier email to routed potential impact.
-2. Every displayed claim links to its evidence and shows its level (Fact / Inference).
-3. No output states or implies a Level 3 conclusion.
-4. Rejected and corrected events are handled and recorded.
-5. Investigation time and evidence precision/recall are measured against a manual baseline.
+Technology stack, frontend/backend frameworks, database, LLM/AI provider, data model, API design, UI
+design, authentication approach, hosting and pricing.
 
-These criteria are a proposal for founder review.
+## 7. MVP exit criteria (proposed)
+
+1. The transformer scenario runs end to end: supplier communication → `NEEDS_REVIEW` event → human
+   confirmation → trusted state update → dependency traversal → investigation routed to reviewers.
+2. Every displayed claim links to its evidence and shows its level; every dependency shows its status.
+3. Deterministic calculations are correct (e.g. 21 calendar days; Feb 2 is after Jan 15 installation).
+4. No output states or implies a Level 3 conclusion (e.g. "energization will be delayed").
+5. No AI-detected event reaches the trusted state without review.
+6. Rejected events and rejected dependencies are recorded and excluded from impact analysis.
+7. Investigation time and evidence precision/recall are measured against a manual baseline.

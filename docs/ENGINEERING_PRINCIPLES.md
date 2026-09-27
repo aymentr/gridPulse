@@ -1,82 +1,113 @@
 # Engineering Principles
 
-Rules any implementation of GridPulse must respect, regardless of technology stack. They are derived
-directly from the product vision. Where a principle is a derivation rather than an explicit statement
-in the vision, it is marked *(derived)*.
-
-These principles are technology-neutral. No framework, database or AI provider has been chosen.
+Rules any implementation of GridPulse must respect, regardless of technology. They are derived from
+the product vision and the founder decisions in `DECISIONS.md`. No framework, database, LLM or other
+technology has been chosen.
 
 ---
 
-## P1. Evidence or it didn't happen
+## P1. Intelligence layer, not project management
 
-Every important AI-generated claim must be traceable to evidence down to
-source → record → version → page/section/chunk/location. A claim without evidence must not be
-presented as fact. Users must always be able to inspect *why* GridPulse believes something.
+GridPulse is an AI project-intelligence layer. It must not grow task management, Gantt editing,
+scheduling, document management or other generic PM functionality. Displaying milestones and
+dependencies is acceptable only in service of intelligence. It is not a scheduling engine.
 
-## P2. Keep the three levels separate
+## P2. Read-only against systems of record (MVP)
 
-Fact (Level 1), Dependency/Inference (Level 2) and Engineering/Project Conclusion (Level 3) must be
-distinguishable everywhere a claim is stored or shown. GridPulse must never promote an inference to a
-fact silently, and must never produce a Level 3 conclusion autonomously.
+GridPulse does not modify Primavera, Aconex, SharePoint, external schedules, engineering systems or any
+other external system during the MVP (D-002). Write-back is considered only if a customer need is
+demonstrated later.
 
-## P3. AI proposes; humans decide
+## P3. Not the source of truth
 
-AI detection is not truth. Consequential changes pass through human review before entering the trusted
-project state. AI must not silently certify compliance, approve engineering, declare delays, approve
-changes, or make safety-critical decisions.
+GridPulse maintains a validated intelligence state derived from authoritative sources and human review.
+It must never present itself — in data, wording or UI — as the contractual or authoritative record (D-021).
 
-## P4. The trusted project state changes only through reviewed events
+## P4. Evidence or it didn't happen
 
-The trusted state is changed by confirmed Project Events and human corrections — not by raw AI output.
-Reviewer and decision are recorded. Human corrections become part of the trusted state.
+Every important claim is traceable to source → record → version → location. A claim without evidence
+must not be presented as fact.
 
-## P5. One universal intake path
+## P5. Keep the three levels separate
+
+Level 1 (fact, including deterministic calculations/comparisons), Level 2 (dependency/inference) and
+Level 3 (engineering/project conclusion) must be distinguishable wherever claims are stored or shown.
+GridPulse never promotes an inference to a fact and never produces Level 3 autonomously (D-005).
+
+## P6. AI-detected events always start in NEEDS_REVIEW
+
+In the MVP every AI-detected Project Event starts as `NEEDS_REVIEW`. Only an authorized user's manual
+entry may create an event directly as `CONFIRMED` (D-001). AI output is never silently promoted into
+the trusted project state.
+
+## P7. The Review Queue is trust architecture
+
+The Review Queue is the boundary between AI output and trusted state. It must expose what was detected,
+why, the supporting source, what changed, the affected entity, confidence, possibly affected
+dependencies and what remains uncertain.
+
+## P8. Dependencies carry status
+
+Every dependency is `CONFIRMED`, `INFERRED` or `REJECTED` (D-004). Impact analysis may use `INFERRED`
+dependencies but must label them; it must not use `REJECTED` ones. Human confirmation strengthens the
+graph.
+
+## P9. Reconstruct, don't require manual modelling
+
+The graph is reconstructed from existing project information (documents, imported schedules, manually
+entered facts). Explicit schedule relationships are consumed, not re-derived. Manual seeding is
+acceptable only where needed for benchmark ground truth (D-003). The architecture must allow AI to
+discover and infer relationships.
+
+## P10. One universal intake path
 
 All information — manual entry, document upload, email, schedule update, integration, future systems —
-flows through a single event/change intake mechanism. New channels are adapters onto that path, never
-separate pipelines with separate semantics.
+flows through a single intake mechanism. Channels are adapters, not separate pipelines.
 
-## P6. Intelligence layer, not system of record
+## P11. Change and Event are distinct
 
-GridPulse reads from existing systems (Aconex, P6, SharePoint, Procore, email, …) and does not try to
-replace them. Features that duplicate generic project-management, document-management or scheduling
-functionality are out of scope unless they directly serve the core loop.
+A Change is a difference between states or versions; an Event is something that happened in the real
+project. A Change may generate a Potential Event (D-009). The model must not conflate them.
 
-## P7. Events are first-class; the project is not static
+## P12. Small, extensible event taxonomy
 
-GridPulse models a project that changes continuously. Real-world events are a core object, with old
-state, new state, detected time and effective time — not an afterthought to document analysis.
+Prefer broad categories with attributes (old/new value, reason, affected entity) over granular types.
+Descriptive labels may be derived from the state change (D-007).
 
-## P8. Preserve history *(derived)*
+## P13. Impact is potential, and must be substantive
 
-To answer "what changed?" and to keep evidence inspectable, GridPulse must retain source versions,
-events (including rejected ones), review decisions and prior states rather than overwriting them.
-(Exact retention semantics are an open decision — see DECISIONS.md.)
+Impact output is framed as potential impact requiring human attention. It must still be a real
+investigation: evidence, affected entities, dependency chain with statuses, deterministic calculations,
+relevant milestones, uncertainty, suggested reviewers and unresolved questions.
 
-## P9. Impact is "potential" until a human says otherwise
+## P14. Preserve history
 
-Impact analysis identifies what *may* be affected and who should look at it. Its language and data
-model must make that explicit ("Potential impact detected. Review required.").
+Retain source versions, events (including rejected ones), review decisions and prior states so that
+"what changed?" can be answered and evidence stays inspectable. (Exact semantics open — D-012.)
 
-## P10. Measure investigation quality, not just speed
+## P15. Measure investigation quality, not just speed
 
-The critical metric is **investigation compression while maintaining acceptable evidence precision
-and recall.** Time savings that come at the cost of missed or wrong evidence are not success.
-Stated targets (4 h → 15 min AI + 30–60 min expert) are hypotheses to be validated experimentally.
+The critical metric is investigation compression **with** acceptable evidence precision and recall.
+Stated time targets are hypotheses to validate.
 
-## P11. Domain-first, not domain-locked *(derived)*
+## P16. Confidentiality-aware from the start, enterprise controls later
 
-BESS / grid-connected infrastructure is the first domain and the design should be driven by its real
-workflows. The underlying intelligence architecture should not preclude later domains (data centers,
-other capital projects) or later lifecycle stages (intake through COD).
+Prototype and benchmark use synthetic and public data only (D-015). The architecture must not preclude
+encryption, authentication, authorization, tenant isolation, audit logs, retention, deletion, residency,
+AI-provider data-handling controls and contractual confidentiality, all of which are required before
+real customer data is used. Do not build an enterprise compliance program during the MVP.
 
-## P12. Every feature must reinforce the loop
+## P17. Design for the first user
 
-**Detect → Evidence → Review → Understand → Impact → Act.** A proposed feature that does not strengthen
-this loop should be challenged before it is built.
+Optimize for the Owner's Engineer / technical project-control professional on large BESS projects
+(D-013). Do not design simultaneously for other segments.
 
-## P13. Do not silently make major decisions
+## P18. Every feature must reinforce the loop
 
-Product and architecture ambiguities are recorded in `DECISIONS.md` with options, a recommendation and
-reasoning, and left for founder review. Do not invent requirements absent from the product vision.
+Real world → information enters → detection → evidence → human review → trusted project event →
+project intelligence graph → impact analysis → attention / action. Features that don't strengthen this
+loop are challenged before they are built.
+
+## P19. Do not silently make major decisions
+
+Ambiguities are recorded in `DECISIONS.md` and left for founder review. Do not invent requirements.
