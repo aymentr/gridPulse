@@ -1,5 +1,6 @@
 # SYNTHETIC VALIDATION DOCUMENT - fictional project Kestrel Moor BESS. Not a real project.
 # Document no.: KMB-EPC-SCH-U11 | Schedule update | Data date: 20-Nov-2026 | Issued by: EPC Contractor Project Controls
+# Durations are in working days unless marked "7-day calendar", in which case the activity duration is counted in calendar days.
 Activity ID,Activity Name,Original Duration (working days),Predecessors,Start,Finish,Float,Status
 A0100,Notice to proceed,,,01-Apr-26,01-Apr-26,,Complete
 A0400,Substation civil works,,A0100 FS,10-Aug-26,22-Dec-26,,In progress

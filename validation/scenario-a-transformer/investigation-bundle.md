@@ -386,39 +386,47 @@ for human review.
 
 ## 8. Ask GridPulse — example
 
+Structure: canonical Ask GridPulse answer structure (D-037).
+
 **Question:** *"Is the main transformer delivery date consistent across the latest project documents?"*
 
-**1. Answer**
-- VALIDATED INFORMATION: none — no human review has occurred.
-- OBSERVED INFORMATION: No. For the reporting period ending 18 December 2026, progress report
-  KMB-EPC-PR-0012 reports a supplier-advised revised delivery date of 2 February 2027 for TX-01, while
-  schedule update KMB-EPC-SCH-U12 shows 12 January 2027. The purchase order extract shows 12 January
-  2027.
-- DETERMINISTIC CALCULATIONS: 2 February 2027 is 21 calendar days after 12 January 2027, and 18
-  calendar days after the planned installation start of 15 January 2027.
-- POTENTIAL EXPOSURES: TX-01 installation milestone; via an inferred path, HV commissioning.
+**VALIDATED INFORMATION**
+None. No finding, claim or relationship in this investigation has been reviewed by a human.
 
-**2. Evidence**
+**OBSERVED INFORMATION**
+- No — the latest supplied documents are not consistent. For the reporting period ending 18 December
+  2026, progress report KMB-EPC-PR-0012 reports a supplier-advised revised delivery date of 2 February
+  2027 for TX-01; schedule update KMB-EPC-SCH-U12 shows 12 January 2027; the purchase order extract
+  shows 12 January 2027. (UNVALIDATED; evidence confidence HIGH for each observation.)
+- Entity: TX-01, main power transformer (also written "Main transformer (T1)"). AUX-TX-02 is a
+  separate transformer whose 12 January 2027 delivery is separately confirmed; it is not part of this
+  answer.
+- Explicit relationship: TX-01 delivery → TX-01 installation (EXPLICIT · UNVALIDATED ·
+  SCHEDULE_DERIVED).
+
+**INFERRED RELATIONSHIPS**
+- TX-01 installation → HV commissioning (INFERRED · UNVALIDATED · AI_INFERRED), from the commissioning
+  plan precondition that all HV equipment is installed before HV commissioning and the equipment
+  list's HV classification of TX-01. Not stated in any supplied document.
+
+**DETERMINISTIC CALCULATIONS**
+- 12 Jan 2027 → 2 Feb 2027: 21 calendar days.
+- 15 Jan 2027 (planned installation start) → 2 Feb 2027: 18 calendar days.
+
+**POTENTIAL EXPOSURES**
+- TX-01 installation milestone (A1010) — potentially affected; requires review.
+- Via the inferred relationship: HV commissioning (A1100) — possible dependency; requires review.
+
+**HUMAN VALIDATION REQUIRED**
+- Which delivery date is currently operative, and whether the purchase order has been amended —
+  Procurement; Project Controls. GridPulse does not have sufficient evidence to determine this.
+- Whether HV commissioning depends on TX-01 installation — Commissioning Engineer; Project Controls.
+
+**EVIDENCE**
 - KMB-EPC-PR-0012 §4, row "Main transformer (T1) / TX-01": "The supplier has advised a revised
   delivery date of 2 February 2027."
-- KMB-EPC-SCH-U12, activity A1000: finish 12-Jan-27.
+- KMB-EPC-SCH-U12, activity A1000: finish 12-Jan-27; activity A1010: start 15-Jan-27, predecessor
+  "A1000 FS".
 - KMB-PO-0042, Schedule 2, item 1: "12 January 2027".
-
-**3. Affected entities**
-TX-01 (main power transformer; also "Main transformer (T1)"). Not AUX-TX-02, whose 12 January 2027
-delivery is separately confirmed.
-
-**4. Dependency chain**
-INFERRED RELATIONSHIPS and explicit links: TX-01 delivery → TX-01 installation (EXPLICIT ·
-UNVALIDATED) → HV commissioning (**INFERRED · UNVALIDATED**).
-
-**5. Uncertainty / validation status**
-HUMAN VALIDATION REQUIRED. The supplied documents do not establish which date is operative. The
-supplier communication is not among the supplied documents. All items are UNVALIDATED.
-
-**6. Relevant reviewer**
-Project Controls (schedule reconciliation); Procurement (delivery status).
-
-**7. Unresolved question**
-Which delivery date is currently operative, and has the purchase order been amended? GridPulse does
-not have sufficient evidence to determine this.
+- KMB-EPC-COM-PLN-001 Rev 1 §5.1; KMB-EPC-EQL-001 Rev 4, row TX-01 (class HV).
+- KMB-EPC-EQL-001 Rev 4, row AUX-TX-02; KMB-SUP-A-LTR-0031.

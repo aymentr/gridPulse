@@ -339,13 +339,12 @@ analysis.
   across PCS units in proportion to their available capability (§4.3); its design basis is the PCS
   capability in PCS spec cl. 5.3 (§4.2).
 - GC-04 verifies R-12 through the PPC (test plan §2).
-- The equipment list (KMB-EPC-EQL-001 Rev 4) lists no reactive power equipment other than the PCS
-  skids (no capacitor banks, reactors or similar devices are listed).
+- The equipment list (KMB-EPC-EQL-001 Rev 4) lists the PCS skids and no other item described as
+  providing reactive power.
 
 From these statements, the PCS reactive capability appears to contribute to the facility's reactive
-capability under R-12. No supplied document states this relationship. The contribution of other plant
-equipment (for example transformers and cables) to reactive power at the POC is not evidenced. The
-relationship is inferred and requires technical validation.
+capability under R-12. No supplied document states this relationship. The relationship is inferred
+and requires technical validation.
 
 ---
 
@@ -445,38 +444,41 @@ for human review.
 
 ## 8. Ask GridPulse — example
 
+Structure: canonical Ask GridPulse answer structure (D-037).
+
 **Question:** *"Which project documents still reference PCS specification Rev 7?"*
 
-**1. Answer**
-- VALIDATED INFORMATION: none — no human review has occurred.
-- OBSERVED INFORMATION: Among the supplied documents, the PPC functional specification
-  KMB-EPC-SPC-PPC-002 Rev 2 references PCS specification Rev 7 (clause 5.3) in §4.2. The current
-  revision of the PCS specification is Rev 8.
-- DETERMINISTIC CALCULATIONS: not applicable.
-- POTENTIAL EXPOSURES: PPC design basis; indirectly, GC-04, which the test plan executes through the
-  PPC and which references PPC Rev 2.
+**VALIDATED INFORMATION**
+None. No finding, claim or relationship in this investigation has been reviewed by a human.
 
-**2. Evidence**
+**OBSERVED INFORMATION**
+- Among the supplied documents, the PPC functional specification KMB-EPC-SPC-PPC-002 Rev 2 references
+  PCS specification Rev 7, clause 5.3 (§4.2). The current revision of the PCS specification is Rev 8.
+  (UNVALIDATED; evidence confidence HIGH.)
+- Explicit relationships: PPC functional specification Rev 2 → PCS specification Rev 7 cl. 5.3
+  (EXPLICIT · UNVALIDATED; the cited revision is superseded); grid compliance test plan Rev 1 → PPC
+  functional specification Rev 2 (EXPLICIT · UNVALIDATED). The test plan does not reference the PCS
+  specification directly.
+- Entities: PPC-01 (design basis); PCS-01 … PCS-28 (clause 5.3).
+
+**INFERRED RELATIONSHIPS**
+None used in this answer.
+
+**DETERMINISTIC CALCULATIONS**
+Not applicable.
+
+**POTENTIAL EXPOSURES**
+- PPC design basis (PPC Rev 2 §4.2) — potentially affected; requires review.
+- GC-04, executed through the PPC and referencing PPC Rev 2 — indirectly; requires review.
+
+**HUMAN VALIDATION REQUIRED**
+- Whether the PPC functional specification is to be revised to reference Rev 8 — EPC technical lead.
+- Whether documents not supplied (for example the protection study or PCS manufacturer documentation)
+  also reference Rev 7 — Owner's Engineer (document control). GridPulse does not have sufficient
+  evidence to determine this for documents it has not received.
+
+**EVIDENCE**
 - KMB-EPC-SPC-PPC-002 Rev 2 §4.2: "… PCS capability defined in PCS specification KMB-EPC-SPC-PCS-001
   Rev 7, clause 5.3."
 - KMB-DOC-REG-2026-12: KMB-EPC-SPC-PCS-001 current revision Rev 8 (04-Dec-26).
-- KMB-EPC-GCT-PLN-004 Rev 1 §1: references PPC Functional Specification Rev 2 (not the PCS
-  specification directly).
-
-**3. Affected entities**
-PPC-01 (design basis); PCS-01 … PCS-28 (clause 5.3).
-
-**4. Dependency chain**
-Test plan → PPC functional spec Rev 2 (EXPLICIT · UNVALIDATED) → PCS spec Rev 7 cl. 5.3 (EXPLICIT ·
-UNVALIDATED; superseded revision). INFERRED RELATIONSHIPS: none used in this answer.
-
-**5. Uncertainty / validation status**
-HUMAN VALIDATION REQUIRED. Only the supplied documents were searched; documents not supplied (for
-example the protection study or PCS manufacturer documentation) may also reference Rev 7. GridPulse
-does not have sufficient evidence to determine this for documents it has not received.
-
-**6. Relevant reviewer**
-EPC technical lead; Owner's Engineer (document control).
-
-**7. Unresolved question**
-Will the PPC functional specification be revised to reference Rev 8?
+- KMB-EPC-GCT-PLN-004 Rev 1 §1: references PPC Functional Specification Rev 2.

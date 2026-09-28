@@ -37,7 +37,7 @@ Registered Capacity, the PPC shall command maximum leading and maximum lagging r
 
 3.4 **Acceptance.** Power factor at the POC within the range stated in R-12 at every test point.
 
-## 4. Stage relationship to the grid compliance checkpoint
+## 4. Test stages and the grid compliance milestone
 
 Acceptance of GC-01 to GC-06 by the Network Operator is required to achieve the grid compliance
 milestone in the Connection Agreement.
