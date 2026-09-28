@@ -3,9 +3,14 @@
 Materials for the validation gate defined in `docs/VALIDATION_PLAN.md`. **No application code.**
 
 **Current state:** synthetic scenario documents for Scenarios A and B are authored (realism tier T1
-with light T2 degradation). The GridPulse-style investigation bundles for Route B are **not** yet
-prepared. **No validation evidence exists** — no interviews, timed comparisons or benchmark runs have
-been recorded.
+with light T2 degradation). The GridPulse-style investigation bundles for Route B are prepared
+(`scenario-a-transformer/investigation-bundle.md`, `scenario-b-pcs/investigation-bundle.md`). They were
+prepared manually, not by GridPulse software, and have not been reviewed by any expert. **No
+validation run has occurred and no validation evidence exists** — no interviews, timed comparisons or
+benchmark runs have been recorded.
+
+Status: Phase 1 — ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.
+Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
 
 | Folder | Contents |
 |---|---|
@@ -32,7 +37,9 @@ Each scenario folder:
   scenario README for which folders to include.
 - Investigators must not receive `ground-truth/`, `scoring/`, `docs/VALIDATION_PLAN.md` or
   `docs/PHASE_1_ARCHITECTURE.md` (which contains the scenario definitions).
-- The GridPulse-style investigation bundle for Route B is handed over only at step 5 of the protocol.
+- The investigation bundle (`investigation-bundle.md`) is given only in the **assisted** task of the
+  crossover design, together with the raw documents. It is never included in an unassisted pack.
+- Scenario READMEs describe document roles and are never given to investigators.
 
 ## Data rules
 

@@ -44,5 +44,7 @@ Aliases used for the main transformer: "Main power transformer", "Main transform
 
 ## Investigator distribution
 
-Standard run: flatten all files **except** `changed/` and `ground-truth/` into one folder (file names
-are document numbers and do not reveal roles). Variant run: additionally include `changed/`.
+Standard run: flatten the files in `baseline/`, `supporting/`, `schedule/` and `progress-report/` into
+one folder (file names are document numbers and do not reveal roles). Variant run: additionally
+include `changed/`. Never include this README, `investigation-bundle.md` (assisted task only) or
+`ground-truth/`.

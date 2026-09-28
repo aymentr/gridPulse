@@ -28,4 +28,6 @@ reference chain).
 
 ## Investigator distribution
 
-Flatten all files except `ground-truth/` into one folder. File names are document numbers.
+Flatten the files in `baseline/`, `changed/`, `supporting/`, `schedule/` and `progress-report/` into
+one folder. File names are document numbers. Never include this README, `investigation-bundle.md`
+(assisted task only) or `ground-truth/`.
