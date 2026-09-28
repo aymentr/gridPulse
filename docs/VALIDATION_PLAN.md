@@ -173,37 +173,51 @@ GridPulse until the final section; record with `PRACTITIONER_INTERVIEW_TEMPLATE.
 11. what they would never trust software to do
 12. who would pay
 
-## 6. Route B — Expert timed comparison
+## 6. Route B — Expert timed comparison (crossover, D-048)
 
 The expert does **not** use GridPulse software. The "GridPulse-style investigation bundle" is prepared
 by hand, following the output contract in `PHASE_1_ARCHITECTURE.md` §10.4 / §13, and must itself obey
 the determination boundary.
 
-**Protocol per scenario (as specified):**
+**Design — crossover (efficiency measure).** Each expert does two tasks:
+
+| Expert group | Task 1 | Task 2 |
+|---|---|---|
+| G1 | Scenario A — unassisted | Scenario B — assisted |
+| G2 | Scenario B — unassisted | Scenario A — assisted |
+| G3 | Scenario A — assisted | Scenario B — unassisted |
+| G4 | Scenario B — assisted | Scenario A — unassisted |
+
+Assign experts to groups in rotation so that scenario and order are counterbalanced.
+
+**Unassisted task:**
 
 1. Give the expert the raw document pack (no ground truth, no bundle).
 2. Ask them to investigate as they normally would: *what changed, what may it affect, what evidence
    supports that, who needs to look at it?*
 3. Measure time (`T_raw`).
 4. Record their findings.
-5. Provide the GridPulse-style investigation bundle.
-6. Ask them to validate and correct it.
-7. Measure the additional review time (`T_review`).
-8. Compare total time and correctness against ground truth.
 
-**Key comparison:** `T_raw` (unassisted investigation) vs `T_assisted` (total human time on the
-bundle: review, correction, further investigation, evidence verification, routing) — not AI
-generation time.
+**Assisted task (on the other scenario):**
 
-**Known bias:** in steps 5–7 the expert has already investigated the documents, so `T_review`
-understates the time a fresh reviewer would need. Mitigation — recommended, pending founder decision
-**D-048**: a crossover design where each expert does one scenario unassisted and the *other* scenario
-assisted-first, with the order counterbalanced across experts. The as-specified protocol remains
-useful for measuring correction behaviour and trust.
+5. Give the raw document pack **and** the GridPulse-style investigation bundle together.
+6. Ask them to validate and correct the bundle and produce their answer to the same question.
+7. Measure total human time (`T_assisted`): reviewing, correcting, further investigation, evidence
+   verification, routing.
+8. Record their findings and every correction.
 
-**Also record:** which bundle items the expert corrected or rejected; any expert finding absent from
-the bundle; perceived trustworthiness of the evidence chain; whether "potential impact — expert
-validation required" was useful or too thin.
+Compare `T_raw` and `T_assisted` per scenario across experts, together with correctness against ground
+truth. AI generation time is not the metric. With small samples, report individual results and spread,
+not only averages.
+
+**Optional correction/trust observation (not an efficiency measure).** After an unassisted task and
+once `T_raw` is recorded, the expert may be shown the bundle for that same scenario to observe what
+they correct, reject or add, and whether they trust the evidence chain. This time is recorded
+separately and never used in the efficiency comparison.
+
+**Also record:** which bundle items were corrected or rejected; any expert finding absent from the
+bundle; perceived trustworthiness of the evidence chain; whether "potential impact — expert validation
+required" was useful or too thin.
 
 Recording sheet: `validation/scoring/`.
 
@@ -222,11 +236,11 @@ never reported as such. Record the source and licence/permission of every extern
 validation/
   README.md
   scenario-a-transformer/
-    baseline/          period N-1 information (previous progress report, PO, prior schedule)
-    changed/           period N information carrying the change
+    baseline/          purchase order extract (contractual delivery date)
+    changed/           supplier letter — variant runs only
     supporting/        commissioning plan, equipment list, test programme, distractors
-    schedule/          schedule updates (N-1, N)
-    progress-report/   EPC progress reports (N-1, N)
+    schedule/          schedule updates U11 (period N-1) and U12 (period N)
+    progress-report/   EPC progress reports 11 (N-1) and 12 (N — carries the change)
     ground-truth/      expected findings and forbidden conclusions — WITHHELD from investigators
   scenario-b-pcs/
     baseline/          PCS spec Rev 7, PPC spec, grid requirement, test plan
@@ -239,8 +253,10 @@ validation/
   interview/           interview log (no fabricated entries)
 ```
 
-Ground truth must remain inaccessible to the investigator: distribute investigator packs as copies
-**without** `ground-truth/`, this plan, or `PHASE_1_ARCHITECTURE.md`.
+Ground truth must remain inaccessible to the investigator: distribute investigator packs as
+**flattened** copies (files named by document number) **without** `ground-truth/`, this plan, or
+`PHASE_1_ARCHITECTURE.md`. Pack status: Scenario A and B documents authored (synthetic);
+investigation bundles for Route B not yet prepared.
 
 ## 9. Buyer and pricing hypotheses (D-045 — tested in interviews, not decided)
 

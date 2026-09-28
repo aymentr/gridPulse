@@ -2,9 +2,10 @@
 
 Materials for the validation gate defined in `docs/VALIDATION_PLAN.md`. **No application code.**
 
-**Current state:** structure and specifications only. The scenario documents have **not** been
-authored yet, and **no validation evidence exists** — no interviews, timed comparisons or benchmark
-results have been recorded.
+**Current state:** synthetic scenario documents for Scenarios A and B are authored (realism tier T1
+with light T2 degradation). The GridPulse-style investigation bundles for Route B are **not** yet
+prepared. **No validation evidence exists** — no interviews, timed comparisons or benchmark runs have
+been recorded.
 
 | Folder | Contents |
 |---|---|
@@ -26,8 +27,9 @@ Each scenario folder:
 
 ## Access rules
 
-- Investigator packs are distributed as copies containing **only** `baseline/`, `changed/`,
-  `supporting/`, `schedule/` and `progress-report/`.
+- Investigator packs are distributed as **flattened** copies (one folder, files named by document
+  number) so folder names such as `baseline/` or `changed/` do not reveal where the change is. See each
+  scenario README for which folders to include.
 - Investigators must not receive `ground-truth/`, `scoring/`, `docs/VALIDATION_PLAN.md` or
   `docs/PHASE_1_ARCHITECTURE.md` (which contains the scenario definitions).
 - The GridPulse-style investigation bundle for Route B is handed over only at step 5 of the protocol.

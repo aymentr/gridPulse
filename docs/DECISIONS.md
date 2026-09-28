@@ -61,8 +61,8 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-045 | Buyer and pricing hypotheses | OPEN (to be tested) |
 | D-046 | Documentation freeze | RESOLVED |
 | D-047 | Drawings, SLDs and protection-setting files | OPEN |
-| D-048 | Timed-comparison design (order bias) | OPEN |
-| D-049 | Validation status of schedule-derived data | OPEN (interim rule applied) |
+| D-048 | Timed-comparison design (order bias) | RESOLVED — crossover |
+| D-049 | Validation status of schedule-derived data | RESOLVED — EXPLICIT + UNVALIDATED |
 | D-050 | Economic hypothesis: investigation compression, not change detection | RECORDED — UNVALIDATED |
 
 ---
@@ -426,9 +426,12 @@ reviewer would need, biasing `T_assisted` downward.
 **Options.** A. As specified (single expert, raw then bundle). B. Crossover: each expert does one
 scenario unassisted and the other assisted-first, order counterbalanced. C. Separate expert groups per
 arm.
-**Recommendation.** Run B for the efficiency measure; keep A for correction behaviour and trust. C
-needs more participants than are likely to be available.
-**Status.** OPEN
+**Decision.** B — crossover. Each expert investigates one scenario unassisted and the other scenario
+assisted, with scenario assignment and task order counterbalanced across experts. The crossover is the
+basis for the efficiency measure. The sequential steps (bundle shown after an unassisted investigation)
+may still be used after `T_raw` is recorded, only to observe correction behaviour and trust — never for
+the efficiency measure.
+**Status.** RESOLVED
 
 ## D-049 — Validation status of schedule-derived data
 **Question.** D-004's example treated a relationship explicitly stated in the schedule as `CONFIRMED`.
@@ -436,9 +439,10 @@ D-027 states that only explicit human review changes validation status to `CONFI
 "the schedule says it" is not "an engineer validated it".
 **Options.** A. Schedule-derived items are `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED`. B. Schedule-
 derived items are `CONFIRMED` without review.
-**Interim rule applied.** A — consistent with D-023 and D-027. The schedule-stated link is still
-usable in impact analysis and displayed as explicit.
-**Status.** OPEN — founder to confirm.
+**Decision.** A — schedule-derived items are `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED`, consistent
+with D-023 and D-027. They are usable in impact analysis and displayed as explicitly stated; only
+explicit human review makes them `CONFIRMED`. D-004's schedule example is amended accordingly.
+**Status.** RESOLVED
 
 ## D-050 — Economic hypothesis
 **Statement.** The economic hypothesis is **not** that change detection is valuable enough to buy.

@@ -212,7 +212,7 @@ delivery is expected Feb 2" can be `HIGH` even though "expected" is a forecast.
 
 | Value | Meaning |
 |---|---|
-| `UNVALIDATED` | No human has confirmed it. Applies to all observed/extracted claims, AI-extracted and AI-inferred relationships, and imported source data (including schedule-derived data — **[D-049]**). Usable in investigation, always labelled. |
+| `UNVALIDATED` | No human has confirmed it. Applies to all observed/extracted claims, AI-extracted and AI-inferred relationships, and imported source data (including schedule-derived data — D-049). Usable in investigation, always labelled. |
 | `CONFIRMED` | Confirmed (or edited and confirmed) by an authorized reviewer through explicit review, or entered by an authorized user as a manual fact (`MANUAL_ENTRY`). |
 | `REJECTED` | Rejected by an authorized reviewer. |
 
@@ -751,7 +751,7 @@ The D-004 labels map onto these axes: "INFERRED" = relationship confidence `INFE
 | D3 | An explicitly stated relationship extracted by AI is `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED`. It never becomes `CONFIRMED` automatically (D-027). |
 | D4 | If a schedule-derived link disappears in a newer schedule version, its evidence becomes `STALE` and a `CHANGE` finding is raised; nothing changes silently. |
 | D5 | Rejecting a schedule-derived link changes GridPulse's intelligence only; the schedule is untouched and the divergence is shown **[D-040]**. |
-| D6 | Deterministically imported schedule logic is `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED` — interim rule pending **[D-049]**. |
+| D6 | Deterministically imported schedule logic is `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED` (D-049). |
 
 ### 7.5 Investigation
 
