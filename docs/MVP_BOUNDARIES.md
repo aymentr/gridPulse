@@ -30,12 +30,13 @@ framed as the OE receives them — by reporting period (D-041).
 | Review Queue with `CONFIRM`, `REJECT`, `REQUEST_INVESTIGATION`, `EDIT_FINDING` | D-010 |
 | Authorized manual entry as `CONFIRMED` with `MANUAL_ENTRY` provenance | D-001, D-024 |
 | Validated Project Intelligence changed only via review/manual entry | D-020 |
-| Dependencies with status + provenance; at least one AI-inferred dependency in the demo | D-004, D-023, D-025 |
-| Impact analysis: direct → secondary → milestones → gates → potential exposure | Phase 1 §10 |
+| Dependencies with relationship confidence, validation status and provenance; at least one AI-inferred dependency per scenario | D-004, D-023, D-025, D-027 |
+| Impact analysis: direct → secondary → milestones → checkpoints → potential exposure | Phase 1 §10 |
 | Deterministic calculations and comparisons | D-005 |
-| Three confidence/validation axes | D-006 |
-| Fixed MVP gate set as intelligence checkpoints | D-016 |
-| Narrow Ask GridPulse over Validated Project Intelligence with evidence | D-019 [D-037] |
+| Three confidence/validation axes (`UNVALIDATED` / `CONFIRMED` / `REJECTED`) | D-006, D-027 |
+| Selective, prioritised Review Queue — not every extracted fact | D-026 |
+| Fixed MVP checkpoints (neutral names; never READY / NOT READY) | D-016, D-033 |
+| Narrow Ask GridPulse distinguishing validated / observed / inferred / calculated information | D-019, D-037 |
 | Configured reviewers/roles; routing suggestions | D-024 [D-008] |
 | Complete history of GridPulse's own actions | D-012 |
 | Benchmark harness and metrics, reported per corpus realism tier; incl. inferred-dependency precision, entity-resolution accuracy, divergence detection, review load | D-017, D-044 |
@@ -53,7 +54,7 @@ framed as the OE receives them — by reporting period (D-041).
 - Production integrations; live mailbox connection
 - Project management, task management, scheduling/CPM, Gantt editing, document management
 - Portfolio / multi-project functionality (D-018)
-- Configurable enterprise gate management; gate readiness verdicts [D-033]
+- Configurable enterprise gate management; checkpoint readiness verdicts (D-033)
 - Elaborate review workflow (multi-step approvals, SLAs, delegation)
 - Risk/confidence-based auto-acceptance of AI findings (D-001)
 - Automatic delay, float or cost conclusions; compliance certification; engineering approval
@@ -79,7 +80,7 @@ approach, hosting, pricing — Phase 2 or later.
 
 1. Both vertical slices run end to end through the normal intake path.
 2. Each slice includes at least one AI-inferred (not seeded) dependency, labelled `INFERRED`, shown
-   with evidence and `Validation: REQUIRED`.
+   with evidence and `Validation: UNVALIDATED`.
 3. The transformer slice raises the report-vs-schedule disagreement as a CONFLICT; the PCS slice
    raises the PPC specification's stale reference to Rev 7.
 4. Every displayed claim links to verified evidence and shows its level; every dependency shows status

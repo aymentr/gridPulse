@@ -187,15 +187,20 @@ project's existing information, rather than humans modelling everything manually
 
 The goal is to **reduce the amount of expert investigation required after project information changes.**
 
+> **Economic hypothesis (D-050) — UNVALIDATED.** The hypothesis is *not* that change detection itself
+> is valuable enough to buy. Change detection is the trigger; the potential economic value is
+> **compressing the cross-disciplinary investigation required after a meaningful change**. The
+> validation gate tests this directly.
+
 > **Product hypothesis / target — not an industry fact, not validated evidence:**
 > ~4 hours of manual investigation → ~15 minutes of AI investigation + 30–60 minutes of expert validation.
 
 **Critical metric:** investigation compression while maintaining acceptable evidence precision and recall.
 
-Measurement is part of the architecture from the beginning (D-017). The benchmark measures change
-detection accuracy, direct- and secondary-impact recall, evidence precision, stale-evidence detection,
-false-positive rate, reviewer routing accuracy, gate identification, investigation time and human
-correction rate — and checks that no unsupported determinations are made.
+Measurement is part of the architecture from the beginning (D-017, D-044). The validation gate has
+three dimensions — **efficiency** (total human time, including review of AI output), **investigation
+quality** (precision and recall reported separately; no perfect-recall requirement; precision first for
+inferred dependencies) and **safety** (zero unsupported Level 3 conclusions).
 
 "Review required" alone is not value. An investigation must deliver evidence, affected entities, the
 dependency chain, deterministic calculations, relevant milestones, uncertainty, suggested reviewers

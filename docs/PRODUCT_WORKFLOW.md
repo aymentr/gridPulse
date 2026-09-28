@@ -45,7 +45,7 @@ often does not control it (D-003). All inputs use one universal intake path.
 ### 2.2 Detection
 
 - A **Change** is a detected difference between two states, versions, records or observations
-  (e.g. transformer delivery 15 Jan → 2 Feb; PCS spec Rev 7 → Rev 8).
+  (e.g. transformer delivery 12 Jan → 2 Feb; PCS spec Rev 7 → Rev 8).
 - An **Event** is something that happened, or is reported to have happened, in the real project
   (e.g. "Supplier informed the project that transformer delivery has moved to 2 February").
 
@@ -56,7 +56,7 @@ SOURCE → CHANGE DETECTED → POTENTIAL EVENT → HUMAN REVIEW → CONFIRMED / 
 Every AI-detected event starts `DETECTED` and moves to `UNDER_REVIEW`. An authorized user's manual
 entry of a known event may be created directly as `CONFIRMED`, with `MANUAL_ENTRY` provenance (D-001).
 
-**Conflicts.** If sources contradict each other (Source A: delivery 15 Jan; Source B: delivery 2 Feb),
+**Conflicts.** If sources contradict each other (Source A: delivery 12 Jan; Source B: delivery 2 Feb),
 GridPulse raises **CONFLICT DETECTED** with both sources, their versions/dates and evidence. It may
 explain the conflict but never chooses which source is authoritative. Human review determines the
 validated interpretation (D-011).
@@ -121,10 +121,21 @@ reviewer · unresolved question.
 
 ## 4. Ask GridPulse (MVP, narrow)
 
-Ask GridPulse answers questions from Validated Project Intelligence with evidence. It is **not** a
-general-purpose chatbot. Each answer contains: answer · supporting evidence · affected entities ·
-dependency chain · uncertainty · reviewer/validation status. If an answer cannot be supported by
-evidence, GridPulse says so (D-019).
+Ask GridPulse may use validated intelligence, observed (unvalidated) information, inferred
+relationships and deterministic calculations — and every answer keeps them distinct (D-037). It is
+**not** a general-purpose chatbot and must not hide uncertainty. Minimum structure:
+
+```
+VALIDATED INFORMATION
+OBSERVED INFORMATION
+INFERRED RELATIONSHIPS
+DETERMINISTIC CALCULATIONS
+POTENTIAL EXPOSURES
+HUMAN VALIDATION REQUIRED
+EVIDENCE
+```
+
+If evidence is insufficient: *"GridPulse does not have sufficient evidence to determine this."*
 
 Example: *"What is currently blocking energization?"*
 
@@ -137,19 +148,20 @@ receives — reporting-period documents (D-041). Canonical definitions: `PHASE_1
 
 | Item | Date |
 |---|---|
-| Transformer delivery (original) | 15 January |
-| Transformer installation | 15 January |
+| Transformer delivery (original) | 12 January |
+| Transformer installation (planned) | 15 January |
 | HV commissioning | 10 February |
 | Grid compliance testing | 20 February |
 | Energization | 1 March |
 
 Reporting period N: the **EPC progress report** says *"the supplier has advised a revised delivery
-date of 2 February"*; the **schedule update** for the same period still shows 15 January. (Variant:
+date of 2 February"*; the **schedule update** for the same period still shows delivery 12 January
+and installation 15 January. (Variant:
 a supplier letter copied to the owner.)
 
 GridPulse:
 
-1. detects the change (15 Jan → 2 Feb) and the **disagreement between the two current sources**
+1. detects the change (12 Jan → 2 Feb) and the **disagreement between the two current sources**
 2. extracts old and new dates
 3. links the evidence for both
 4. creates a potential event and a conflict finding
@@ -163,9 +175,10 @@ GridPulse:
 
 | | |
 |---|---|
-| CHANGE | Delivery date changed 15 Jan → 2 Feb |
-| CONFLICT | Progress report (2 Feb) and schedule update (15 Jan) disagree |
-| FACT | 18 calendar days difference relative to the planned installation date |
+| CHANGE | Delivery information changed 12 Jan → 2 Feb |
+| CONFLICT | Progress report (2 Feb) and schedule update (12 Jan) disagree |
+| FACT | 2 February is 18 calendar days after the planned 15 January installation date (original plan: 3 days before) |
+| POTENTIAL IMPACT | Transformer installation milestone may require investigation |
 | DEPENDENCY | Transformer delivery → transformer installation |
 | SECONDARY DEPENDENCY | Transformer installation → downstream commissioning activity (**AI-inferred, validation required**) |
 | POTENTIAL EXPOSURE | Downstream milestone may require review |
@@ -185,7 +198,7 @@ control firmware version.
 | STALE REFERENCE | The PPC functional specification still references PCS spec **Rev 7** |
 | FACT (comparison) | The stated Rev 8 range does not cover part of the range stated in the relevant grid requirement (stated at different measurement points) |
 | INFERRED DEPENDENCY | PCS capability appears to contribute to the plant's grid reactive-power requirement (**AI-inferred, validation required**) |
-| POTENTIAL EXPOSURE | GRID COMPLIANCE READY and ENGINEERING READY may require review |
+| POTENTIAL EXPOSURE | GRID COMPLIANCE CHECKPOINT and ENGINEERING CHECKPOINT may require review |
 | VALIDATION | Electrical engineering / grid compliance review required |
 
 GridPulse must **not** say *"the plant will fail grid compliance testing"*, *"the PPC must be
@@ -206,5 +219,5 @@ These are views over the intelligence model, not generic PM features.
 | Requirements | Requirements and supporting / missing evidence |
 | Dependencies | Relationships with status and provenance |
 | Impact | What a confirmed change may affect |
-| Gates | The fixed MVP gate set as intelligence checkpoints |
-| Ask GridPulse | Narrow, evidence-backed questions |
+| Checkpoints | The fixed MVP checkpoints — evidence and unresolved issues; never READY / NOT READY |
+| Ask GridPulse | Narrow, evidence-backed questions with validated / observed / inferred kept distinct |

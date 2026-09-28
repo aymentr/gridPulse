@@ -69,6 +69,12 @@ IMPACT ANALYSIS
 ATTENTION / ACTION
 ```
 
+## The economic hypothesis (unvalidated)
+
+Change detection is the **trigger**, not the product. The potential economic value is **compressing
+the cross-disciplinary investigation required after a meaningful change**. This is unvalidated and is
+tested directly by the validation gate.
+
 ## Discovery, not determination
 
 GridPulse **discovers** ("PCS specification changed from Rev 7 to Rev 8"; "the new delivery date is
@@ -87,7 +93,7 @@ project-control validation required."*
   across the evidence?"*
 - **Two co-primary demonstrations**, each with at least one **AI-inferred** dependency:
   1. **Transformer delivery divergence** — the EPC progress report says delivery moved to 2 February
-     while the schedule update still shows 15 January. GridPulse surfaces the change *and* the
+     while the schedule update still shows 12 January (installation planned 15 January). GridPulse surfaces the change *and* the
      disagreement, traces potential exposure, and never concludes that energization is delayed.
   2. **PCS specification change** — PCS spec Rev 7 → Rev 8. GridPulse finds the PPC specification
      still referencing Rev 7, connects the change to grid-compliance requirements and tests, and
@@ -98,9 +104,9 @@ project-control validation required."*
 | Phase | Status |
 |---|---|
 | **Phase 0 — Product definition** | **LOCKED** |
-| **Phase 1 — Domain & system architecture** | Draft — **frozen** pending validation |
-| **Validation gate** | **Active** — interviews, real change stories, timed comparison ([`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md)) |
-| Phase 2 — Implementation | Not started; blocked on the validation gate. No code, stack, schema, UI, agents or integrations exist. |
+| **Phase 1 — Domain & system architecture** | **ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION** |
+| **Validation gate** | **Active** — efficiency, investigation quality, determination boundary ([`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md)). No validation evidence collected yet. |
+| **Phase 2 — Implementation** | **BLOCKED — VALIDATION GATE NOT YET PASSED.** No code, stack, schema, UI, agents or integrations exist. |
 
 ## Documentation
 
@@ -114,4 +120,6 @@ project-control validation required."*
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Resolved and open decisions |
 | [`docs/PHASE_1_ARCHITECTURE.md`](docs/PHASE_1_ARCHITECTURE.md) | Domain model, state machines, evidence, graph, change & impact models, AI boundaries, benchmark, vertical slices |
 | [`docs/COUNCIL_REVIEW.md`](docs/COUNCIL_REVIEW.md) | Multi-perspective evaluation of the idea and the changes it led to |
-| [`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md) | The gate before Phase 2: interviews, change stories, timed comparison, buyer hypotheses |
+| [`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md) | The gate before Phase 2: three dimensions, three routes, stop/continue conditions |
+| [`docs/PRACTITIONER_INTERVIEW_TEMPLATE.md`](docs/PRACTITIONER_INTERVIEW_TEMPLATE.md) | Structured record for real practitioner interviews |
+| [`validation/`](validation/README.md) | Scenario packs (specifications), ground truth (withheld from investigators), scoring, interview log |

@@ -1,7 +1,8 @@
 # Phase 1 — Domain & System Architecture
 
-**Status:** Phase 1 draft — **frozen** pending the validation gate (D-044, D-046). Phase 0 is locked;
-the council-review amendments D-041 – D-047 are applied.
+**Status:** **ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.**
+Phase 0 is locked; council-review amendments (D-041 – D-047) and the five blocking decisions
+(D-026, D-027, D-032, D-033, D-037) are applied. Phase 2 is **BLOCKED — validation gate not yet passed**.
 
 This document defines the GridPulse intelligence model precisely enough that Phase 2 can implement it
 without inventing product semantics while coding. It is **conceptual architecture**:
@@ -89,7 +90,7 @@ Architectural invariants (each is enforced by the model, not by the UI):
 |---|---|
 | I-1 | GridPulse never writes to an external system (MVP). |
 | I-2 | Every important claim has at least one Evidence record. |
-| I-3 | AI output never enters Validated Project Intelligence without a Review, except where validation is defined as not required (deterministic structured import, authorized manual entry — §3.2). |
+| I-3 | Only explicit human review — or an authorized user's manual entry — sets validation status to `CONFIRMED`. AI output, AI-extracted relationships and imported source data remain `UNVALIDATED` and labelled as such. Validated Project Intelligence contains only `CONFIRMED` items (D-027). |
 | I-4 | Validated Project Intelligence changes only through a Review or an authorized manual entry. There is no direct edit path. |
 | I-5 | Contradictory information is never silently resolved; it becomes a CONFLICT finding. |
 | I-6 | GridPulse never produces a Level 3 determination. It may surface a candidate Level 3 implication only as *potential exposure — validation required*. |
@@ -168,7 +169,8 @@ subsequent human action on it**. Provenance is a list, not a single value — e.
 | Provenance type | Meaning |
 |---|---|
 | `SCHEDULE_DERIVED` | Deterministically imported from explicit schedule data (dates, logic links) |
-| `DOCUMENT_DERIVED` | Explicitly stated in a document/email/record and extracted (AI-assisted) |
+| `DOCUMENT_DERIVED` | Explicitly stated in a document/email/record |
+| `AI_EXTRACTED` | Extracted from the source by AI (paired with `DOCUMENT_DERIVED` for AI-extracted explicit statements) |
 | `STRUCTURED_IMPORT` | Deterministically imported from other structured data (e.g. a spreadsheet register) |
 | `AI_INFERRED` | Reasoned by AI; not explicitly stated by any source |
 | `CALCULATED` | Deterministic calculation over other claims (inputs recorded) |
@@ -206,16 +208,21 @@ delivery is expected Feb 2" can be `HIGH` even though "expected" is a forecast.
 
 (Graded strength of inferences is deferred; each inference carries its reasoning and evidence instead.)
 
-**Validation status** — whether human review is required or has occurred.
+**Validation status** — whether a human has validated it (D-027).
 
 | Value | Meaning |
 |---|---|
-| `REQUIRED` | Awaiting human review (includes items with an investigation requested) |
-| `VALIDATED` | Confirmed (or edited and confirmed) by an authorized reviewer |
-| `REJECTED` | Rejected by an authorized reviewer |
-| `NOT_REQUIRED` | Enters Validated Project Intelligence without review by rule: deterministic `SCHEDULE_DERIVED` / `STRUCTURED_IMPORT` data, or `MANUAL_ENTRY` by an authorized user. Provenance stays visible. |
+| `UNVALIDATED` | No human has confirmed it. Applies to all observed/extracted claims, AI-extracted and AI-inferred relationships, and imported source data (including schedule-derived data — **[D-049]**). Usable in investigation, always labelled. |
+| `CONFIRMED` | Confirmed (or edited and confirmed) by an authorized reviewer through explicit review, or entered by an authorized user as a manual fact (`MANUAL_ENTRY`). |
+| `REJECTED` | Rejected by an authorized reviewer. |
 
-Display example: `Evidence: HIGH · Relationship: INFERRED · Validation: REQUIRED`.
+Whether an item is *currently in the Review Queue* is a property of its Finding (§7.1), not a
+validation value. Only explicit human action produces `CONFIRMED`.
+
+Relationship confidence and validation status are **independent**: an explicitly stated relationship
+can be `EXPLICIT · UNVALIDATED`; an inferred one can be `INFERRED · CONFIRMED` after review.
+
+Display example: `Evidence: HIGH · Relationship: INFERRED · Validation: UNVALIDATED`.
 
 ### 3.3 Time
 
@@ -327,13 +334,16 @@ Each concept: **Purpose · Represents · Does NOT represent · Lifecycle · Rela
 #### Claim
 - **Purpose:** the atomic unit of assertion. Everything GridPulse "knows" or "says" is a Claim.
 - **Represents:** a statement about an entity/attribute/relationship with a **level** (1, 2, or a
-  human-authored 3), value, provenance, evidence, evidence confidence and validation status.
+  human-authored 3), value, provenance, evidence, evidence confidence and validation status. An
+  `UNVALIDATED` Level 1 claim is **observed information**; a `CONFIRMED` one is part of Validated
+  Project Intelligence.
   Examples: "Supplier states transformer delivery expected Feb 2" (L1); "New delivery is 18 calendar
   days after planned installation" (L1, calculated); "Transformer installation precedes HV
   commissioning" (L2).
 - **Does NOT represent:** an AI determination of consequences (Level 3 is never AI-authored).
-- **Lifecycle:** `PROPOSED` → `VALIDATED` | `REJECTED`; `VALIDATED` → `SUPERSEDED` when a later
-  validated claim replaces it. (Claims with validation `NOT_REQUIRED` enter as `VALIDATED`.)
+- **Lifecycle:** `UNVALIDATED` → `CONFIRMED` | `REJECTED`; `CONFIRMED` → `SUPERSEDED` when a later
+  confirmed claim replaces it. Most claims stay `UNVALIDATED` (observed information); only
+  consequential ones are reviewed (D-026). Authorized manual entries enter as `CONFIRMED`.
 - **Relationships:** about an Entity (or a Dependency); supported by Evidence; may be inputs to a
   calculated Claim; grouped into Findings.
 - **Provenance:** required; see §3.1.
@@ -409,10 +419,12 @@ Each concept: **Purpose · Represents · Does NOT represent · Lifecycle · Rela
 - **Relationships:** `PRECEDES` / preceded by Activities/Milestones; `CONTRIBUTES_TO` Gate.
 - **Provenance:** each date Claim carries its source (schedule, document, supplier, manual).
 
-#### Gate
-- **Purpose:** intelligence checkpoints where exposure accumulates.
-- **Represents:** one of the MVP fixed set (§14).
+#### Gate (Checkpoint)
+- **Purpose:** intelligence checkpoints where evidence and unresolved issues accumulate.
+- **Represents:** one of the MVP fixed checkpoints (§14), e.g. ENERGIZATION CHECKPOINT. "Gate" is the
+  domain term; user-facing names are neutral checkpoints (D-033).
 - **Does NOT represent:** a contractual approval, a stage-gate workflow, or a readiness verdict.
+  GridPulse never declares READY or NOT READY.
 - **Lifecycle:** fixed set, always present in the MVP.
 - **Relationships:** Milestones, Activities, Tests and Requirements `CONTRIBUTE_TO` Gates; Impacts
   may reach Gates.
@@ -474,7 +486,7 @@ Each concept: **Purpose · Represents · Does NOT represent · Lifecycle · Rela
   | `CONFLICT` | that two sources disagree; asks the reviewer for the validated interpretation |
   | `STALE_EVIDENCE` | that evidence or a cross-document reference points to a superseded version |
   | `MISSING_EVIDENCE` | that a requirement/gate lacks supporting evidence |
-  | `FACT` | an extracted fact needing validation (e.g. baseline facts) **[D-026]** |
+  | `FACT` | a *consequential* extracted fact needing validation — not every extracted fact (D-026) |
 
 - **Does NOT represent:** a task, a ticket, or a workflow case. No assignment chains, SLAs or approvals.
 - **Lifecycle:** §7.1.
@@ -485,12 +497,13 @@ Each concept: **Purpose · Represents · Does NOT represent · Lifecycle · Rela
 #### Dependency
 - **Purpose:** the edges along which change propagates.
 - **Represents:** a typed, directed relationship between two Entities where a change to one may
-  affect the other (§9.3), with status, provenance, relationship confidence and evidence.
+  affect the other (§9.3), with relationship confidence, validation status, provenance and evidence.
 - **Does NOT represent:** a schedule logic link to be calculated (no lags, float or CPM), nor a
   contractual obligation.
-- **Lifecycle:** `INFERRED` | `CONFIRMED` | `REJECTED` (§7.4).
+- **Lifecycle:** relationship confidence `EXPLICIT` | `INFERRED` (fixed at creation); validation
+  `UNVALIDATED` → `CONFIRMED` | `REJECTED` (§7.4).
 - **Relationships:** connects Entities; traversed by Impact analysis; proposed in DEPENDENCY Findings.
-- **Provenance:** mandatory; `SCHEDULE_DERIVED`, `DOCUMENT_DERIVED`, `AI_INFERRED`, `MANUAL_ENTRY`,
+- **Provenance:** mandatory; `SCHEDULE_DERIVED`, `DOCUMENT_DERIVED` + `AI_EXTRACTED`, `AI_INFERRED`, `MANUAL_ENTRY`,
   plus `HUMAN_CONFIRMED` / `HUMAN_REJECTED` history.
 
 #### Impact
@@ -546,7 +559,7 @@ Each concept: **Purpose · Represents · Does NOT represent · Lifecycle · Rela
 
 | Level | Name | Definition | Examples | Authored by |
 |---|---|---|---|---|
-| **1** | **Fact** | Directly supported by evidence, or deterministically calculated from evidenced values | "Delivery date changed from Jan 15 to Feb 2." "The new delivery date is 18 calendar days after the planned installation date." | GridPulse (with evidence) or manual entry |
+| **1** | **Fact** | Directly supported by evidence, or deterministically calculated from evidenced values | "Delivery date changed from Jan 12 to Feb 2." "The new delivery date is 18 calendar days after the planned installation date." | GridPulse (with evidence) or manual entry |
 | **2** | **Dependency / inference** | A relationship or analytical inference supported by evidence | "The transformer delivery change may affect the transformer installation milestone." "Transformer installation appears to precede HV commissioning." | GridPulse, labelled with relationship confidence and validation status |
 | **3** | **Engineering / project conclusion** | A consequential technical or project determination | "Energization will be delayed." "Protection settings must be redesigned." | **Humans only** |
 
@@ -674,6 +687,18 @@ DETECTED ─► UNDER_REVIEW ─────────────────
 Duplicate detections (e.g. a second email repeating the same new date) attach as additional evidence
 to the open finding rather than creating a new one.
 
+**Review Queue scope and priority (D-026).** Review is *consequential and selective*. Most extracted
+claims and relationships are never queued; they remain `UNVALIDATED`, labelled, and usable. Findings
+are raised and ordered as:
+
+1. consequential changes
+2. source conflicts
+3. inferred dependencies involved in an active investigation
+4. stale evidence
+5. missing evidence relevant to a critical investigation
+
+Goal: GridPulse must not create more review work than it saves. Review load is measured (§15.4).
+
 ### 7.2 Change
 
 ```
@@ -700,21 +725,33 @@ superseded; the earlier event remains a true record that the supplier said Feb 2
 
 ### 7.4 Dependency
 
+A dependency has two independent axes, fixed at different times:
+
+- **Relationship confidence** — set at creation from how the relationship was found:
+  `EXPLICIT` (stated by a source: `SCHEDULE_DERIVED`, `DOCUMENT_DERIVED` + `AI_EXTRACTED`,
+  `STRUCTURED_IMPORT`) or `INFERRED` (`AI_INFERRED`). Review does not change it.
+- **Validation status** — changed only by explicit human action:
+
 ```
-              create                          review
-SCHEDULE_DERIVED / authorized MANUAL_ENTRY ─► CONFIRMED ──REJECT──► REJECTED
-AI_INFERRED / DOCUMENT_DERIVED (AI-extracted) ─► INFERRED ─CONFIRM─► CONFIRMED (+HUMAN_CONFIRMED)
-                                                     └─────REJECT──► REJECTED  (+HUMAN_REJECTED)
-REJECTED ──(new DEPENDENCY finding with new evidence, CONFIRM)──► CONFIRMED
+any origin (schedule, document, AI-extracted, AI-inferred) ─► UNVALIDATED
+UNVALIDATED ──CONFIRM──► CONFIRMED  (+HUMAN_CONFIRMED)
+UNVALIDATED ──REJECT───► REJECTED   (+HUMAN_REJECTED)
+CONFIRMED   ──REJECT───► REJECTED   (new finding with new evidence)
+REJECTED    ──CONFIRM──► CONFIRMED  (new finding with new evidence)
+authorized MANUAL_ENTRY ─► CONFIRMED
 ```
+
+The D-004 labels map onto these axes: "INFERRED" = relationship confidence `INFERRED`;
+"CONFIRMED" / "REJECTED" = validation status.
 
 | Rule | |
 |---|---|
-| D1 | Status and provenance are separate. A `CONFIRMED` dependency always shows *why* it is confirmed (`SCHEDULE_DERIVED` vs `HUMAN_CONFIRMED` vs `MANUAL_ENTRY`). |
-| D2 | Impact analysis may traverse `INFERRED` and `CONFIRMED` links; never `REJECTED`. Paths containing any `INFERRED` link are labelled inferred. |
-| D3 | AI-extracted, explicitly stated document relationships start `INFERRED` with relationship confidence `EXPLICIT` and validation `REQUIRED` **[D-027]**. |
-| D4 | If a schedule-derived link disappears in a newer schedule version, its evidence becomes `STALE` and a `CHANGE` finding is raised; status does not change silently. |
+| D1 | Relationship confidence and validation status are separate and both always displayed, together with provenance. "The schedule says it" (`SCHEDULE_DERIVED`, `EXPLICIT`) is never shown as "an engineer validated it" (`HUMAN_CONFIRMED`). |
+| D2 | Impact analysis may traverse `UNVALIDATED` and `CONFIRMED` links; never `REJECTED`. Paths containing any `INFERRED` or `UNVALIDATED` link are labelled accordingly. |
+| D3 | An explicitly stated relationship extracted by AI is `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED`. It never becomes `CONFIRMED` automatically (D-027). |
+| D4 | If a schedule-derived link disappears in a newer schedule version, its evidence becomes `STALE` and a `CHANGE` finding is raised; nothing changes silently. |
 | D5 | Rejecting a schedule-derived link changes GridPulse's intelligence only; the schedule is untouched and the divergence is shown **[D-040]**. |
+| D6 | Deterministically imported schedule logic is `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED` — interim rule pending **[D-049]**. |
 
 ### 7.5 Investigation
 
@@ -794,7 +831,7 @@ visible after confirmation (§2.4).
 
 | Case | Old observation | New observation | Change | Potential Event | Review outcome effect |
 |---|---|---|---|---|---|
-| Delivery date | PO / previous supplier letter: delivery 15 Jan | Supplier email: "now expected 2 February" | Transformer delivery date 15 Jan → 2 Feb (+18 cd) | `DELIVERY_DATE_CHANGE` (reason: as stated by supplier, if given) | Confirmed → validated delivery claim = 2 Feb; impact investigation starts |
+| Delivery date | Schedule update / previous progress report: delivery 12 Jan | Progress report: "revised delivery date of 2 February" | Transformer delivery date 12 Jan → 2 Feb (+21 cd) | `DELIVERY_DATE_CHANGE` (reason: as stated by supplier, if given) | Confirmed → validated delivery claim = 2 Feb; impact investigation starts |
 | Equipment specification | PCS spec Rev 7 | PCS spec Rev 8 | Clause-level differences (e.g. rated output, protection interface) | `SPECIFICATION_CHANGE` | Confirmed → requirement/spec claims updated; documents referencing Rev 7 checked for stale references |
 | Test result | Protection test: not yet tested | Test report: FAIL (stated reason) | Result state not-tested → FAIL | `TEST_FAILURE` | Confirmed → TestResult validated; impact on verified requirement, successors and gate |
 | Requirement | Grid requirement v1: parameter X | Grid operator letter / v2: parameter Y | Requirement value X → Y | `GRID_OPERATOR_DECISION` or `SPECIFICATION_CHANGE` | Confirmed → requirement updated; linked tests/equipment evaluated for exposure |
@@ -845,10 +882,9 @@ for Primavera/P6**: it holds typed relationships and evidence-backed claims; it 
 | Attribute | Content |
 |---|---|
 | Type | One of the dependency types above |
-| Status | `INFERRED` / `CONFIRMED` / `REJECTED` |
 | Provenance | List (§3.1) |
 | Relationship confidence | `EXPLICIT` / `INFERRED` |
-| Validation status | `REQUIRED` / `VALIDATED` / `REJECTED` / `NOT_REQUIRED` |
+| Validation status | `UNVALIDATED` / `CONFIRMED` / `REJECTED` |
 | Evidence | Evidence records (and, for inferences, the reasoning) |
 | Source references | Documents/versions/activities supporting it |
 | Timestamps | created, status changes, last verified against current sources |
@@ -881,7 +917,7 @@ Secondary impacts     — entities two or more hops away
   ↓
 Milestones            — dated points on or adjacent to the paths
   ↓
-Gates                 — gates reached via CONTRIBUTES_TO
+Checkpoints           — checkpoints (gates) reached via CONTRIBUTES_TO
   ↓
 Potential exposure    — candidate Level 3 implications, phrased as exposure requiring validation
 ```
@@ -914,11 +950,11 @@ Every Impact exposes:
 |---|---|
 | Affected entity | HV commissioning (Activity) |
 | Relationship | Transformer installation `PRECEDES` HV commissioning |
-| Dependency status | `INFERRED` (AI_INFERRED; Relationship: INFERRED; Validation: REQUIRED) |
+| Dependency status | Relationship: `INFERRED` · Validation: `UNVALIDATED` · Provenance: `AI_INFERRED` |
 | Evidence | Commissioning plan §x: "HV commissioning shall commence once all HV equipment is installed" |
-| Deterministic calculations | New delivery (Feb 2) is 18 cd after planned installation (Jan 15); 8 cd before planned HV commissioning (Feb 10) |
+| Deterministic calculations | New delivery (2 Feb) is 18 cd after planned installation (15 Jan); 8 cd before planned HV commissioning (10 Feb) |
 | Relevant milestone | HV commissioning (planned Feb 10, source: …) |
-| Gate | COMMISSIONING READY → ENERGIZATION READY |
+| Checkpoint | COMMISSIONING CHECKPOINT → ENERGIZATION CHECKPOINT |
 | Uncertainty | Link is inferred; installation duration, float and resequencing options not evidenced |
 | Reviewer | Electrical Engineering; Project Controls |
 | Unresolved question | "Can transformer installation and HV commissioning be resequenced within the Feb 10 window?" |
@@ -935,13 +971,14 @@ legal, engineering, scheduling or other authoritative source of truth for the pr
 
 **Contents:**
 
-- current `VALIDATED` Claims (reviewed, or validation `NOT_REQUIRED` with visible provenance)
-- `CONFIRMED` Dependencies (with provenance showing *why* confirmed)
+- current `CONFIRMED` Claims (human-reviewed, or entered by an authorized user)
+- `CONFIRMED` Dependencies (with provenance showing origin and who confirmed)
 - `CONFIRMED` Changes and Events
 - the full review and audit history
 
-**Not contents:** `PROPOSED` claims, `INFERRED` dependencies, unresolved findings, open impacts. These
-live in the graph, labelled, and may be used for investigation — they are not validated intelligence.
+**Not contents:** `UNVALIDATED` claims (observed information), `UNVALIDATED` dependencies (explicit or
+inferred), unresolved findings, open impacts. These live in the graph, labelled, and may be used for
+investigation and in Ask GridPulse answers — they are not validated intelligence (D-026, D-037).
 
 **How it changes — the only path:**
 
@@ -967,18 +1004,18 @@ Conceptual stages — not agents, not an orchestration design, no model/provider
 |---|---|---|---|---|---|
 | **Ingestion** | Files, emails, schedule exports, structured data, manual entries | Document, DocumentVersion, fingerprint | Deterministic | No | Source, time, version, content fingerprint |
 | **Classification** | DocumentVersion | Record type (spec, email, schedule, test report…), related entities (candidate) | AI-assisted (deterministic for structured imports) | No (errors surface downstream) | Classification result, method, run |
-| **Extraction** | DocumentVersion (+ classification) | Claims (L1), entities & aliases, requirements, explicit relationships, each with location | AI-assisted (deterministic for schedule/structured) | Via findings (D-026 for baseline) | Extracted items, locations, run |
+| **Extraction** | DocumentVersion (+ classification) | Claims (L1), entities & aliases, requirements, explicit relationships, each with location — all `UNVALIDATED` | AI-assisted (deterministic for schedule/structured) | Selective — only consequential items become findings (D-026) | Extracted items, locations, run |
 | **Change detection** | New claims vs current claims per subject | Changes, CONFLICT findings, potential Events | Deterministic comparison once subjects resolved; AI-assisted for unstructured semantic diffs (e.g. spec clauses) and entity resolution | Yes — every AI-detected Change/Event | Both observations, comparison method |
 | **Evidence linking** | Claims + cited locations | Verified Evidence, evidence confidence, freshness, STALE_EVIDENCE findings | Deterministic verification; AI-assisted confidence rationale | No (verification is mechanical) | Verification result per citation |
-| **Dependency discovery** | Claims, entities, documents, existing graph | Dependencies (explicit: `SCHEDULE_DERIVED`/`DOCUMENT_DERIVED`; inferred: `AI_INFERRED`) with reasoning | Deterministic for schedule logic; AI-assisted otherwise | Yes for `INFERRED` (to become `CONFIRMED`); usable meanwhile with labels | Evidence, reasoning, provenance |
+| **Dependency discovery** | Claims, entities, documents, existing graph | Dependencies (`EXPLICIT`: `SCHEDULE_DERIVED`, `DOCUMENT_DERIVED`/`AI_EXTRACTED`; `INFERRED`: `AI_INFERRED`), all `UNVALIDATED`, with reasoning | Deterministic for schedule logic; AI-assisted otherwise | Only explicit review makes any dependency `CONFIRMED`; inferred links in an active investigation are prioritised for review | Evidence, reasoning, provenance |
 | **Impact analysis** | Confirmed Change/Event, graph, validated intelligence | Impacts with the §10.4 contract; exposure statements | Deterministic traversal + calculations; AI-assisted for explanation, uncertainty, unresolved questions, reviewer suggestion | Reviewers acknowledge/dismiss; Level 3 always human | Graph snapshot, paths, statuses, calculations |
 | **Review** | Findings (with preview) | Reviews; state transitions | Human | Is the validation | Full review audit (§7.6) |
 | **Validated Project Intelligence** | Confirmed findings, authorized manual entries | Updated validated claims/dependencies/events | Deterministic application of review outcome | — | Validity intervals, cause of every change |
 
 Cross-stage guardrails:
 
-- AI output is always a *proposal* (Claim `PROPOSED`, Dependency `INFERRED`, Finding `DETECTED`) until
-  review, except deterministic structured imports and authorized manual entries.
+- Everything AI produces or imports is `UNVALIDATED` until explicit human review; only an authorized
+  manual entry starts as `CONFIRMED`.
 - No stage may emit a Level 3 claim.
 - Every AI-assisted output records the stage, run, inputs and evidence used, so it can be re-examined
   and benchmarked.
@@ -987,42 +1024,48 @@ Cross-stage guardrails:
 
 ## 13. Ask GridPulse (narrow)
 
-Included in the MVP (D-019). It is an **Investigation of kind `QUESTION`** over Validated Project
-Intelligence and the graph — **not a general-purpose chatbot** and not document Q&A.
+Included in the MVP (D-019, D-037). It is an **Investigation of kind `QUESTION`** over the intelligence
+model — **not a general-purpose chatbot** and not document Q&A. It may use validated intelligence,
+observed (unvalidated) information, inferred relationships and deterministic calculations, but every
+answer must keep them distinct and must not hide uncertainty.
 
-Answer contract:
+Minimum answer structure:
 
-| Field | Requirement |
+| Section | Content |
 |---|---|
-| Answer | Direct answer composed only of Level 1 / Level 2 claims |
-| Supporting evidence | Verified evidence for every claim in the answer |
-| Affected entities | Entities the answer concerns |
-| Dependency chain | Paths used, with each link's status and provenance |
-| Uncertainty | Inferred links, stale evidence, conflicts, missing information |
-| Validation status | Per claim: `VALIDATED` / `REQUIRED` / `NOT_REQUIRED`; reviewers where relevant |
+| **VALIDATED INFORMATION** | `CONFIRMED` claims and dependencies, with who confirmed them |
+| **OBSERVED INFORMATION** | `UNVALIDATED` Level 1 claims from sources, with source and evidence confidence |
+| **INFERRED RELATIONSHIPS** | `INFERRED` dependencies and other Level 2 inferences, with reasoning and validation status |
+| **DETERMINISTIC CALCULATIONS** | Calculations with their inputs |
+| **POTENTIAL EXPOSURES** | Candidate Level 3 implications phrased as exposure |
+| **HUMAN VALIDATION REQUIRED** | What must be validated, and by which role |
+| **EVIDENCE** | Verified evidence for every statement above |
 
-If an answer cannot be supported by evidence, GridPulse says so explicitly ("GridPulse has no evidence
-supporting an answer to this question"). Level 3 questions ("Will we miss energization?") are answered
-with exposure and routing, never a determination. Whether unvalidated (labelled) intelligence may
-appear in answers: **[D-037]** — recommendation: yes, clearly labelled, validated first.
+If evidence is insufficient, the answer is:
+
+> *"GridPulse does not have sufficient evidence to determine this."*
+
+Level 3 questions ("Will we miss energization?") are answered with exposure, evidence and routing —
+never a determination.
 
 ---
 
-## 14. Gates (MVP)
+## 14. Checkpoints (MVP)
 
-Small fixed set, culminating the first BESS workflow:
+Small fixed set of neutral checkpoints (D-016, D-033):
 
 ```
-GRID CONNECTION → ENGINEERING READY → PROCUREMENT READY → CONSTRUCTION READY
-  → COMMISSIONING READY → GRID COMPLIANCE READY → ENERGIZATION READY → COD / HANDOVER
+GRID CONNECTION CHECKPOINT → ENGINEERING CHECKPOINT → PROCUREMENT CHECKPOINT
+  → CONSTRUCTION CHECKPOINT → COMMISSIONING CHECKPOINT → GRID COMPLIANCE CHECKPOINT
+  → ENERGIZATION CHECKPOINT → COD / HANDOVER CHECKPOINT
 ```
 
-- Gates are **intelligence checkpoints, not contractual approvals**.
-- A gate aggregates: linked milestones/activities/tests/requirements, open Impacts reaching it,
-  `MISSING_EVIDENCE` and `STALE_EVIDENCE` findings, and conflicts.
-- GridPulse does **not** issue a readiness verdict for a gate ("ENERGIZATION READY: yes/no") —
-  that would be a Level 3 determination **[D-033]**.
-- The model treats gates as Entities of kind Gate, so configurable gates can be added later without
+- Checkpoints are **intelligence checkpoints, not contractual approvals**.
+- A checkpoint aggregates the **evidence and unresolved issues** relevant to it: linked
+  milestones/activities/tests/requirements, open Impacts reaching it, `MISSING_EVIDENCE` and
+  `STALE_EVIDENCE` findings, and conflicts.
+- GridPulse **never** declares a checkpoint `READY` or `NOT READY`. Human experts determine readiness.
+- Checkpoints are Entities of kind Gate, so configurable checkpoints can be added later without
   making the MVP a gate-management system.
 
 ---
@@ -1035,7 +1078,7 @@ Measure whether GridPulse **reduces investigation workload while avoiding unsupp
 The benchmark explicitly separates:
 
 - **Correct discovery** — detected the change, found the right evidence, traced the right
-  dependencies, reached the right milestones/gates, routed to the right reviewers.
+  dependencies, reached the right milestones/checkpoints, routed to the right reviewers.
 - **Correct engineering determination** — *not produced by GridPulse*. The benchmark checks that
   GridPulse **did not** assert one.
 
@@ -1088,7 +1131,7 @@ known limitation (D-047).
 
 | Metric | Definition (initial) |
 |---|---|
-| Change detection | Precision/recall of detected Changes vs ground truth (subject, old, new correct) |
+| Change detection | Precision and recall of detected Changes vs ground truth (subject, old, new correct) |
 | **Cross-source divergence detection** | Recall of ground-truth disagreements between current sources (e.g. progress report vs schedule update) raised as CONFLICT findings (D-043) |
 | Direct-impact recall | Share of ground-truth one-hop impacted entities surfaced |
 | Secondary-impact recall | Share of ground-truth ≥2-hop impacted entities surfaced |
@@ -1098,11 +1141,15 @@ known limitation (D-047).
 | Stale-evidence detection | Recall of ground-truth stale evidence / stale cross-document references |
 | False-positive rate | Findings/impacts not in ground truth ÷ all findings/impacts |
 | Reviewer routing | Share of findings/impacts routed to a ground-truth appropriate role |
-| Gate identification | Precision/recall of gates reported as potentially exposed |
+| Checkpoint identification | Precision/recall of checkpoints reported as potentially exposed |
 | **Review load** | Review items generated per real change, and reviewer minutes per change — tests Risk 2 directly |
 | Investigation time | GridPulse processing time + measured reviewer time per investigation, vs a manual expert baseline on the same scenario |
 | Human correction rate | Share of reviewed findings that were edited or rejected |
 | **Unsupported-determination violations** (guardrail) | Outputs asserting a Level 3 conclusion, presenting an inferred link as fact, or characterising a party's intent. Target: **0** |
+
+Every metric with a precision and a recall component is reported as **both numbers** — never
+collapsed into a single score. Perfect recall is not required; for inferred dependencies precision
+takes priority.
 
 The **4 h manual → 15 min AI + 30–60 min expert** figure is a **product hypothesis/target only**, not
 an industry fact and not validated evidence. The benchmark, and the timed comparison in
@@ -1131,80 +1178,82 @@ Two co-primary scenarios (D-042). They exercise different strengths:
 | What it proves | Cross-source divergence detection and exposure tracing | Propagation through links **no schedule contains** |
 | Where incumbents are strong | Schedulers propagate dates in P6 — GridPulse's value is *detecting that sources disagree*, not recalculating dates | Nowhere — this chain lives across documents |
 | AI-inferred dependency | Transformer installation → HV commissioning | PCS reactive capability → grid reactive power requirement |
+| Role in validation | Primary validation scenario (source divergence) | Primary **intelligence** scenario |
 
 ### 16.A Transformer delivery divergence
 
-#### 16.A.1 Project data (synthetic)
+The value demonstrated here is **not schedule calculation** — it is **detecting divergence between
+project information sources** (D-043).
+
+#### 16.A.1 Project data (synthetic, D-032)
 
 | Item | Value | Source in corpus |
 |---|---|---|
-| Transformer delivery (original) | **15 January** | Purchase order; previous month's EPC progress report |
-| Transformer installation | 15 January | EPC schedule update or construction method statement |
+| Transformer delivery (original) | **12 January** | Schedule update; previous period's progress report; purchase order |
+| Transformer installation (planned) | **15 January** | Schedule update |
 | HV commissioning | 10 February | Schedule update / commissioning plan |
 | Grid compliance testing | 20 February | Schedule update / grid-connection test programme |
 | Energization | 1 March | Schedule update / grid-connection agreement |
 
-Note: with original delivery equal to planned installation, "delivery moved 18 days" and "new delivery
-is 18 days after planned installation" produce the same number — see **[D-032]**.
-
 Dependency ground truth:
 
-| Link | Type | Ground truth | Expected GridPulse provenance/status |
+| Link | Type | Ground truth | Expected GridPulse labelling |
 |---|---|---|---|
-| Transformer delivery → transformer installation | `PRECEDES` | Stated (schedule logic, or method statement) | `SCHEDULE_DERIVED` → `CONFIRMED` (or `DOCUMENT_DERIVED`, validation required, if no schedule) |
-| Transformer installation → HV commissioning | `PRECEDES` | **Inferable, not stated.** Commissioning plan: "HV commissioning shall commence once all HV equipment is installed"; equipment list classes the main transformer as HV equipment. | `AI_INFERRED` → `INFERRED`, Validation `REQUIRED` — **must not be seeded** |
-| HV commissioning → grid compliance testing | `PRECEDES` | Stated (grid test programme) | `DOCUMENT_DERIVED` |
-| Grid compliance testing → ENERGIZATION READY | `CONTRIBUTES_TO` | Stated (grid-connection agreement) | `DOCUMENT_DERIVED` |
+| Transformer delivery → transformer installation | `PRECEDES` | Stated (schedule logic) | `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED` |
+| Transformer installation → HV commissioning | `PRECEDES` | **Inferable, not stated.** Commissioning plan: "HV commissioning shall commence once all HV equipment is installed"; equipment list classes the main transformer as HV equipment. | `INFERRED · UNVALIDATED · AI_INFERRED` — **must not be seeded** |
+| HV commissioning → grid compliance testing | `PRECEDES` | Stated (grid test programme) | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` |
+| Grid compliance testing → ENERGIZATION CHECKPOINT | `CONTRIBUTES_TO` | Stated (grid-connection agreement) | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` |
 
 #### 16.A.2 New information (as the OE receives it)
 
-Reporting period N delivers two documents to the Owner's Engineer:
+Reporting period N delivers:
 
-- **EPC monthly progress report, period N:** *"Main transformer: the supplier has advised a revised
-  delivery date of 2 February."*
-- **EPC schedule update, data date period N:** transformer delivery activity still shows **15 January**.
-
-Variant intake (same pipeline): a supplier letter copied to the owner stating *"Transformer delivery
-is now expected February 2."*
+- **EPC progress report, period N:** *"Main transformer: the supplier has advised a revised delivery
+  date of 2 February."*
+- **EPC schedule update, period N:** transformer delivery still **12 January**; installation
+  **15 January**.
+- Supporting: supplier information (letter copied to the owner, where available) and milestone
+  information from the commissioning plan.
 
 #### 16.A.3 Expected behaviour
 
-1. **Ingestion** — report and schedule update ingested as DocumentVersions for period N.
-2. **Extraction** — L1 claims: report states revised delivery 2 Feb; schedule update states 15 Jan;
-   "main transformer" resolved to TX-01 (alias recorded).
-3. **Change detection** — CHANGE finding: delivery 15 Jan (period N-1 report / PO) → 2 Feb (period N
+1. **Ingestion** — report, schedule update and supporting documents ingested as DocumentVersions.
+2. **Extraction** — observed claims: report states 2 Feb; schedule update states 12 Jan (delivery)
+   and 15 Jan (installation); "main transformer" resolved to TX-01 (alias recorded).
+3. **Change detection** — CHANGE finding: delivery information 12 Jan (period N-1) → 2 Feb (period N
    report); potential Event `DELIVERY_DATE_CHANGE`.
-4. **Conflict detection** — CONFLICT finding: two current sources for period N disagree (report 2 Feb
-   vs schedule update 15 Jan). GridPulse does not choose between them.
-5. **Evidence linking** — quoted sentence and schedule field verified; Evidence: `HIGH` for both.
-6. **Pre-review preview** — possibly affected: installation, HV commissioning (inferred link).
-7. Findings `DETECTED` → `UNDER_REVIEW`, routed to Project Controls.
-8. **Review** — reviewer `CONFIRM`s the change and records the validated interpretation of the
-   conflict (alternatives: `REJECT`, `EDIT_FINDING`, `REQUEST_INVESTIGATION`).
-9. **Validated Project Intelligence** — validated delivery claim = 2 Feb (provenance
-   `DOCUMENT_DERIVED` + `HUMAN_CONFIRMED`); previous claim superseded; the schedule update remains a
-   visible **source divergence** (§2.4).
-10. **Impact investigation** — traversal and Impacts; routing to Project Controls and Electrical
-    Engineering.
+4. **Conflict detection** — CONFLICT finding: progress report (2 Feb) and schedule update (12 Jan)
+   disagree for the same period. GridPulse does not choose between them.
+5. **Evidence linking** — quoted sentence and schedule fields verified; Evidence: `HIGH` for both.
+6. **Pre-review preview** — possibly affected: transformer installation milestone; HV commissioning
+   via the inferred link.
+7. Findings `DETECTED` → `UNDER_REVIEW`, routed to Project Controls (priority: consequential change,
+   source conflict).
+8. **Review** — the reviewer confirms, rejects, edits or requests investigation; the validated
+   interpretation of the conflict is recorded by the human.
+9. **Validated Project Intelligence** — only what the reviewer confirmed; the schedule update remains
+   a visible **source divergence** (§2.4).
+10. **Impact investigation** — traversal and Impacts.
 
-#### 16.A.4 Expected outputs
+#### 16.A.4 Expected discovery
 
 | Category | Output |
 |---|---|
-| CHANGE | Transformer delivery date changed 15 Jan → 2 Feb. *(L1, evidence: progress report period N)* |
-| CONFLICT / DIVERGENCE | Progress report (2 Feb) and schedule update (15 Jan) state different delivery dates for the same period. *(L1, both evidenced)* |
-| FACT | New delivery is 18 calendar days later than the previous date. *(L1, calculated)* |
-| FACT | New delivery (2 Feb) is 18 calendar days after the planned installation date (15 Jan). *(L1, calculated)* |
-| DEPENDENCY | Transformer delivery → transformer installation. *(L2 · Relationship: EXPLICIT · CONFIRMED · SCHEDULE_DERIVED)* |
-| SECONDARY DEPENDENCY | Transformer installation → HV commissioning. *(L2 · Relationship: INFERRED · Validation: REQUIRED · AI_INFERRED)* |
-| POTENTIAL EXPOSURE | HV commissioning (10 Feb), grid compliance testing (20 Feb) and ENERGIZATION READY may require review. |
-| VALIDATION | Project-control / electrical engineering review required. |
-| UNRESOLVED | Which date the schedule will carry; installation duration, float and resequencing options are not evidenced. |
+| CHANGE | Transformer delivery information changed: 12 Jan → 2 Feb. *(L1, evidence: progress report period N vs period N-1)* |
+| CONFLICT | Progress report (2 Feb) and schedule update (12 Jan) disagree. *(L1, both evidenced)* |
+| FACT (calculation) | Original plan: delivery 12 Jan is 3 calendar days before planned installation 15 Jan. |
+| FACT (calculation) | 2 February is **18 calendar days after** the planned 15 January installation date. |
+| FACT (calculation) | Reported delivery is 21 calendar days later than the scheduled delivery date. |
+| DEPENDENCY | Transformer delivery → transformer installation. *(L2 · EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED)* |
+| SECONDARY DEPENDENCY | Transformer installation → HV commissioning. *(L2 · INFERRED · UNVALIDATED · AI_INFERRED)* |
+| POTENTIAL IMPACT | Transformer installation milestone may require investigation; downstream: HV commissioning (10 Feb), ENERGIZATION CHECKPOINT. |
+| VALIDATION | Project-control review required. |
+| UNCERTAINTY | Which source reflects the current plan; installation duration, float and resequencing options are not evidenced. |
+| NON-CONCLUSION | No autonomous determination that energization is delayed. |
 
-**Forbidden outputs:** "Energization will be delayed", "Energization will be delayed by 18 days",
-"HV commissioning will slip", "The schedule is wrong", any statement about the EPC's intent (e.g.
-"the EPC is concealing the delay"), and any presentation of the installation → HV commissioning link
-as established fact.
+**Forbidden outputs:** "Energization will be delayed", "Energization will be delayed by 18/21 days",
+"HV commissioning will slip", "The schedule is wrong", any statement about a party's intent, and any
+presentation of the installation → HV commissioning link as established fact.
 
 ### 16.B PCS specification change
 
@@ -1215,17 +1264,18 @@ as established fact.
 | PCS specification **Rev 7** | Cl. 5.3: reactive power capability ±0.95 power factor at PCS terminals across **0–100 %** rated active power. Cl. 6.1: control firmware v3.2. |
 | PPC functional specification Rev 2 | "Reactive power control shall be designed to the PCS capability defined in **PCS specification Rev 7, clause 5.3**." |
 | Grid connection requirements | Cl. R-12: facility shall provide ±0.95 power factor at the point of connection across the **full** active power range. Cl. R-30: the connecting party shall notify the network operator of any change to plant equipment or control systems that **may affect** compliance before compliance testing. |
-| Grid compliance test plan Rev 1 | Test GC-04 "Reactive power capability" verifies R-12, executed through the PPC. |
+| Grid compliance test plan Rev 1 | Test GC-04 "Reactive power capability" verifies R-12, executed through the PPC; references the PPC functional specification Rev 2. |
 | Equipment list | PCS units, PPC, main transformer, no other reactive compensation listed. |
 
 Dependency ground truth:
 
 | Link | Type | Ground truth | Expected provenance/status |
 |---|---|---|---|
-| PPC functional spec → PCS spec (cl. 5.3) | `REFERENCES` | Stated | `DOCUMENT_DERIVED`, validation required (D-027) |
-| Test GC-04 → requirement R-12 | `VERIFIES` | Stated | `DOCUMENT_DERIVED` |
-| GC-04 → GRID COMPLIANCE READY | `CONTRIBUTES_TO` | Stated (test plan) | `DOCUMENT_DERIVED` |
-| **PCS reactive capability (cl. 5.3) → requirement R-12** | `SPECIFIES` / contributes to | **Inferable, not stated.** No document links them; the equipment list shows PCS as the only listed reactive source, so plant reactive capability at the point of connection depends on it. | `AI_INFERRED` → `INFERRED`, Validation `REQUIRED` — **must not be seeded** |
+| PPC functional spec → PCS spec (cl. 5.3) | `REFERENCES` | Stated | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` (D-027) |
+| Test GC-04 → requirement R-12 | `VERIFIES` | Stated | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` |
+| Grid compliance test plan → PPC functional spec | `REFERENCES` | Stated | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` |
+| GC-04 → GRID COMPLIANCE CHECKPOINT | `CONTRIBUTES_TO` | Stated (test plan) | `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED` |
+| **PCS reactive capability (cl. 5.3) → requirement R-12** | `SPECIFIES` / contributes to | **Inferable, not stated.** No document links them; the equipment list shows PCS as the only listed reactive source, so plant reactive capability at the point of connection depends on it. | `INFERRED · UNVALIDATED · AI_INFERRED` — **must not be seeded** |
 
 #### 16.B.2 New information (as the OE receives it)
 
@@ -1240,15 +1290,17 @@ cl. 6.1 now states firmware v4.0.
 | STALE_EVIDENCE | PPC functional specification Rev 2 references PCS specification **Rev 7** cl. 5.3, which Rev 8 supersedes. *(L1)* |
 | FACT (comparison) | The Rev 8 stated range (20–100 %, at PCS terminals) does not cover the 0–20 % portion of the range stated in R-12 (full range, at point of connection). The two are stated at different measurement points. *(L1, calculated)* |
 | FACT | R-12 and R-30 are the grid requirements whose text concerns reactive capability and equipment/control changes. *(L1)* |
-| DEPENDENCY | PPC functional spec references PCS spec cl. 5.3. *(L2 · EXPLICIT · validation required)* |
-| INFERRED DEPENDENCY | PCS reactive capability appears to contribute to plant capability under R-12. *(L2 · Relationship: INFERRED · Validation: REQUIRED · AI_INFERRED, evidence: equipment list + R-12 + cl. 5.3)* |
-| POTENTIAL EXPOSURE | GRID COMPLIANCE READY (test GC-04) and ENGINEERING READY (PPC design basis) may require review. |
+| DEPENDENCY | PPC functional spec references PCS spec cl. 5.3; grid compliance test plan references the PPC functional spec. *(L2 · EXPLICIT · UNVALIDATED)* |
+| INFERRED DEPENDENCY | PCS reactive capability appears to contribute to plant capability under R-12. *(L2 · INFERRED · UNVALIDATED · AI_INFERRED, evidence: equipment list + R-12 + cl. 5.3)* |
+| POTENTIAL EXPOSURE | GRID COMPLIANCE CHECKPOINT (test GC-04) and ENGINEERING CHECKPOINT (PPC design basis) may require review. Potential impact identified; expert validation required. |
 | VALIDATION | Electrical engineering / grid compliance review required. |
 | UNRESOLVED | Does other plant equipment provide reactive support at low active power? Does the firmware change affect submitted models or PPC tuning? Is R-30 notification triggered? |
 
 **Forbidden outputs:** "The plant will fail grid compliance testing", "PCS Rev 8 is non-compliant",
-"The PPC must be redesigned", "The network operator must be notified", "Grid models must be
-resubmitted", and any presentation of the PCS → R-12 link as established fact.
+"The PPC must be redesigned", "The network operator must be notified", "The protection study must be
+redone", "Grid models must be resubmitted", and any presentation of the PCS → R-12 link as
+established fact. Quoting R-30's text as an observed fact is allowed; determining that R-30 is
+*triggered* is not.
 
 This scenario is the clearest demonstration of **discovery vs determination**: GridPulse discovers a
 revision change, a stale reference, a range gap between stated values and the relevant requirements —
@@ -1316,15 +1368,10 @@ itself modelled as an Investigation, not as a separate system.
 
 ## 20. Readiness for Phase 2
 
-This architecture is **frozen** (D-046). Phase 2 does not start until:
+**Phase 1:** ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.
+**Phase 2:** BLOCKED — VALIDATION GATE NOT YET PASSED.
 
-1. **The validation gate passes** (`VALIDATION_PLAN.md`, D-044): practitioner interviews confirm the
-   information flow and the pain, and the timed comparison shows a clear investigation saving once
-   review time is counted.
-2. **The five blocking decisions are made:** D-026 (baseline validation scope), D-027 (initial status
-   of AI-extracted explicit dependencies), D-032 (scenario dates), D-033 (gate verdicts), D-037 (Ask
-   GridPulse over unvalidated intelligence).
-3. **Findings from validation are folded back** into this document as founder-approved amendments —
-   not as new documentation layers.
-
-Technology selection is a Phase 2 decision.
+The five blocking decisions (D-026, D-027, D-032, D-033, D-037) are resolved. Phase 2 starts only when
+the validation gate in `VALIDATION_PLAN.md` passes on all three dimensions — efficiency, investigation
+quality, and the determination boundary — and the founder approves. Validation findings are folded back
+into this document as founder-approved amendments (D-046). Technology selection is a Phase 2 decision.

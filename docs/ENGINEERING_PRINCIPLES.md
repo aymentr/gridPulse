@@ -31,9 +31,11 @@ Level 1 (fact, including deterministic calculations), Level 2 (dependency/infere
 (human-only conclusion) are distinguishable wherever claims are stored or shown.
 
 ## P7. No silent promotion; no direct edits
-AI-detected findings start `DETECTED`/`UNDER_REVIEW`. Validated Project Intelligence changes only via
-`SOURCE → DETECTION → FINDING → REVIEW`, or authorized manual entry with `MANUAL_ENTRY` provenance
-(D-001, D-020).
+AI-detected findings start `DETECTED`/`UNDER_REVIEW`. Only explicit human review or authorized manual
+entry produces `CONFIRMED`; everything else stays `UNVALIDATED` and labelled (D-027). Validated Project
+Intelligence changes only via `SOURCE → DETECTION → FINDING → REVIEW`, or authorized manual entry with
+`MANUAL_ENTRY` provenance (D-001, D-020). Review is selective and prioritised — consequential changes,
+conflicts, inferred links in active investigations, stale and critical missing evidence (D-026).
 
 ## P8. The Review Queue is trust architecture
 Reviewers see what, why, source, change, entity, confidence axes, possibly affected dependencies and
@@ -46,9 +48,10 @@ Contradictions become CONFLICT findings with all sources and evidence (D-011).
 Evidence confidence, relationship confidence and validation status are separate. No percentages
 without a validated statistical basis (D-006).
 
-## P11. Dependencies carry status and provenance
-Status `INFERRED` / `CONFIRMED` / `REJECTED`; provenance distinguishes schedule-derived,
-document-derived, AI-inferred and human-confirmed (D-004, D-023).
+## P11. Dependencies carry confidence, validation and provenance
+Relationship confidence (`EXPLICIT` / `INFERRED`) and validation status (`UNVALIDATED` / `CONFIRMED` /
+`REJECTED`) are separate axes; provenance distinguishes schedule-derived, document-derived,
+AI-extracted, AI-inferred and human-confirmed (D-004, D-023, D-027).
 
 ## P12. Reconstruct from existing information; schedule optional
 The graph is reconstructed from documents, schedules, supplier communications, manual facts and other
@@ -104,5 +107,12 @@ Assumptions about users, information flow and value are tested with practitioner
 implementation (D-044). Documentation is frozen except for blocking decisions and validated
 amendments (D-046).
 
-## P26. Do not silently make major decisions
+## P26. Never fabricate validation evidence
+No invented interviews, participants, quotes, approvals, willingness to pay or benchmark results.
+Public research is not practitioner validation (D-044).
+
+## P27. Precision and recall are reported separately
+Never collapse them into one score; completeness does not mean 100 % recall (D-044).
+
+## P28. Do not silently make major decisions
 Ambiguities go to `DECISIONS.md` for founder review.

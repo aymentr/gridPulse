@@ -44,11 +44,17 @@ CLAIM → EVIDENCE → DOCUMENT_VERSION → PAGE / SECTION / CHUNK (or message, 
 
 | Level | Name | Example | Who |
 |---|---|---|---|
-| 1 | **Fact** — directly supported or deterministically calculated | "Delivery date changed from Jan 15 to Feb 2." | GridPulse, with evidence |
+| 1 | **Fact** — directly supported or deterministically calculated | "Delivery date changed from Jan 12 to Feb 2." / "2 Feb is 18 calendar days after the planned 15 Jan installation." | GridPulse, with evidence |
 | 2 | **Dependency / inference** — reasoned relationship supported by evidence | "The transformer delivery change may affect the transformer installation milestone." | GridPulse, labelled |
 | 3 | **Engineering / project conclusion** | "Energization will be delayed." "Protection settings must be redesigned." | **Humans only** |
 
 GridPulse may surface candidate Level 3 implications only as *potential exposure — validation required*.
+
+## Observed information
+
+Level 1 claims taken from sources that no human has validated (`UNVALIDATED`). Usable in
+investigations and answers, always labelled; distinct from Validated Project Intelligence (D-026,
+D-037).
 
 ## Discovery vs determination
 
@@ -103,9 +109,13 @@ No single "AI confidence score". Three separate axes:
 |---|---|
 | Evidence confidence — support for the factual observation | `HIGH` / `MEDIUM` / `LOW` |
 | Relationship confidence — support for a relationship | `EXPLICIT` / `INFERRED` |
-| Validation status | `REQUIRED` / `VALIDATED` / `REJECTED` / `NOT_REQUIRED` |
+| Validation status | `UNVALIDATED` / `CONFIRMED` / `REJECTED` |
 
-Example: `Evidence: HIGH · Relationship: INFERRED · Validation: REQUIRED`. No percentages without a
+Only explicit human review (or an authorized manual entry) produces `CONFIRMED`. Everything else —
+observed claims, AI-extracted and AI-inferred relationships, imported data — stays `UNVALIDATED` and
+labelled (D-027). Relationship confidence and validation status are independent.
+
+Example: `Evidence: HIGH · Relationship: INFERRED · Validation: UNVALIDATED`. No percentages without a
 validated statistical basis.
 
 ## Source divergence
@@ -129,8 +139,10 @@ activities, tests, gates, document artifacts.
 
 ## Dependency
 
-A typed relationship along which change may propagate. **Status:** `INFERRED` / `CONFIRMED` /
-`REJECTED`. **Provenance (at minimum):** `SCHEDULE_DERIVED` / `DOCUMENT_DERIVED` / `HUMAN_CONFIRMED` /
+A typed relationship along which change may propagate, described by **relationship confidence**
+(`EXPLICIT` / `INFERRED`) and **validation status** (`UNVALIDATED` / `CONFIRMED` / `REJECTED`). An
+explicitly stated relationship extracted by AI is `EXPLICIT · UNVALIDATED · DOCUMENT_DERIVED/AI_EXTRACTED`
+(D-027). **Provenance (at minimum):** `SCHEDULE_DERIVED` / `DOCUMENT_DERIVED` / `HUMAN_CONFIRMED` /
 `AI_INFERRED`. Inferred relationships are never presented as established fact.
 
 ## Project Intelligence Graph
@@ -151,8 +163,10 @@ investigation (`REQUESTED → IN_PROGRESS → COMPLETED`), or an Ask GridPulse q
 
 ## Gate (MVP fixed set)
 
-GRID CONNECTION · ENGINEERING READY · PROCUREMENT READY · CONSTRUCTION READY · COMMISSIONING READY ·
-GRID COMPLIANCE READY · ENERGIZATION READY · COD / HANDOVER. **Intelligence checkpoints, not
+GRID CONNECTION CHECKPOINT · ENGINEERING CHECKPOINT · PROCUREMENT CHECKPOINT · CONSTRUCTION CHECKPOINT ·
+COMMISSIONING CHECKPOINT · GRID COMPLIANCE CHECKPOINT · ENERGIZATION CHECKPOINT · COD / HANDOVER
+CHECKPOINT (D-033). GridPulse identifies evidence and unresolved issues; it never declares READY or
+NOT READY — experts determine readiness. **Intelligence checkpoints, not
 contractual approvals.**
 
 ## Requirement · Test · TestResult · Milestone

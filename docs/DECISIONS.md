@@ -1,7 +1,10 @@
 # Decisions Log
 
 **Phase 0 decisions: LOCKED.** They change only by explicit founder decision.
-**Phase 1 decisions (D-026 – D-040): OPEN** for founder review.
+**Phase 1 decisions (D-026 – D-040):** the five blocking decisions (D-026, D-027, D-032, D-033, D-037)
+are **RESOLVED**; the rest remain OPEN.
+**Phase status:** Phase 1 — ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.
+Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
 **Council-review amendments (D-041 – D-047):** adopted on founder instruction after `COUNCIL_REVIEW.md`;
 they amend the locked Phase 0 documents where noted.
 
@@ -36,28 +39,31 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-023 | Dependency provenance | RESOLVED |
 | D-024 | Authorized user | RESOLVED |
 | D-025 | AI-inferred dependency in first demo | RESOLVED |
-| D-026 | Baseline validation scope | OPEN |
-| D-027 | Initial status of AI-extracted explicit dependencies | OPEN |
+| D-026 | Baseline validation scope | RESOLVED |
+| D-027 | Initial status of AI-extracted explicit dependencies | RESOLVED |
 | D-028 | Entity resolution review | OPEN |
 | D-029 | Impact disposition | OPEN |
 | D-030 | Document content retention | OPEN |
 | D-031 | Recording human Level 3 determinations | OPEN |
-| D-032 | Canonical scenario dates | OPEN |
-| D-033 | Gate readiness verdicts | OPEN |
+| D-032 | Canonical scenario dates | RESOLVED |
+| D-033 | Gate readiness verdicts | RESOLVED |
 | D-034 | Conditional one-hop implications | OPEN |
 | D-035 | Impact propagation matrix | OPEN |
 | D-036 | Source-authority configuration | OPEN |
-| D-037 | Ask GridPulse over unvalidated intelligence | OPEN |
+| D-037 | Ask GridPulse over unvalidated intelligence | RESOLVED |
 | D-038 | Who performs requested investigations | OPEN |
 | D-039 | Activity as an entity kind | OPEN |
 | D-040 | Rejecting schedule-derived dependencies | OPEN |
 | D-041 | Intake framed around what the OE actually receives | RESOLVED (subject to validation) |
 | D-042 | PCS specification-change scenario co-primary | RESOLVED |
 | D-043 | Transformer demo reframed as divergence detection | RESOLVED |
-| D-044 | Validation gate before Phase 2 | RESOLVED |
+| D-044 | Validation gate before Phase 2 (three dimensions) | RESOLVED |
 | D-045 | Buyer and pricing hypotheses | OPEN (to be tested) |
 | D-046 | Documentation freeze | RESOLVED |
 | D-047 | Drawings, SLDs and protection-setting files | OPEN |
+| D-048 | Timed-comparison design (order bias) | OPEN |
+| D-049 | Validation status of schedule-derived data | OPEN (interim rule applied) |
+| D-050 | Economic hypothesis: investigation compression, not change detection | RECORDED — UNVALIDATED |
 
 ---
 
@@ -98,6 +104,8 @@ No single "AI confidence score". Three axes: **evidence confidence** (`HIGH`/`ME
 **relationship confidence** (`EXPLICIT`/`INFERRED`), **validation status**
 (`REQUIRED`/`VALIDATED`/`REJECTED`/`NOT_REQUIRED`). Explicit states over pseudo-precise percentages;
 no percentages without a future validated statistical basis. **RESOLVED**
+*Amended by D-027:* validation status values are `UNVALIDATED` / `CONFIRMED` / `REJECTED`; only explicit
+human action produces `CONFIRMED`.
 
 ## D-007 — Event taxonomy
 Small and extensible; broad categories with attributes (old, new, reason, affected entity), e.g.
@@ -160,7 +168,7 @@ compliance program in the MVP. **RESOLVED**
 Small fixed MVP set: GRID CONNECTION · ENGINEERING READY · PROCUREMENT READY · CONSTRUCTION READY ·
 COMMISSIONING READY · GRID COMPLIANCE READY · ENERGIZATION READY · COD / HANDOVER. Intelligence
 checkpoints, not contractual approvals. Architecture allows future configurable gates without making
-the MVP a gate-management system. **RESOLVED** (see D-033)
+the MVP a gate-management system. **RESOLVED** — *names amended by D-033* to neutral checkpoints.
 
 ## D-017 — Measurement
 Measurement exists in the architecture from the start. The benchmark measures at least: change
@@ -176,7 +184,7 @@ MVP is one project. No portfolio functionality; architecture stays extensible. *
 In the MVP, narrow. Not a general-purpose chatbot. Answers from Validated Project Intelligence with
 evidence; each answer contains answer, supporting evidence, affected entities, dependency chain,
 uncertainty and reviewer/validation status. If an answer cannot be supported by evidence, GridPulse
-says so. **RESOLVED** (see D-037)
+says so. **RESOLVED** — *source scope and answer structure amended by D-037.*
 
 ## D-020 — Direct editing
 No arbitrary direct edits to Validated Project Intelligence. State changes originate through the
@@ -214,26 +222,30 @@ proposed as `INFERRED` with evidence and validation required, never silently tre
 
 # Phase 1 — open architecture decisions
 
-## D-026 — Baseline validation scope
-**Question.** Reconstructing the initial project (D-003) produces many AI-extracted facts. D-001/D-020
-forbid silently promoting AI output into Validated Project Intelligence, but reviewing every extracted
-fact would cause review overload (Risk 2).
-**Options.** A. Review every extracted fact. B. Extracted facts stay `PROPOSED` (usable, labelled
-unvalidated); only facts that participate in impact paths, milestones or gates are raised as `FACT`
-findings for baseline review. C. Treat facts from authoritative documents as validated without review.
-**Recommendation.** B. C violates D-001's spirit; A is unusable at scale.
-**Status.** OPEN
+## D-026 — Baseline review scope
+**Decision.** Consequential / selective review. Human review of every extracted fact is **not**
+required. The baseline may contain observed claims, AI-extracted claims, inferred relationships and
+document-derived relationships, explicitly marked `UNVALIDATED` where appropriate. The Review Queue
+prioritises:
+1. consequential changes
+2. source conflicts
+3. inferred dependencies involved in an investigation
+4. stale evidence
+5. missing evidence relevant to a critical investigation
 
-## D-027 — Initial status of AI-extracted explicit dependencies
-**Question.** D-025 says relationships *not* explicitly stated are `INFERRED`. A relationship that *is*
-explicitly stated in a document but extracted by AI could be mis-extracted. What status does it start with?
-**Options.** A. `CONFIRMED` (it is explicit). B. `INFERRED` status, with relationship confidence
-`EXPLICIT`, provenance `DOCUMENT_DERIVED`, validation `REQUIRED`, until reviewed. C. Add a fourth status.
-**Recommendation.** B. Only deterministic structured imports (`SCHEDULE_DERIVED`), authorized manual
-entries and human review produce `CONFIRMED`. The display shows "explicitly stated in <document> —
-validation required", so the `INFERRED` status label is not mistaken for "reasoned". If the label
-confusion is unacceptable, choose C.
-**Status.** OPEN
+Objective: GridPulse must not create more review work than it saves.
+**Status.** RESOLVED
+
+## D-027 — Explicit AI-extracted dependencies
+**Decision.** An explicitly stated relationship extracted by AI is: relationship confidence `EXPLICIT`,
+validation status `UNVALIDATED`, provenance `DOCUMENT_DERIVED` / `AI_EXTRACTED`. It never becomes
+human-confirmed automatically; only explicit human review changes validation status to `CONFIRMED`.
+Relationship confidence is kept separate from validation status.
+**Consequences.** Validation status values are `UNVALIDATED` / `CONFIRMED` / `REJECTED` (replacing
+`REQUIRED` / `VALIDATED` / `NOT_REQUIRED`). The D-004 labels map to the two axes: "INFERRED" is a
+relationship-confidence value; "CONFIRMED"/"REJECTED" are validation values. Validated Project
+Intelligence contains only `CONFIRMED` items. See D-049 for schedule-derived data.
+**Status.** RESOLVED
 
 ## D-028 — Entity resolution review
 **Question.** "Main transformer", "TX-01" and "Power Transformer T1" must be resolved to one entity.
@@ -267,23 +279,21 @@ reviewer attribution (never AI-authored), linked to the impact.
 keeping authorship explicit.
 **Status.** OPEN
 
-## D-032 — Canonical scenario dates
-**Question.** Phase 1 sets original delivery = 15 Jan and planned installation = 15 Jan. Then "delivery
-moved 18 days" and "new delivery is 18 days after planned installation" give the same number, so the
-benchmark cannot tell whether GridPulse compared against the right baseline. Same-day delivery and
-installation is also unrealistic.
-**Options.** A. Keep 15 Jan / 15 Jan. B. Original delivery 12 Jan (21-day shift; 18 days after
-installation). C. Keep delivery 15 Jan; move planned installation (e.g. 19 Jan).
-**Recommendation.** B or C — make the two calculations produce different numbers.
-**Status.** OPEN
+## D-032 — Canonical transformer dates
+**Decision.** Original delivery **12 January**; planned installation **15 January**; new supplier
+delivery (via progress report) **2 February**. Permitted calculations: 12 Jan → 15 Jan = 3 calendar
+days; 2 Feb is 18 calendar days after the planned 15 January installation date (and 21 days after the
+scheduled delivery). No conclusion that energization will be delayed. The demonstration centres on
+source divergence (progress report 2 Feb vs schedule 12 Jan / installation 15 Jan): change,
+conflict/divergence, affected milestone, evidence, uncertainty — never party intent.
+**Status.** RESOLVED
 
-## D-033 — Gate readiness verdicts
-**Question.** Gate names like "ENERGIZATION READY" suggest a ready/not-ready verdict, which would be a
-Level 3 determination.
-**Options.** A. No verdict; gates show linked items, open exposures, missing/stale evidence and
-conflicts. B. A computed readiness status.
-**Recommendation.** A.
-**Status.** OPEN
+## D-033 — Checkpoint terminology
+**Decision.** Neutral checkpoints: GRID CONNECTION CHECKPOINT · ENGINEERING CHECKPOINT · PROCUREMENT
+CHECKPOINT · CONSTRUCTION CHECKPOINT · COMMISSIONING CHECKPOINT · GRID COMPLIANCE CHECKPOINT ·
+ENERGIZATION CHECKPOINT · COD / HANDOVER CHECKPOINT. GridPulse never declares READY or NOT READY; it
+identifies evidence and unresolved issues relevant to a checkpoint. Human experts determine readiness.
+**Status.** RESOLVED
 
 ## D-034 — Conditional one-hop implications
 **Question.** May GridPulse state "If the finish-to-start link holds, installation cannot start before
@@ -305,14 +315,14 @@ EPC schedule for planned dates)?
 **Recommendation.** B.
 **Status.** OPEN
 
-## D-037 — Ask GridPulse over unvalidated intelligence
-**Question.** D-019 says answers come from Validated Project Intelligence, but many useful answers
-("what is blocking energization?") need inferred dependencies or open findings, and the required answer
-fields include validation status.
-**Options.** A. Validated intelligence only. B. Validated first, plus clearly labelled unvalidated
-items (inferred links, open findings, conflicts).
-**Recommendation.** B.
-**Status.** OPEN
+## D-037 — Ask GridPulse
+**Decision.** Ask GridPulse may use validated project intelligence, observed/unvalidated information,
+inferred relationships and deterministic calculations — but every answer distinguishes them. Minimum
+structure: VALIDATED INFORMATION · OBSERVED INFORMATION · INFERRED RELATIONSHIPS · DETERMINISTIC
+CALCULATIONS · POTENTIAL EXPOSURES · HUMAN VALIDATION REQUIRED · EVIDENCE. It must not hide
+uncertainty. If evidence is insufficient: *"GridPulse does not have sufficient evidence to determine
+this."*
+**Status.** RESOLVED
 
 ## D-038 — Who performs requested investigations
 **Question.** After `REQUEST_INVESTIGATION`, who investigates?
@@ -369,12 +379,17 @@ intent (e.g. "the EPC is concealing the delay").
 **Status.** RESOLVED
 
 ## D-044 — Validation gate before Phase 2
-**Decision.** Phase 2 does not start until `VALIDATION_PLAN.md` passes: 8–12 practitioner interviews,
-3–5 anonymised real change stories, and a timed manual-vs-assisted comparison (concierge output
-acceptable). The benchmark reports metrics per corpus realism tier (clean synthetic, degraded
-synthetic, public real documents). Added metrics: inferred-dependency precision (primary),
-entity-resolution accuracy, cross-source divergence detection, review load.
-**Status.** RESOLVED (pass criteria in the plan are proposed and need founder confirmation)
+**Decision.** Phase 2 does not start until `VALIDATION_PLAN.md` passes on three dimensions:
+**A. Efficiency** — total unassisted vs total assisted human investigation time (assisted time includes
+review, correction, further investigation, evidence verification, routing); target ≥ 50 % reduction,
+a target rather than a universal pass/fail law. **B. Investigation quality** — change detection,
+direct/secondary-impact recall, evidence precision, stale-evidence, source-divergence, entity
+resolution, inferred-dependency precision, routing, review load; a time saving does not count if
+important evidence-supported impacts are missed. **C. Safety** — unsupported Level 3 conclusions must
+be 0. Completeness is not 100 % recall; precision and recall are always reported separately, with
+precision prioritised for inferred dependencies. Three routes: practitioner interviews, expert timed
+comparison, external realism validation. No fabricated validation evidence.
+**Status.** RESOLVED
 
 ## D-045 — Buyer and pricing hypotheses
 **Question.** Who pays, and per what unit?
@@ -399,3 +414,34 @@ C. Full drawing understanding in MVP.
 **Recommendation.** A for the MVP; revisit using the interview findings on how often drawing changes
 drive investigations.
 **Status.** OPEN
+
+---
+
+# Validation-preparation decisions
+
+## D-048 — Timed-comparison design (order bias)
+**Question.** In the specified Route B protocol the expert investigates the raw documents first and
+then reviews the bundle. Having already investigated, their review time understates what a fresh
+reviewer would need, biasing `T_assisted` downward.
+**Options.** A. As specified (single expert, raw then bundle). B. Crossover: each expert does one
+scenario unassisted and the other assisted-first, order counterbalanced. C. Separate expert groups per
+arm.
+**Recommendation.** Run B for the efficiency measure; keep A for correction behaviour and trust. C
+needs more participants than are likely to be available.
+**Status.** OPEN
+
+## D-049 — Validation status of schedule-derived data
+**Question.** D-004's example treated a relationship explicitly stated in the schedule as `CONFIRMED`.
+D-027 states that only explicit human review changes validation status to `CONFIRMED`, and D-023 says
+"the schedule says it" is not "an engineer validated it".
+**Options.** A. Schedule-derived items are `EXPLICIT · UNVALIDATED · SCHEDULE_DERIVED`. B. Schedule-
+derived items are `CONFIRMED` without review.
+**Interim rule applied.** A — consistent with D-023 and D-027. The schedule-stated link is still
+usable in impact analysis and displayed as explicit.
+**Status.** OPEN — founder to confirm.
+
+## D-050 — Economic hypothesis
+**Statement.** The economic hypothesis is **not** that change detection is valuable enough to buy.
+Change detection is the trigger; the potential economic value is **compressing the cross-disciplinary
+investigation required after a meaningful change**.
+**Status.** RECORDED — **UNVALIDATED**; tested directly by the validation gate.

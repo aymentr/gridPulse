@@ -1,98 +1,304 @@
 # Validation Plan — Gate Before Phase 2
 
-**Status:** ACTIVE. Phase 2 (implementation) does not begin until this gate passes (D-044).
+**Status:** ACTIVE. **Phase 2 is BLOCKED until this gate passes** (D-044).
+**Evidence collected to date:** none. No interviews, timed comparisons or benchmark runs have taken
+place. Nothing in this repository should be read as validation evidence until recorded under
+`validation/`.
 
-This plan tests the assumptions the architecture rests on, before building it. It involves people and
-documents, not code. A human producing GridPulse-style output behind the scenes ("concierge" /
-Wizard-of-Oz) is acceptable for the timed comparison.
+---
 
-## 1. Assumptions under test
+## 1. The hypothesis under test
 
-| # | Assumption | Source | Tested by |
-|---|---|---|---|
-| A1 | Investigating the consequences of project changes is a top-3 pain for OEs / technical project-control professionals | Product vision | Interviews |
-| A2 | The OE receives changes through reporting-period documents (EPC reports, schedule updates, submittals, minutes, copied correspondence) rather than direct supplier communication | D-041 | Interviews, real change stories |
-| A3 | Cross-document technical changes (specification → design → grid compliance) are more painful and less well served than date changes | D-042 | Interviews, change stories |
-| A4 | Detecting disagreement between sources (report vs schedule) is valued | D-043 | Interviews, timed comparison |
-| A5 | An evidence-backed investigation bundle materially reduces investigation time **including** review time | Value hypothesis (not a fact) | Timed comparison |
-| A6 | "Potential exposure — validation required" output is acceptable and useful to practitioners (not "too thin") | D-005 | Timed comparison debrief |
-| A7 | Someone will pay, and who | D-045 | Interviews |
+> **Change detection is the trigger, not the product.** The current economic hypothesis is **not**
+> that detecting changes is valuable enough to buy. It is that the potential economic value lies in
+> **compressing the cross-disciplinary investigation required after a meaningful change**.
+>
+> **This hypothesis is UNVALIDATED.** The validation experiment must test it directly.
 
-## 2. Practitioner interviews
+The "4 h manual → 15 min AI + 30–60 min expert validation" figure is a **product target**, not an
+industry fact and not evidence.
 
-**Who:** 8–12 people. Priority: Owner's Engineers and technical project-control professionals on
-large BESS / grid-connected projects. Include 2–3 adjacent roles for contrast (developer project
-director, lender's technical advisor, EPC project controls) — without redesigning for them (D-013).
+## 2. Integrity rules
 
-**Guide (45 min, open questions; do not pitch until the end):**
+These rules apply to everything recorded under this plan.
 
-1. Walk me through the last time a project change landed on your desk and you had to work out what it
-   affected. What was it? How did you hear about it?
-2. Which documents do you routinely receive from the EPC, and how often? Which do you *not* see?
-3. How long did that investigation take? Who else did you involve? What did you produce at the end?
-4. What was the hardest part — finding the information, connecting it, or deciding what it meant?
-5. Tell me about a change you or a colleague **missed** or caught late. What did it cost?
-6. How do you handle specification or submittal revisions? How do you check what references the old
-   revision?
-7. When the progress report and the schedule disagree, what do you do?
-8. How many projects do you cover at once?
-9. What tools do you use today for this (P6 viewer, Aconex, Excel trackers, email)?
-10. *(After showing a GridPulse-style output mock-up)* Would you trust this? What would you need to
-    see? What is missing? Is "potential exposure — validation required" useful or frustrating?
-11. Who in your organisation or your client's would pay for time saved here? How are these reviews
-    budgeted (fixed fee, time-based, per project)?
+1. **Never fabricate** interviews, participants, quotes, expert approvals, willingness to pay,
+   pilot commitments or benchmark results — including as placeholders or examples.
+2. **Public research is not practitioner validation.** It may establish that Owner's Engineering, BESS
+   project coordination, grid connection, commissioning and technical project-control services exist.
+   It does not validate the GridPulse hypothesis.
+3. **Route C is "External realism validation"**, never "customer validation".
+4. Record only what is needed (`PRACTITIONER_INTERVIEW_TEMPLATE.md`); no unnecessary personal data.
+5. Record negative and inconvenient results with the same care as positive ones.
+6. Ground truth is never shown to an investigator before or during their investigation.
 
-**Record per interview:** role, organisation type, project size/stage, answers to A1–A7, quotes,
-documents they offered to share (anonymised).
+## 3. The gate — three dimensions
 
-## 3. Real change stories
+All three must pass. A strong result on one does not compensate for failure on another.
 
-Collect **3–5 anonymised real change cases** (from interviewees, public sources or the founder's own
-experience) with: the triggering information, where it arrived, what it affected, how long the
-investigation took, and what the right outcome was. These become:
+### A. Efficiency
 
-- the realism check for the canonical scenarios, and
-- candidate T3 benchmark cases (subject to confidentiality — synthetic/public only in the prototype,
-  D-015; real stories are used as *patterns* unless explicitly cleared).
+**Measure:** total unassisted human investigation time vs total GridPulse-assisted investigation time.
 
-## 4. Timed comparison
+**Assisted total time includes** every human minute spent on:
 
-**Participants:** 3–5 experienced OEs / project-control professionals.
+- reviewing the AI output
+- correcting it
+- any further investigation the expert still had to do
+- verifying evidence
+- routing to reviewers
 
-**Cases:** the two canonical scenarios (transformer divergence; PCS specification change) prepared as
-realistic document packs (≈15–30 documents each, with distractors), plus one real-story case if
-available.
+AI generation time is **not** the metric.
 
-**Protocol:**
+**Target:** ≥ 50 % reduction in total investigation time. This is a **target, not a universal
+pass/fail law**: results are interpreted together with dimensions B and C, the number of participants,
+and the spread of results.
 
-| Arm | What the participant gets | Measured |
-|---|---|---|
-| Manual | The document pack; task: "What changed this period, what may it affect, what evidence supports that, who needs to look at it?" | Time to answer; completeness vs ground truth; errors; confidence |
-| Assisted | The same pack plus a GridPulse-style investigation bundle (produced by hand, following `PHASE_1_ARCHITECTURE.md` §10.4 and §16) with review items | Time to validate and answer; review items processed; corrections made; completeness; errors |
+### B. Investigation quality
 
-Counterbalance order across participants and cases. Debrief on trust, usefulness and wording.
+Compare the unassisted human baseline against the GridPulse-assisted output, per scenario:
 
-**Pass criteria (proposed — founder to confirm):**
+| Measure | Reported as |
+|---|---|
+| Change detection | precision **and** recall |
+| Direct-impact recall | recall (+ false positives listed) |
+| Secondary-impact recall | recall (+ false positives listed) |
+| Evidence precision | precision |
+| Stale-evidence detection | precision **and** recall |
+| Source-divergence detection | precision **and** recall |
+| Entity-resolution accuracy | correct / incorrect merges |
+| Inferred-dependency precision | precision (primary) **and** recall |
+| Reviewer routing | share routed to an appropriate role |
+| Review load | review items per change; reviewer minutes per change |
 
-- Assisted time (including review) is clearly lower than manual on both scenarios — a target of at
-  least ~50 % reduction; the 4 h → 15 min + 30–60 min figure remains a hypothesis, not a pass mark.
-- No loss of completeness vs manual (direct and secondary impacts, stale reference, divergence).
-- Participants judge the output trustworthy and not "too thin" (A6).
-- Review load is acceptable to participants (items per change, minutes per change).
+**A time saving does not count as success if the assisted output misses important
+evidence-supported impacts.** Ground truth tags each expected item `CRITICAL` or `SUPPORTING`; any
+missed `CRITICAL` item that the unassisted baseline found is a quality failure for that run.
 
-## 5. Buyer and pricing hypotheses (D-045 — to be tested, not decided)
+**Completeness is not 100 % recall.** The product does not require perfect recall. For inferred
+dependencies, **precision matters more than recall**: a false inferred link creates review work and
+undermines trust. The validation report always shows **precision and recall as separate numbers** —
+never a single combined score.
+
+### C. Safety / determination boundary
+
+**Unsupported Level 3 conclusions: MUST = 0.**
+
+Forbidden unless the source evidence explicitly establishes the statement *and* its human validation
+status is preserved:
+
+- "The project will miss energization."
+- "The equipment will fail grid compliance."
+- "The network operator must be notified."
+- "The protection study must be redone."
+- Any statement about a party's intent.
+
+Permitted form: *"Potential impact identified. Expert validation required."* Quoting a source that
+itself states an obligation (e.g. the text of a notification clause) is observed information, not a
+determination that the obligation is triggered.
+
+## 4. Validation scenarios
+
+Packs live in `validation/` (§8). Scenario definitions and expected outputs are also in
+`PHASE_1_ARCHITECTURE.md` §16 — **investigators must not see that document or the ground truth**.
+
+### Scenario A — Transformer source divergence (primary validation scenario)
+
+**Inputs:** EPC progress report · schedule update · supplier information · relevant milestone
+information (plus distractor documents).
+
+| Source | Content |
+|---|---|
+| Schedule update | Transformer delivery **12 January**; installation **15 January** |
+| Progress report | Transformer delivery **2 February** |
+
+**Expected discovery:**
+
+| | |
+|---|---|
+| CHANGE | Delivery information changed |
+| CONFLICT | Progress report and schedule disagree |
+| FACT | 2 February is 18 calendar days after the planned 15 January installation date (original plan: 12 Jan delivery is 3 days before installation) |
+| POTENTIAL IMPACT | Transformer installation milestone may require investigation |
+| VALIDATION | Project-control review required |
+| NON-CONCLUSION | No autonomous determination that energization is delayed |
+
+The value proposition tested is **not schedule calculation**; it is **detecting divergence between
+project information sources**.
+
+### Scenario B — PCS specification change (primary intelligence scenario)
+
+**Inputs:** PCS specification Rev 7 · PCS specification Rev 8 · PPC specification · grid requirement ·
+grid compliance test plan · equipment information (plus distractors).
+
+```
+PCS Rev 7 ─► PCS Rev 8            material parameter changed
+PPC specification                 still references Rev 7
+Grid requirement                  relevant to the changed parameter
+Grid compliance test plan         references the PPC specification
+```
+
+The relationship **PCS capability → grid requirement** must be **AI-inferred and not seeded**.
+
+The benchmark measures whether GridPulse:
+
+1. discovers the relationship,
+2. gets it right,
+3. supports it with evidence, and
+4. avoids unsupported engineering conclusions (WILL FAIL GRID COMPLIANCE, MUST NOTIFY NETWORK
+   OPERATOR, PROTECTION STUDY MUST BE REDONE — unless explicitly supported by the scenario's
+   evidence).
+
+## 5. Route A — Practitioner interviews
+
+**Target participants (8–12):** Owner's Engineers · BESS technical project managers ·
+project-control professionals · electrical/grid engineers on BESS projects · commissioning
+professionals.
+
+**Rules:** ask about the current workflow **first**; do not lead toward GridPulse; show nothing about
+GridPulse until the final section; record with `PRACTITIONER_INTERVIEW_TEMPLATE.md`.
+
+**What we need to understand:**
+
+1. what information they actually receive
+2. how often they receive it
+3. how they detect changes
+4. how they investigate cross-disciplinary impacts
+5. what tools they use
+6. where information is fragmented
+7. which investigations consume the most time
+8. whether source divergence is common
+9. whether technical specification changes cause recurring investigation work
+10. what they would trust software to do
+11. what they would never trust software to do
+12. who would pay
+
+## 6. Route B — Expert timed comparison
+
+The expert does **not** use GridPulse software. The "GridPulse-style investigation bundle" is prepared
+by hand, following the output contract in `PHASE_1_ARCHITECTURE.md` §10.4 / §13, and must itself obey
+the determination boundary.
+
+**Protocol per scenario (as specified):**
+
+1. Give the expert the raw document pack (no ground truth, no bundle).
+2. Ask them to investigate as they normally would: *what changed, what may it affect, what evidence
+   supports that, who needs to look at it?*
+3. Measure time (`T_raw`).
+4. Record their findings.
+5. Provide the GridPulse-style investigation bundle.
+6. Ask them to validate and correct it.
+7. Measure the additional review time (`T_review`).
+8. Compare total time and correctness against ground truth.
+
+**Key comparison:** `T_raw` (unassisted investigation) vs `T_assisted` (total human time on the
+bundle: review, correction, further investigation, evidence verification, routing) — not AI
+generation time.
+
+**Known bias:** in steps 5–7 the expert has already investigated the documents, so `T_review`
+understates the time a fresh reviewer would need. Mitigation — recommended, pending founder decision
+**D-048**: a crossover design where each expert does one scenario unassisted and the *other* scenario
+assisted-first, with the order counterbalanced across experts. The as-specified protocol remains
+useful for measuring correction behaviour and trust.
+
+**Also record:** which bundle items the expert corrected or rejected; any expert finding absent from
+the bundle; perceived trustworthiness of the evidence chain; whether "potential impact — expert
+validation required" was useful or too thin.
+
+Recording sheet: `validation/scoring/`.
+
+## 7. Route C — External realism validation
+
+Use legitimate public or anonymised project material (e.g. published grid-connection requirements,
+public tender specifications and test procedures, anonymised material provided with permission) to
+make the scenario packs realistic and to build the degraded and public-document benchmark tiers.
+
+This is **external realism validation**. It is **not** customer or practitioner validation, and is
+never reported as such. Record the source and licence/permission of every external document used.
+
+## 8. Validation pack structure
+
+```
+validation/
+  README.md
+  scenario-a-transformer/
+    baseline/          period N-1 information (previous progress report, PO, prior schedule)
+    changed/           period N information carrying the change
+    supporting/        commissioning plan, equipment list, test programme, distractors
+    schedule/          schedule updates (N-1, N)
+    progress-report/   EPC progress reports (N-1, N)
+    ground-truth/      expected findings and forbidden conclusions — WITHHELD from investigators
+  scenario-b-pcs/
+    baseline/          PCS spec Rev 7, PPC spec, grid requirement, test plan
+    changed/           PCS spec Rev 8
+    supporting/        equipment information, distractors
+    schedule/          (optional) relevant milestones
+    progress-report/   (optional) the submittal transmittal / report mentioning Rev 8
+    ground-truth/      WITHHELD from investigators
+  scoring/             scoring rubric, timing and results sheets
+  interview/           interview log (no fabricated entries)
+```
+
+Ground truth must remain inaccessible to the investigator: distribute investigator packs as copies
+**without** `ground-truth/`, this plan, or `PHASE_1_ARCHITECTURE.md`.
+
+## 9. Buyer and pricing hypotheses (D-045 — tested in interviews, not decided)
 
 | Hypothesis | Buyer | Why they might pay | Possible pricing unit |
 |---|---|---|---|
-| H1 | OE / technical-advisory firm | Deliver reviews faster, with better evidence, at fixed fee | Per project per month; per seat |
-| H2 | Owner / developer | Earlier visibility of exposure across its project(s) | Per project; per MW under construction |
-| H3 | Lender's technical advisor / lender | Evidence-backed monitoring for construction-phase lending | Per monitored project |
-| H4 | Services-led start | GridPulse-assisted OE services sold by a partner firm before a software sale | Revenue share / service fee |
+| H1 | OE / technical-advisory firm | Faster, better-evidenced reviews at fixed fee | Per project per month; per seat |
+| H2 | Owner / developer | Earlier visibility of exposure | Per project; per MW under construction |
+| H3 | Lender's technical advisor / lender | Evidence-backed construction monitoring | Per monitored project |
+| H4 | Services-led start | GridPulse-assisted OE services via a partner firm | Revenue share / service fee |
 
-## 6. Gate outcome
+Willingness-to-pay and willingness-to-pilot are recorded only as stated by real participants.
+
+## 10. Stop / pivot and continue conditions
+
+**STOP or major pivot if:**
+
+- practitioners do not describe cross-disciplinary change investigation as a recurring, meaningful
+  workload
+- source divergence is rare or unimportant
+- technical specification changes rarely require the proposed investigation
+- existing tools already provide the required answer with little manual work
+- inferred dependencies are too noisy
+- review load consumes the saved time
+- users only want document search / summarisation
+- experts do not trust the evidence chain
+- the system requires excessive manual graph construction
+
+**CONTINUE if:**
+
+- practitioners repeatedly describe the workflow as painful
+- GridPulse finds cross-source relationships that are otherwise assembled manually
+- evidence tracing is substantially faster
+- review time is lower than the investigation time saved
+- experts trust the evidence trail
+- the PCS scenario exposes a meaningful workflow gap
+- users repeatedly ask questions that require cross-disciplinary investigation
+
+## 11. Gate outcome and report
+
+The validation report (stored under `validation/`) states, per scenario and per route:
+
+- participants (role and experience only), dates, and what was actually done
+- efficiency: `T_raw`, `T_assisted`, reduction, spread, sample size
+- quality: every measure in §3.B with **precision and recall shown separately**
+- safety: count of unsupported Level 3 conclusions (must be 0), with examples if any
+- interview findings against §5 items 1–12, including contrary evidence
+- which stop/continue conditions (§10) are met
 
 | Outcome | Condition | Next step |
 |---|---|---|
-| **Pass** | A1, A2 (or an adjusted A2), A5 and A6 supported; pass criteria met | Resolve blocking decisions; fold findings into Phase 1 as amendments; start Phase 2 |
-| **Pivot** | Pain confirmed but intake or scenario assumptions wrong | Amend D-041 – D-043 and the scenarios; repeat the timed comparison |
-| **Stop** | Change investigation is not a top-3 pain, or no clear saving once review time counts | Revisit the product thesis |
+| **Pass** | A, B and C satisfied; continue conditions dominate | Founder approval; fold findings into Phase 1; unblock Phase 2 |
+| **Pivot** | Pain confirmed but scenario, intake or output assumptions wrong | Amend decisions and scenarios; repeat Route B |
+| **Stop** | Stop conditions dominate | Revisit the product thesis |
+
+## 12. Phase status
+
+| Phase | Status |
+|---|---|
+| Phase 0 — Product definition | LOCKED |
+| Phase 1 — Architecture | ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION |
+| Phase 2 — Implementation | BLOCKED — VALIDATION GATE NOT YET PASSED |
