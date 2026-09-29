@@ -14,6 +14,11 @@ Establish whether the synthetic source documents are technically and operational
 BESS / grid project. This is **not** a validation run and does not assess GridPulse, the business, or
 the investigation bundles.
 
+## Recruitment
+
+See `OUTREACH.md` (internal): target profile, exclusions, candidate sources, outreach message
+(EN/DE), delivery rules, outreach log and independence record. Status: no reviewer recruited.
+
 ## Who may perform it
 
 A real practitioner with BESS / grid / project-controls experience who:
@@ -44,7 +49,7 @@ part of the source material being assessed for realism.
 
 `ground-truth/` · `investigation-bundle.md` · scenario `README.md` files · `SOURCES.md` ·
 `docs/PHASE_1_ARCHITECTURE.md` · `docs/VALIDATION_PLAN.md` · `docs/DECISIONS.md` ·
-`docs/COUNCIL_REVIEW.md` · `validation/scoring/` · this README · benchmark expectations, finding counts,
+`docs/COUNCIL_REVIEW.md` · `validation/scoring/` · this README · `OUTREACH.md` · benchmark expectations, finding counts,
 forbidden-conclusion lists, the product hypothesis, or any previous GridPulse analysis.
 
 Do not tell the reviewer which document carries a change or what either pack is meant to test.
