@@ -18,6 +18,7 @@ Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
 | `scenario-b-pcs/` | Scenario B — PCS specification change (primary intelligence scenario) |
 | `scoring/` | Scoring rubric, timing sheet, results template |
 | `interview/` | Interview log and records (real interviews only) |
+| `technical-realism-review/` | Blind reviewer pack and blank report forms; review outstanding |
 
 Each scenario folder:
 
@@ -39,7 +40,10 @@ Each scenario folder:
   `docs/PHASE_1_ARCHITECTURE.md` (which contains the scenario definitions).
 - The investigation bundle (`investigation-bundle.md`) is given only in the **assisted** task of the
   crossover design, together with the raw documents. It is never included in an unassisted pack.
-- Scenario READMEs describe document roles and are never given to investigators.
+- Scenario READMEs and each `supporting/SOURCES.md` describe document roles or test design and are
+  never given to investigators or to the technical realism reviewer.
+- **Technical realism review (before Route B): OUTSTANDING.** See `technical-realism-review/README.md`.
+  The technical reviewer does not take part in Route B.
 
 ## Data rules
 

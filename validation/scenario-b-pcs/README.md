@@ -29,5 +29,5 @@ reference chain).
 ## Investigator distribution
 
 Flatten the files in `baseline/`, `changed/`, `supporting/`, `schedule/` and `progress-report/` into
-one folder. File names are document numbers. Never include this README, `investigation-bundle.md`
+one folder. File names are document numbers. Never include `supporting/SOURCES.md`, this README, `investigation-bundle.md`
 (assisted task only) or `ground-truth/`.
