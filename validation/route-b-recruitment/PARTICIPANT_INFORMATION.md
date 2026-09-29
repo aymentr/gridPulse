@@ -21,7 +21,11 @@ Which set comes first, and which set comes with the bundle, is rotated between p
 to the experimental design. The bundle was prepared manually for this test; it is not live software
 output.
 
-Session length: **[to be confirmed by the organiser before sending]**.
+**Session length: approximately 90 minutes.** The session is expected to take approximately 90
+minutes in total: a short introduction and instructions, the first task, a short transition, the second
+task, and a brief wrap-up. The actual investigation times are recorded as part of the study and are not
+expected to match a fixed target. There is no time limit for either task; if you need more or less
+time, that is fine.
 
 ## Important disclosure
 

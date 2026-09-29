@@ -2,7 +2,7 @@
 
 > Internal. **Never give this file to participants.**
 
-**Status: RECRUITMENT IN PROGRESS — candidates identified; no one contacted; no one has agreed.**
+**Status: READY FOR FIRST OUTREACH — no one contacted; no one has agreed.**
 Outreach is sent manually by the founder; nothing is sent automatically from this repository.
 
 ## Participant profile (from `docs/VALIDATION_PLAN.md` §6 and the Route B checklist)
@@ -52,9 +52,9 @@ recorded.
 
 | Candidate ID | Name | Public professional role | Organization | Relevant experience (public evidence) | Public source | Contact route | Status | Date contacted | Response | Eligible | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| RB-C01 | Mohsen Tabrizi | Chief Technical Consultant | BESS EPC (Stuttgart) | Page states "20+ years in electrical engineering and clean energy; TÜV-certified PV and storage consultant; EPC and commissioning background under German standards" | [bess-epc.de](https://bess-epc.de/) | Company contact details on website | IDENTIFIED | — | — | — | Firm offers owner's engineering / due diligence: possible future customer or competitor — disclose |
-| RB-C02 | Kai Poßekel | Listed contact, Energietechnik (battery storage) | Sweco GmbH | Listed as contact for Sweco's battery-storage planning (site, grid connection, permitting, design through commissioning). Role-level evidence only | [Sweco BESS page](https://www.sweco-gmbh.de/unsere-leistungen/wasser-energie-industrie/energietechnik/batteriespeicher/) | Contact via Sweco page | IDENTIFIED | — | — | — | Confirm hands-on change-investigation experience in screening |
-| RB-C03 | Mike Becker | Gruppenleitung Elektrotechnik (Head of Electrical Engineering) | john becker ingenieure | Company page lists large-battery-storage planning, grid connection, project management through commissioning; named as contact | [wirberaten.de](https://www.wirberaten.de/leistungen/einleitung/grossbatteriespeicher/) | Company general contact published on that page | IDENTIFIED | — | — | — | Confirm BESS project experience in screening |
+| RB-C01 | Mohsen Tabrizi | Chief Technical Consultant | BESS EPC (Stuttgart) | Page states "MBA; B.Eng. Industrial Electronics; 20+ years in electrical engineering and clean energy; TÜV-certified PV and storage consultant; EPC and commissioning background under German standards" | [bess-epc.de](https://bess-epc.de/) | Company contact published on website: info@bess-epc.de (general company address, not personal) | IDENTIFIED | — | — | — | Public evidence supports the profile (electrical engineering, EPC, commissioning, storage). Change-investigation experience to confirm on response. Firm offers owner's engineering / due diligence: possible future customer or competitor — disclose |
+| RB-C02 | Kai Poßekel | Listed under "Energietechnik" on Sweco's battery-storage page; no job title stated | Sweco GmbH | Page names him in the Energietechnik department on the large-battery-storage service page. No personal experience stated | [Sweco BESS page](https://www.sweco-gmbh.de/unsere-leistungen/wasser-energie-industrie/energietechnik/batteriespeicher/) | Behind the page's "Kontaktinformationen anzeigen" link — not retrieved; user to check | SCREENING | — | — | — | Public evidence insufficient: department listing only. Do not assume BESS expertise |
+| RB-C03 | Mike Becker | Gruppenleitung Elektrotechnik (Head of Electrical Engineering) | john becker ingenieure | Title stated; company page describes "technisch fundierte Planung von Speichersystemen für Energie, Netz und Versorgung". Personal BESS project experience not stated | [wirberaten.de](https://www.wirberaten.de/leistungen/einleitung/grossbatteriespeicher/) | Company contact published on that page: info@wirberaten.de, +49 4298 27695-0 (general company, not personal) | SCREENING | — | — | — | Public evidence insufficient: title and company services only. Confirm experience on response |
 | RB-C04 | Pierluigi Sagarriga Visconti | Principal | Back to Grid | Site describes owner's engineering, commissioning (FAT, site) and grid-code compliance review for utility-scale BESS, handled by him directly | [backtogrid.com](https://backtogrid.com/) | Contact via website | IDENTIFIED | — | — | — | Outside DACH (FR/IT/GB); possible future customer/competitor — disclose |
 | RB-C05 | Mark Junker | Head, Battery Grid Integration and Storage System Analysis | ISEA, RWTH Aachen | Group page: design, setup and operation of utility-scale storage systems; grid integration | [ISEA group page](https://www.isea.rwth-aachen.de/cms/ISEA/Die-Organisationseinheit/Forschungsgruppen/~oysq/Netzintegration-und-Speichersystemanalys/?lidx=1) | Contact via university page | IDENTIFIED | — | — | — | Academic; lower fit for change-investigation workflow; may refer practitioner colleagues |
 | RB-C06 | Santiago Cornejo Vorbeck | Contact, Application and System Integration team | TUM, Chair of Electrical Energy Storage Technology | Team researches stationary storage system design, operation, field data | [TUM EES team page](https://www.epe.ed.tum.de/en/ees/research-teams/team-application/) | Contact via university page | IDENTIFIED | — | — | — | Academic; lower fit |
@@ -62,14 +62,26 @@ recorded.
 RB-C01, RB-C04, RB-C05 and RB-C06 were also identified as possible technical-realism reviewers; none
 was contacted for that. Anyone who later performs the realism review is excluded from Route B.
 
+## Public-evidence screening (first wave, re-checked before outreach)
+
+| ID | Evidence supports the Route B profile? | Result |
+|---|---|---|
+| RB-C01 | Yes, at role level: electrical engineering, EPC and commissioning, storage consulting stated on the company page | Remains IDENTIFIED |
+| RB-C02 | Not sufficiently: only a department listing on a service page | SCREENING — no title or experience stated |
+| RB-C03 | Not sufficiently: title and company services, no personal project experience | SCREENING |
+
+SCREENING here means the public evidence is not enough to judge fit; it does not mean contact has
+occurred. The "Fit" column in the candidate-pool table is an organization-level indication, not an
+established fact about any person. Eligibility is decided only after the person responds.
+
 ## Rules
 
 - Record only: role, relevant experience, public source, professional contact route, status.
 - No private contact details unless published for professional contact or given voluntarily.
 - Do not record anyone as INTERESTED, SCHEDULED or COMPLETED unless it actually happened.
 - Compensation: none authorized. Log any compensation question in Notes.
-- Before the first session: set the session duration (not defined in the validation plan) in
-  `OUTREACH_TEMPLATE.md` and `PARTICIPANT_INFORMATION.md`.
+- Session length: **approximately 90 minutes** (appointment estimate only — not a timing target,
+  maximum or performance threshold; measured task times follow the frozen checklist).
 
 ## Materials
 
