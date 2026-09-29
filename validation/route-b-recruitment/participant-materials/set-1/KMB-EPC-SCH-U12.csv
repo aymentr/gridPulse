@@ -1,0 +1,24 @@
+# SYNTHETIC VALIDATION DOCUMENT - fictional project Kestrel Moor BESS. Not a real project.
+# Document no.: KMB-EPC-SCH-U12 | Schedule update | Data date: 18-Dec-2026 | Issued by: EPC Contractor Project Controls
+# Durations are in working days unless marked "7-day calendar", in which case the activity duration is counted in calendar days.
+Activity ID,Activity Name,Original Duration (working days),Predecessors,Start,Finish,Float,Status
+A0100,Notice to proceed,,,01-Apr-26,01-Apr-26,,Complete
+A0400,Substation civil works,,A0100 FS,10-Aug-26,22-Dec-26,,In progress
+A0500,Substation control building complete,0,A0400 FS,,08-Jan-27,,Not started
+A0600,Battery container delivery (final batch),0,,,15-Jan-27,,Not started
+A0610,Battery container placement,,A0600 FS,01-Oct-26,22-Jan-27,,In progress
+A0700,PCS skid delivery (final),0,,,08-Jan-27,,Not started
+A0710,PCS skid installation,25,A0700 FS,11-Jan-27,12-Feb-27,,Not started
+A0800,33 kV cable delivery (remainder),0,,,09-Dec-26,,Complete
+A0810,33 kV cable installation and terminations,30,A0800 FS,14-Dec-26,29-Jan-27,,In progress
+A0900,132 kV switchgear installation,15,A0400 FS,04-Jan-27,22-Jan-27,,Not started
+A0950,HV cable installation and terminations,10,A0900 FS,25-Jan-27,05-Feb-27,,Not started
+A1000,Main power transformer TX-01 delivery to site,0,,,12-Jan-27,,Not started
+A1010,Main power transformer TX-01 installation and dressing,10,A1000 FS,15-Jan-27,28-Jan-27,,Not started
+A1020,Auxiliary transformer AUX-TX-02 delivery to site,0,,,12-Jan-27,,Not started
+A1030,Auxiliary transformer AUX-TX-02 installation,3,A1020 FS,14-Jan-27,18-Jan-27,,Not started
+A1100,HV commissioning,6,"A0950 FS; A0500 FS",10-Feb-27,17-Feb-27,,Not started
+A1150,"LV/MV commissioning (battery, PCS, 33 kV)",10,"A0710 FS; A0810 FS",15-Feb-27,26-Feb-27,,Not started
+A1200,Stage 1 grid compliance tests (pre-energization),7 (7-day calendar),A1100 FS,20-Feb-27,26-Feb-27,,Not started
+A1300,Energization,0,A1200 FS,01-Mar-27,,,Not started
+A1400,Stage 2 grid compliance tests (on-load),10,"A1300 FS; A1150 FS",02-Mar-27,15-Mar-27,,Not started
