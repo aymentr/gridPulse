@@ -33,6 +33,13 @@ directly with the person.
 | Independent BESS owner's engineers / commissioning specialists outside DACH | Commissioning and grid-compliance review experience | Non-DACH practice may differ; record as observation |
 | BVES (Bundesverband Energiespeicher Systeme), large-storage working group | Access to practitioners via the association | Low |
 | Founder's own professional network | Highest likelihood of response; verify independence | Check prior exposure to GridPulse materials |
+| University research groups on grid-scale / stationary battery storage (e.g. groups working on design, setup and operation of utility-scale storage and grid integration) | Likely to help unpaid; strong on technical realism (Scenario B); may be weaker on EPC project-control documents | Low; note academic vs. EPC perspective as an observation |
+| Researchers who have published lessons learned from real grid-scale BESS projects in Germany | Combine field experience with a habit of peer review | Low |
+
+**Unpaid approach.** No compensation is authorized. Non-monetary reciprocity may be offered only if the
+founder approves it, for example: a short summary of the reviewer's own findings, an acknowledgement
+(if they want one), or sharing the anonymised realism checklist. Do not imply any future commercial
+relationship.
 
 ## Outreach message (English)
 
