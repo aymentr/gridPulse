@@ -9,8 +9,13 @@ prepared manually, not by GridPulse software, and have not been reviewed by any 
 validation run has occurred and no validation evidence exists** — no interviews, timed comparisons or
 benchmark runs have been recorded.
 
-Status: Phase 1 — ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.
-Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
+| Item | Status |
+|---|---|
+| Architecture | ARCHITECTURE REVIEWED |
+| Benchmark | BENCHMARK CONSTRUCTED (synthetic) |
+| Technical realism | NOT INDEPENDENTLY VALIDATED — see below |
+| Product validation | PENDING — **Route B unblocked** (D-051), not yet run |
+| Phase 2 | BLOCKED UNTIL VALIDATION GATE IS PASSED |
 
 | Folder | Contents |
 |---|---|
@@ -18,7 +23,7 @@ Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
 | `scenario-b-pcs/` | Scenario B — PCS specification change (primary intelligence scenario) |
 | `scoring/` | Scoring rubric, timing sheet, results template |
 | `interview/` | Interview log and records (real interviews only) |
-| `technical-realism-review/` | Blind reviewer pack and blank report forms; review outstanding |
+| `technical-realism-review/` | Blind reviewer pack and blank report forms — NOT PERFORMED, optional follow-up |
 
 Each scenario folder:
 
@@ -36,14 +41,40 @@ Each scenario folder:
 - Investigator packs are distributed as **flattened** copies (one folder, files named by document
   number) so folder names such as `baseline/` or `changed/` do not reveal where the change is. See each
   scenario README for which folders to include.
-- Investigators must not receive `ground-truth/`, `scoring/`, `docs/VALIDATION_PLAN.md` or
-  `docs/PHASE_1_ARCHITECTURE.md` (which contains the scenario definitions).
+- Investigators must not receive `ground-truth/`, `scoring/`, `docs/VALIDATION_PLAN.md`,
+  `docs/PHASE_1_ARCHITECTURE.md` (which contains the scenario definitions), this README, or anything in
+  `technical-realism-review/`.
 - The investigation bundle (`investigation-bundle.md`) is given only in the **assisted** task of the
   crossover design, together with the raw documents. It is never included in an unassisted pack.
 - Scenario READMEs and each `supporting/SOURCES.md` describe document roles or test design and are
   never given to investigators or to the technical realism reviewer.
-- **Technical realism review (before Route B): OUTSTANDING.** See `technical-realism-review/README.md`.
-  The technical reviewer does not take part in Route B.
+- **Technical realism review: NOT PERFORMED — optional, non-blocking** (D-051). See
+  `technical-realism-review/README.md`. If a review happens later, that reviewer does not take part in
+  Route B.
+
+## Independent Technical Realism Review — limitation
+
+Independent BESS/grid practitioner review was sought but was not obtained before Route B. Candidate
+sources and outreach material were prepared (`technical-realism-review/OUTREACH.md`); no outreach is
+recorded there and no review took place.
+
+The scenarios therefore remain **synthetic** benchmark scenarios whose technical and workflow realism
+has **not been independently validated**.
+
+This does not prevent the controlled benchmark from being executed. However, benchmark results must be
+interpreted narrowly: they measure GridPulse-style investigation performance against the constructed
+scenarios and their defined ground truth. They do not establish that the scenarios are representative
+of real-world BESS projects.
+
+No reviewer approval, practitioner endorsement or external technical validation is claimed.
+
+Open technical-realism questions (not confirmed errors; scenarios deliberately left unchanged) are
+listed in `technical-realism-review/README.md`. That file is internal and never given to investigators.
+
+The product-validation requirements are unchanged and remain mandatory: zero unsupported Level 3
+conclusions; critical findings cannot be silently missed; evidence remains traceable; inferred
+dependencies remain distinguishable from confirmed ones; human review remains authoritative; review
+and correction time counts toward total investigation time.
 
 ## Data rules
 

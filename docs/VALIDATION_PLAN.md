@@ -1,6 +1,7 @@
 # Validation Plan — Gate Before Phase 2
 
-**Status:** ACTIVE. **Phase 2 is BLOCKED until this gate passes** (D-044).
+**Status:** ACTIVE. **Route B: UNBLOCKED** (D-051). **Phase 2 is BLOCKED until this gate passes** (D-044).
+**Technical realism of the scenarios: NOT INDEPENDENTLY VALIDATED** (§3.1).
 **Evidence collected to date:** none. No interviews, timed comparisons or benchmark runs have taken
 place. Nothing in this repository should be read as validation evidence until recorded under
 `validation/`.
@@ -32,9 +33,45 @@ These rules apply to everything recorded under this plan.
 5. Record negative and inconvenient results with the same care as positive ones.
 6. Ground truth is never shown to an investigator before or during their investigation.
 
-## 3. The gate — three dimensions
+## 3. The gate
 
-All three must pass. A strong result on one does not compensate for failure on another.
+The gate has two dimensions:
+
+| Dimension | Content | Role |
+|---|---|---|
+| **Product validation** | A. Efficiency · B. Investigation quality · C. Safety (below) | **Blocking** — governs Phase 2 (D-044) |
+| **Technical realism** | Independent practitioner review of the synthetic scenarios (§3.1) | **Non-blocking** — recommended; not performed (D-051) |
+
+Within product validation, A, B and C must all pass. A strong result on one does not compensate for
+failure on another.
+
+### 3.1 Technical realism review — non-blocking (D-051)
+
+Route B does **not** require independent technical-realism review.
+
+Independent practitioner realism review is desirable external evidence but is not required to run the
+controlled benchmark. Because no independent review was obtained, benchmark results must not be
+interpreted as evidence that the scenarios faithfully represent real-world BESS project workflows or
+engineering practice.
+
+Independent realism review remains a desirable follow-up before making any claim about real-world BESS
+workflow representativeness. The package in `validation/technical-realism-review/` is kept for that
+purpose. No reviewer approval, practitioner endorsement or external technical validation is claimed.
+
+### 3.2 What Route B can and cannot demonstrate
+
+| Route B **can** provide evidence about whether the GridPulse investigation approach can: | Route B **cannot** by itself establish: |
+|---|---|
+| identify meaningful changes | that real BESS practitioners work exactly like the scenarios |
+| connect evidence across documents | that the source-document mix is representative of industry |
+| detect disagreement between sources | that the technical terminology reflects every real project |
+| discover dependencies | that customers would pay |
+| identify potential downstream impact | that practitioners would adopt the workflow |
+| reduce investigation effort | that the product works on real confidential project documentation |
+| preserve evidence lineage | that the proposed buyer is correct |
+| route appropriate questions to human reviewers | that the product has real-world ROI |
+
+Route B results are measured against the constructed scenarios and their defined ground truth only.
 
 ### A. Efficiency
 
@@ -256,7 +293,7 @@ validation/
 Ground truth must remain inaccessible to the investigator: distribute investigator packs as
 **flattened** copies (files named by document number) **without** `ground-truth/`, this plan, or
 `PHASE_1_ARCHITECTURE.md`. Pack status: Scenario A and B documents authored (synthetic);
-investigation bundles for Route B not yet prepared.
+investigation bundles for Route B prepared (manually; not GridPulse software output).
 
 ## 9. Buyer and pricing hypotheses (D-045 — tested in interviews, not decided)
 
@@ -313,8 +350,11 @@ The validation report (stored under `validation/`) states, per scenario and per 
 
 ## 12. Phase status
 
-| Phase | Status |
+| Item | Status |
 |---|---|
 | Phase 0 — Product definition | LOCKED |
-| Phase 1 — Architecture | ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION |
-| Phase 2 — Implementation | BLOCKED — VALIDATION GATE NOT YET PASSED |
+| Architecture | ARCHITECTURE REVIEWED |
+| Benchmark | BENCHMARK CONSTRUCTED |
+| Technical realism | NOT INDEPENDENTLY VALIDATED (non-blocking, D-051) |
+| Product validation | PENDING — Route B unblocked, not yet run |
+| Phase 2 — Implementation | BLOCKED UNTIL VALIDATION GATE IS PASSED |

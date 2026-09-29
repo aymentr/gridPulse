@@ -1,10 +1,11 @@
 # Technical Realism Review — Internal Coordination
 
-**Status: OUTSTANDING.** No independent technical realism review has been performed. No real BESS /
-grid practitioner has reviewed the packs. The report forms `scenario-a-review.md` and
-`scenario-b-review.md` are blank.
+**Status: NOT PERFORMED — OPTIONAL FOLLOW-UP VALIDATION.** No independent technical realism review
+has been performed. No real BESS / grid practitioner has reviewed the packs. The report forms
+`scenario-a-review.md` and `scenario-b-review.md` are blank. Neither scenario is technically reviewed.
 
-Route B does not start until this review is complete and any CRITICAL issue has been resolved.
+The review is **non-blocking** for Route B (D-051). It remains desirable external evidence before any
+claim that the scenarios represent real-world BESS workflows or engineering practice.
 
 > This README is internal. **Do not give it to the reviewer.**
 
@@ -65,7 +66,7 @@ If any scenario source document changes, re-copy before sending, still excluding
 |---|---|
 | No CRITICAL issues | Change nothing automatically; evaluate each MAJOR issue individually |
 | MAJOR issues | Correct only where the change improves realism **and** passes the protection check below |
-| Any CRITICAL issue | Do not run Route B; fix the pack; repeat the technical realism review |
+| Any CRITICAL issue | Pause further Route B runs; fix the pack; repeat the technical realism review. Record which runs used the earlier version and interpret them accordingly |
 
 ### Protection check (every proposed correction)
 
@@ -78,7 +79,27 @@ A correction is **reported, not implemented**, if it would:
 - change the ground truth (other than a citation made invalid by a wording change);
 - introduce information an investigator could not otherwise obtain.
 
-## Phase status
+## Open technical-realism questions (internal — never give to investigators)
 
-- Phase 1 — ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION
-- Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED
+These were raised by the pack author, who is not independent. They are **open questions, not confirmed
+errors**. The scenarios, ground truth, bundles and scoring were deliberately **not** changed because of
+them (D-051).
+
+| Scenario | Open question |
+|---|---|
+| A | Transformer installation / dressing duration |
+| A | Terminology: pre-energization checks versus grid-compliance testing |
+| A | Delivery / progress-report / schedule workflow assumptions |
+| B | Low-output power-factor wording |
+| B | Reactive-power interpretation |
+| B | PCS capability versus grid requirement |
+| B | PPC relationship |
+| B | Compliance-test points |
+
+## Status
+
+- Architecture — ARCHITECTURE REVIEWED
+- Benchmark — BENCHMARK CONSTRUCTED
+- Technical realism — NOT INDEPENDENTLY VALIDATED
+- Product validation — PENDING (Route B unblocked, not yet run)
+- Phase 2 — BLOCKED UNTIL VALIDATION GATE IS PASSED

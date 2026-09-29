@@ -2,7 +2,8 @@
 
 > Internal. **Do not give this file to the reviewer.**
 
-**Status: NO REVIEWER RECRUITED. No one has been contacted. The review has not occurred.**
+**Status: NO REVIEWER RECRUITED. No outreach is recorded. The review has not occurred.** The review is
+non-blocking for Route B (D-051) and remains an optional follow-up.
 Outreach must be sent by the founder; it cannot be sent from the repository or by an AI assistant.
 
 ## Target profile

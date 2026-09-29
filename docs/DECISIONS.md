@@ -3,8 +3,8 @@
 **Phase 0 decisions: LOCKED.** They change only by explicit founder decision.
 **Phase 1 decisions (D-026 – D-040):** the five blocking decisions (D-026, D-027, D-032, D-033, D-037)
 are **RESOLVED**; the rest remain OPEN.
-**Phase status:** Phase 1 — ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION.
-Phase 2 — BLOCKED — VALIDATION GATE NOT YET PASSED.
+**Status:** ARCHITECTURE REVIEWED · BENCHMARK CONSTRUCTED · TECHNICAL REALISM: NOT INDEPENDENTLY VALIDATED ·
+PRODUCT VALIDATION: PENDING · PHASE 2: BLOCKED UNTIL VALIDATION GATE IS PASSED.
 **Council-review amendments (D-041 – D-047):** adopted on founder instruction after `COUNCIL_REVIEW.md`;
 they amend the locked Phase 0 documents where noted.
 
@@ -64,6 +64,7 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-048 | Timed-comparison design (order bias) | RESOLVED — crossover |
 | D-049 | Validation status of schedule-derived data | RESOLVED — EXPLICIT + UNVALIDATED |
 | D-050 | Economic hypothesis: investigation compression, not change detection | RECORDED — UNVALIDATED |
+| D-051 | External technical-realism review is non-blocking | RESOLVED |
 
 ---
 
@@ -449,3 +450,18 @@ explicit human review makes them `CONFIRMED`. D-004's schedule example is amende
 Change detection is the trigger; the potential economic value is **compressing the cross-disciplinary
 investigation required after a meaningful change**.
 **Status.** RECORDED — **UNVALIDATED**; tested directly by the validation gate.
+
+## D-051 — External technical-realism review is non-blocking
+**Decision.** Independent BESS/grid practitioner realism review is recommended but is not a
+prerequisite for executing the controlled Route B benchmark. If unavailable, the project must
+explicitly record the absence of independent realism validation and must not interpret benchmark
+results as evidence of real-world workflow representativeness.
+**Rationale.** Blocking the controlled product experiment indefinitely on external reviewer
+availability would prevent testing the core investigation hypothesis. The missing review is retained
+as an explicit limitation and future validation item.
+**Consequences.** Route B may proceed. Benchmark conclusions remain limited to the constructed
+scenarios. Real-world workflow and technical realism remain unvalidated. The product-validation gate
+(D-044: efficiency, quality, zero unsupported Level 3 conclusions) is unchanged and still governs
+Phase 2. No independent review has been performed; none is claimed. The review package in
+`validation/technical-realism-review/` is kept as an optional follow-up.
+**Status.** RESOLVED

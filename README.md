@@ -104,9 +104,11 @@ project-control validation required."*
 | Phase | Status |
 |---|---|
 | **Phase 0 — Product definition** | **LOCKED** |
-| **Phase 1 — Domain & system architecture** | **ARCHITECTURE REVIEWED — VALIDATION REQUIRED BEFORE IMPLEMENTATION** |
-| **Validation gate** | **Active** — efficiency, investigation quality, determination boundary ([`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md)). No validation evidence collected yet. |
-| **Phase 2 — Implementation** | **BLOCKED — VALIDATION GATE NOT YET PASSED.** No code, stack, schema, UI, agents or integrations exist. |
+| **Architecture** | **ARCHITECTURE REVIEWED** |
+| **Benchmark** | **BENCHMARK CONSTRUCTED** — two synthetic scenarios with withheld ground truth |
+| **Technical realism** | **NOT INDEPENDENTLY VALIDATED** — no practitioner review obtained; non-blocking (D-051) |
+| **Product validation** | **PENDING** — Route B unblocked, not yet run; gate: efficiency, investigation quality, zero unsupported Level 3 conclusions ([`docs/VALIDATION_PLAN.md`](docs/VALIDATION_PLAN.md)). No validation evidence collected yet. |
+| **Phase 2 — Implementation** | **BLOCKED UNTIL VALIDATION GATE IS PASSED.** No code, stack, schema, UI, agents or integrations exist. |
 
 ## Documentation
 
