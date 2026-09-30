@@ -1,0 +1,9 @@
+[project]
+name = "gridpulse-spike"
+version = "0.0.1"
+description = "GridPulse Phase 1.5 technical spike (D-052). Not a product build."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

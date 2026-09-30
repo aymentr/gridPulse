@@ -65,6 +65,7 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-049 | Validation status of schedule-derived data | RESOLVED — EXPLICIT + UNVALIDATED |
 | D-050 | Economic hypothesis: investigation compression, not change detection | RECORDED — UNVALIDATED |
 | D-051 | External technical-realism review is non-blocking | RESOLVED |
+| D-052 | Phase 1.5 technical spike in parallel with validation | RESOLVED |
 
 ---
 
@@ -464,4 +465,15 @@ scenarios. Real-world workflow and technical realism remain unvalidated. The pro
 (D-044: efficiency, quality, zero unsupported Level 3 conclusions) is unchanged and still governs
 Phase 2. No independent review has been performed; none is claimed. The review package in
 `validation/technical-realism-review/` is kept as an optional follow-up.
+**Status.** RESOLVED
+
+## D-052 — Phase 1.5 technical spike in parallel with validation
+**Decision.** On founder instruction, a Phase 1.5 technical vertical slice ("spike") is built in
+parallel with Route B. It implements the Phase 1 model for the two synthetic scenarios only, to test
+whether fragmented documents can be turned into an evidence-backed investigation without unsupported
+determinations. Spike stack: Python 3.11 standard library, in-memory store, `unittest` — chosen as the
+smallest reversible option. It is **not** the Phase 2 technology decision, which remains open.
+**Constraints.** No change to Phase 0, the Phase 1 architecture, the benchmark, ground truth, bundles,
+scoring or the validation gate. Production code never reads ground truth. Phase 2 remains
+**BLOCKED — VALIDATION GATE NOT PASSED**.
 **Status.** RESOLVED
