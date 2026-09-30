@@ -32,8 +32,12 @@ def main(argv=None) -> int:
         print(f"error: {e}")
         return 2
 
-    res = run(Path(args.scenario_dir),
-              folders=STANDARD_A if args.standard_a else None, provider=provider)
+    try:
+        res = run(Path(args.scenario_dir),
+                  folders=STANDARD_A if args.standard_a else None, provider=provider)
+    except ProviderError as e:
+        print(f"error: {e}")
+        return 2
     s = res.store
     print(f"# GridPulse spike run — {args.scenario_dir}\n")
     print(f"Documents: {len(s.documents)} · claims: {len(s.claims)} · dependencies: "
