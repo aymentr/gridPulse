@@ -41,7 +41,8 @@ third-party dependencies. Reversible; not the Phase 2 stack decision.
 
 ```
 PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 -m gridpulse run validation/scenario-a-transformer
+PYTHONPATH=src python3 -m gridpulse run validation/scenario-a-transformer --standard-a   # standard run
+PYTHONPATH=src python3 -m gridpulse run validation/scenario-a-transformer                # variant (with changed/)
 PYTHONPATH=src python3 -m gridpulse run validation/scenario-b-pcs
 ```
 
@@ -56,3 +57,18 @@ PYTHONPATH=src python3 -m gridpulse run validation/scenario-b-pcs
    generalise to real documents.
 3. Synthetic scenarios only; technical realism not independently validated (D-051).
 4. Production code never reads `ground-truth/`; tests read it only to check forbidden conclusions.
+5. **Observed gaps, not fixed by special-casing:**
+   - Scenario B: the missing Appendix C capability curve (referenced by PCS Rev 8 cl. 5.3) is not
+     raised as MISSING_EVIDENCE.
+   - Scenario A: the progress-report statement that energization is maintained is not extracted as
+     an observed claim.
+   - The stand-in also proposes PCS → R-14 (clause 5.4, unchanged). It is INFERRED · UNVALIDATED
+     and sits in the review queue for a reviewer to accept or reject.
+6. The CSV schedule's `#` comment line is shown as the evidence "section" (cosmetic).
+
+## Status
+
+Scenario A (standard and variant) and Scenario B run end to end; 50 tests pass. The tests include
+checks that no bundle states any forbidden conclusion listed in the frozen ground truth. **This is a
+technical spike. It does not change the validation gate: Phase 2 remains BLOCKED — VALIDATION GATE
+NOT PASSED.**
