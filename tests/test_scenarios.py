@@ -204,7 +204,7 @@ class ScenarioBTests(_ForbiddenMixin, unittest.TestCase):
 class IsolationTests(unittest.TestCase):
     def test_production_code_does_not_reference_benchmark_answers(self):
         src = ROOT / "src" / "gridpulse"
-        for p in src.glob("*.py"):
+        for p in list(src.rglob("*.py")) + list(src.rglob("*.md")):
             text = p.read_text()
             if p.name == "ingest.py":                  # the refusal list itself
                 continue
