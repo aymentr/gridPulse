@@ -30,6 +30,7 @@ class Store:
         self.calculations: dict[str, Calculation] = {}
         self.reviewers: dict[str, Reviewer] = {}
         self.reviews: list[Review] = []
+        self.ai_invocations: list = []      # AIInvocation traces (milestone §9); no secrets
         self.audit: list[dict] = []
 
     def next_id(self, prefix: str) -> str:

@@ -66,6 +66,7 @@ Status values: `RESOLVED`, `OPEN`, `PARTIALLY RESOLVED`.
 | D-050 | Economic hypothesis: investigation compression, not change detection | RECORDED — UNVALIDATED |
 | D-051 | External technical-realism review is non-blocking | RESOLVED |
 | D-052 | Phase 1.5 technical spike in parallel with validation | RESOLVED |
+| D-053 | Milestone 2 — real, provider-agnostic LLM integration behind the spike's AI boundary | RESOLVED |
 
 ---
 
@@ -475,5 +476,22 @@ determinations. Spike stack: Python 3.11 standard library, in-memory store, `uni
 smallest reversible option. It is **not** the Phase 2 technology decision, which remains open.
 **Constraints.** No change to Phase 0, the Phase 1 architecture, the benchmark, ground truth, bundles,
 scoring or the validation gate. Production code never reads ground truth. Phase 2 remains
+**BLOCKED — VALIDATION GATE NOT PASSED**.
+**Status.** RESOLVED
+
+## D-053 — Milestone 2 — real, provider-agnostic LLM integration
+**Decision.** The spike's rule-based AI stand-in is placed behind a provider-agnostic boundary
+(`src/gridpulse/providers/`) with a real Claude provider and an offline mock. The LLM only
+PROPOSES; the deterministic layer verifies citations, detects and calculates changes, and traverses
+the graph; humans validate. Provider and model are selected by environment variable, not code.
+**Constraints.** No change to Phase 0, the Phase 1 architecture, the benchmark, ground truth,
+bundles, scoring or the validation gate. Production code never reads ground truth. The LLM can never
+create CONFIRMED/validated state, bypass evidence verification or review, or produce a Level-3
+determination — these are enforced deterministically in the backend, not by prompt alone. Accepted
+AI dependencies are only ever INFERRED · UNVALIDATED · AI_INFERRED. Every AI invocation is traced;
+no secrets are stored.
+**Consequences.** GridPulse runs offline with the mock (no key) and with a real provider when
+credentials are present. Connecting a real model is an engineering capability, **not** validation:
+the founder must still run the product-validation experiment. Phase 2 remains
 **BLOCKED — VALIDATION GATE NOT PASSED**.
 **Status.** RESOLVED

@@ -5,5 +5,10 @@ description = "GridPulse Phase 1.5 technical spike (D-052). Not a product build.
 requires-python = ">=3.11"
 dependencies = []
 
+# The deterministic pipeline and full test-suite need no third-party packages and no API key.
+# The real LLM provider (GRIDPULSE_LLM_PROVIDER=anthropic) needs the optional 'anthropic' extra.
+[project.optional-dependencies]
+anthropic = ["anthropic>=1.0"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
