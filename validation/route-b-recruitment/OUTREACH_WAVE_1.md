@@ -3,9 +3,8 @@
 > Internal. Messages are prepared for manual sending by Aymen Troudi. **Nothing has been sent.**
 > After sending, update `RECRUITMENT.md`: status CONTACTED and the actual date.
 
-**Missing field in every message:** Aymen's LinkedIn URL is not recorded in the repository — fill
-`[LinkedIn URL]` or delete the line. No email addresses, phone numbers or employment details beyond
-the cited public pages have been added.
+No LinkedIn URL is recorded in the repository, so no LinkedIn line is included. No email addresses,
+phone numbers or employment details beyond the cited public pages have been added.
 
 Salutations are gender-neutral ("Guten Tag [first name] [last name]" / "Dear [first name] [last name]"), since no
 form of address is known.
@@ -53,7 +52,6 @@ Mit freundlichen Grüßen
 Gründer, ATR Business Solutions und GridPulse
 Hildesheim, Deutschland
 E-Mail: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *Einmalige, nicht kommerzielle Anfrage. Wenn Sie keine weitere Kontaktaufnahme wünschen, genügt eine
 kurze Antwort.*
@@ -90,7 +88,6 @@ Kind regards,
 Founder, ATR Business Solutions and GridPulse
 Hildesheim, Germany
 Email: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *One-off, non-commercial request. If you'd prefer not to be contacted again, just reply and I won't
 follow up.*
@@ -99,14 +96,18 @@ follow up.*
 
 ## RB-C02 — Kai Poßekel (Sweco GmbH)
 
-**Route:** not yet known — the Sweco page hides contact details behind "Kontaktinformationen anzeigen".
-**Check the page and fill `[contact route]` before sending.**
+**Route:** official Sweco contact page for him,
+[sweco-gmbh.de/Kontakte/kai-possekel](https://www.sweco-gmbh.de/Kontakte/kai-possekel/), which lists only
+the general company contact — `info@sweco-gmbh.de`, +49 (0) 69 95921-0 (hence the "z. Hd." line). The
+battery-storage page also offers a general contact form.
 **Screening:** SCREENING — public evidence is a department listing only; the message does not assume
 BESS expertise.
 
 ### Deutsch
 
 **Betreff:** Bitte um Teilnahme an einem kurzen Workflow-Test mit synthetischen BESS-Projektdokumenten
+
+z. Hd. Kai Poßekel, Energietechnik
 
 Guten Tag Kai Poßekel,
 
@@ -137,7 +138,6 @@ Mit freundlichen Grüßen
 Gründer, ATR Business Solutions und GridPulse
 Hildesheim, Deutschland
 E-Mail: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *Einmalige, nicht kommerzielle Anfrage. Wenn Sie keine weitere Kontaktaufnahme wünschen, genügt eine
 kurze Antwort.*
@@ -145,6 +145,8 @@ kurze Antwort.*
 ### English
 
 **Subject:** Request: participation in a short workflow test with synthetic BESS project documents
+
+For the attention of Kai Poßekel, Energy Technology
 
 Dear Kai Poßekel,
 
@@ -172,7 +174,6 @@ Kind regards,
 Founder, ATR Business Solutions and GridPulse
 Hildesheim, Germany
 Email: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *One-off, non-commercial request. If you'd prefer not to be contacted again, just reply and I won't
 follow up.*
@@ -222,7 +223,6 @@ Mit freundlichen Grüßen
 Gründer, ATR Business Solutions und GridPulse
 Hildesheim, Deutschland
 E-Mail: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *Einmalige, nicht kommerzielle Anfrage. Wenn Sie keine weitere Kontaktaufnahme wünschen, genügt eine
 kurze Antwort.*
@@ -259,7 +259,6 @@ Kind regards,
 Founder, ATR Business Solutions and GridPulse
 Hildesheim, Germany
 Email: troudiaymen05@gmail.com
-LinkedIn: [LinkedIn URL]
 
 *One-off, non-commercial request. If you'd prefer not to be contacted again, just reply and I won't
 follow up.*

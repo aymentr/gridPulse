@@ -35,7 +35,6 @@ Kind regards,
 Founder, ATR Business Solutions and GridPulse
 Hildesheim, Germany
 Email: troudiaymen05@gmail.com
-LinkedIn: [linkedin.com/in/…]
 
 *One-off, non-commercial request. If you'd prefer not to be contacted again, just reply and I won't
 follow up.*
@@ -72,7 +71,6 @@ Mit freundlichen Grüßen
 Gründer, ATR Business Solutions und GridPulse
 Hildesheim, Deutschland
 E-Mail: troudiaymen05@gmail.com
-LinkedIn: [linkedin.com/in/…]
 
 *Einmalige, nicht kommerzielle Anfrage. Wenn Sie keine weitere Kontaktaufnahme wünschen, genügt eine
 kurze Antwort.*
